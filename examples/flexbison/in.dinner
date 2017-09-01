@@ -1,0 +1,8 @@
+diNNeR 3.7
+type steak
+type bread
+type spoon
+99 102 0 5  steak
+54 1 1 10   steak
+123 4 5 1   bread
+end
