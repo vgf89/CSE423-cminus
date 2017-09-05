@@ -48,6 +48,10 @@ letdig [{digit}|{letter}]
 "]"					{ return BRACL;}
 ";"					{ return SEMI;}
 "."					{ return DOT;}
+"record"			{ return RECORD;}
+"{"					{ return "{";}
+"}"					{ return "}";}
+","					{ return ",";}
 {letter}({letter}|{digit})*		{ return ID;}	
 {digit}+						{ return NUMCONST;}
 '([^\n]|\\[^(0|\\n])'			{ return CHARCONST;}	
