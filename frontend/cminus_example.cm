@@ -1,5 +1,5 @@
 record point {
-	int x, y;
+	int x;
 }
 
 record line {

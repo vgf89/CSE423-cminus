@@ -1,33 +1,37 @@
 %{
 #include <stdio.h>
+#include <stdlib.h>
+char* filename = "cminus_example.cm";
 
 // Stuff from flex that bison needs
 extern int yylex();
+extern char* yytext;
 extern int newline;
 extern int yyparse();
 extern FILE *yyin;
 
 void yyerror(const char *s);
 
-extern int linenumber;
+extern int newline;
 %}
 
 // The union will figure out the yystype void pointer shit
 // as they come back in arbitraily typed tokens
 %union {
     int ival;
+    char cval;
+    int bval;
 }
 
 // Terminal symbols, based on crazy union stuff
 %token IF
 %token ELSE
 %token <ival> INT
-%token BOOL
+%token <bval> BOOL
+%token <cval> CHAR
 %token NOT
 %token AND
 %token OR
-%token BOOLT
-%token BOOLF
 %token RETURN
 %token PARL
 %token PARR
@@ -52,12 +56,21 @@ extern int linenumber;
 %token COND
 %token BRACR
 %token BRACL
-%token SEMIC
+%token SEMI
 %token DOT
 %token ID
 %token NUMCONST
 %token CHARCONST
+%token BOOLCONST
 %token RECTYPE
+%token CURLL
+%token CURLR
+%token COMMA
+%token BREAK
+%token RECORD
+%token STATIC
+%token WHILE
+%token COLON
 
 //Rules following
 //Parsing top-down
@@ -68,44 +81,63 @@ extern int linenumber;
 // The first rule is the highest-level rule, which in out case is
 // just the concept of a whole "dinner menu":
 program:
+
+    declarationList
+
     declarationList:
-        declarationList delcaration | declaration;
+        declarationList declaration | declaration
+        ;
 
     declaration:
-        varDeclaration | funDeclaration | recDeclaration;
+        varDeclaration | funDeclaration | recDeclaration
+        ;
     
     recDeclaration:
-        RECORD ID CURLL localDeclarations CURLR;
+        RECORD ID CURLL localDeclarations CURLR
+        ;
     
     varDeclaration:
-        typeSpecifier varDeclList;
+        typeSpecifier varDeclList SEMI
+        ;
     
     scopedVarDeclaration:
-        scopedTypeSpecifier varDeclList;
+        scopedTypeSpecifier varDeclList SEMI
+        ;
     
     varDeclList:
-        varDeclList COMMA varDeclInitilize | varDeclInitilize;
+        varDeclList COMMA varDeclInitialize | varDeclInitialize
+        ;
+
+    varDeclInitialize:
+        varDeclId | varDeclId COLON simpleExpression
+        ;
     
     varDeclId:
-        ID | ID BRACL NUMCONST BRACR;
+        ID | ID BRACL NUMCONST BRACR
+        ;
     
     scopedTypeSpecifier:
-        STATIC typeSpecifier | typeSpecifier;
+        STATIC typeSpecifier | typeSpecifier
+        ;
 
     typeSpecifier:
-        returnTypeSpecifier | RECTYPE;
+        returnTypeSpecifier | RECTYPE
+        ;
     
     returnTypeSpecifier:
-        INT | BOOL | CHAR;
+        INT | BOOL | CHAR
+        ;
     
     funDeclaration:
-        typeSpecifier ID PARL params PARR statement | ID PARL params PARR statement;
+        typeSpecifier ID PARL params PARR statement | ID PARL params PARR statement
+        ;
     
     params:
-        paramList | ;
+        paramList | 
+        ;
     
     paramList:
-        paramList SEMIC paramTypeList | paramTypeList;
+        paramList SEMI paramTypeList | paramTypeList;
     
     paramTypeList:
         typeSpecifier paramIdList;
@@ -120,7 +152,7 @@ program:
         expressionStmt | compoundStmt | selectionStmt | iterationStmt | returnStmt | breakStmt;
     
     compoundStmt:
-        CURLYL localDeclarations statementList CURLYR;
+        CURLL localDeclarations statementList CURLR;
     
     localDeclarations:
         localDeclarations scopedVarDeclaration | ;
@@ -129,7 +161,7 @@ program:
         statementList statement | ;
     
     expressionStmt:
-        expression SEMIC | ;
+        expression SEMI | ;
     
     selectionStmt:
         IF PARL simpleExpression PARR statement | IF PARL simpleExpression PARR statement ELSE statement;
@@ -138,10 +170,10 @@ program:
         WHILE PARL simpleExpression PARR statement;
 
     returnStmt:
-        RETURN SEMIC | RETURN expression SEMIC;
+        RETURN SEMI | RETURN expression SEMI;
     
     breakStmt:
-        BREAK SEMIC;
+        BREAK SEMI;
 
     expression:
         mutable EQUALS | mutable ADDE | mutable SUBE | mutable MULE | mutable DIVE | mutable INC | mutable DEC | simpleExpression;
@@ -168,7 +200,7 @@ program:
         ADD | SUB;
     
     term:
-        term mulup unaryExpression | unaryExpression;
+        term mulop unaryExpression | unaryExpression;
     
     mulop:
         MUL | DIV | MOD;
@@ -198,15 +230,15 @@ program:
         argList COMMA expression | expression;
     
     constant:
-        NUMCONST | CHARCONST | BOOLT | BOOLF;
+        NUMCONST | CHARCONST | BOOLCONST;
 
 %%
 
 int main (int argc, char** argv)
 {
-    FILE *myfile = fopen("in.dinner", "r");
+    FILE *myfile = fopen(filename, "r");
     if (!myfile) {
-        printf("I can't open in.dinner\n");
+        printf("I can't open the file\n");
         return -1;
     }
 
@@ -220,7 +252,7 @@ int main (int argc, char** argv)
 
 void yyerror(const char *s)
 {
-    printf("Parsing error (%d): %s\n", linenumber, s);
+    printf("Parsing error (%d) token(%s): %s\n", newline, yytext, s);
     // might as well halt now
     exit(-1);
 }

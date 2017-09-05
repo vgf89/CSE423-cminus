@@ -1,8 +1,11 @@
 %{
 #include <stdio.h>
 extern int yylex();
-char* filename = "cminus_example.cm";
+
+#include "parser.tab.h"
+
 int newline = 1;
+
 %}
 
 digit [0-9]
@@ -11,18 +14,23 @@ letdig [{digit}|{letter}]
 
 %%
 [ \t\r]       		;
-"//"[^\n]*			{ printf("Comment ignored on line %d\n", newline);}
+"//"[^\n]*			; 
 \n 					{ newline++; }
 "if"                { return IF;}
 "else"				{ return ELSE;}
-"int"               { return <ival> INT;}
-"bool"				{ return BOOL;}	
+"int"               { return INT;}
+"bool"				{ return BOOL;}
+"char"				{ return CHAR;}	
 "not"				{ return NOT;}
 "and"				{ return AND;}
 "or"				{ return OR;}
-"true"				{ return BOOLT;}
-"false"				{ return BOOLF;}
+"true"				{ yylval.bval = 1; return BOOLCONST;}
+"false"				{ yylval.bval = 0; return BOOLCONST;}
 "return"			{ return RETURN;}
+"record"			{ return RECORD;}
+"break"				{ return BREAK; }
+"while"				{ return WHILE; }
+"static"			{ return STATIC; }
 "("					{ return PARL;}
 ")"					{ return PARR;}
 "=="				{ return EQUIV;}
@@ -47,17 +55,18 @@ letdig [{digit}|{letter}]
 "["					{ return BRACL;}
 "]"					{ return BRACR;}
 ";"					{ return SEMI;}
+":"					{ return COLON;}
 "."					{ return DOT;}
-"record"			{ return RECORD;}
-"{"					{ return CURLR;}
-"}"					{ return CURLL;}
+"{"					{ return CURLL;}
+"}"					{ return CURLR;}
 ","					{ return COMMA;}
 {letter}({letter}|{digit})*		{ return ID;}	
-{digit}+						{ return NUMCONST;}
-'([^\n|\\']|\\[^\0|\n])'		{ return CHARCONST;}	
+{digit}+						{ yylval.ival = atoi(yytext); return NUMCONST;}
+'([^\n|\\']|\\[^\0|\n])'		{ yylval.cval = yytext[0]; return CHARCONST;}	
 .					;
 %%
 
+/*
 int main(int argc, char** argv) {
 	// lex through the input:
 	FILE *myfile = fopen(filename, "r");
@@ -68,4 +77,4 @@ int main(int argc, char** argv) {
 	yyin = myfile;
 	yylex();
 	printf("%d lines read\n", newline);
-}
+} */
