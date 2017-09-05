@@ -16,12 +16,9 @@ extern int linenumber;
 // as they come back in arbitraily typed tokens
 %union {
     int ival;
-    float fval;
-    char *sval;
 }
 
 // Terminal symbols, based on crazy union stuff
-%token <sval> STRING
 %token IF
 %token ELSE
 %token <ival> INT
@@ -60,8 +57,7 @@ extern int linenumber;
 %token ID
 %token NUMCONST
 %token CHARCONST
-
-%token ENDL
+%token RECTYPE
 
 //Rules following
 //Parsing top-down
@@ -71,41 +67,138 @@ extern int linenumber;
 %%
 // The first rule is the highest-level rule, which in out case is
 // just the concept of a whole "dinner menu":
-dinner:
-    header template body_section footer { printf("done with a dinner menu!\n"); }
-    
-    header:
-        DINNER FLOAT    { printf("reading a dinner menu version %f\n", $2); }
-        ;
-    
-    template:
-        typelines
-        ;
-    
-    typelines:
-        typelines typeline
-        | typeline
-        ;
+program:
+    declarationList:
+        declarationList delcaration | declaration;
 
-    typeline:
-        TYPE STRING     { printf("new defined dinner type: %s\n", $2); }
-        ;
+    declaration:
+        varDeclaration | funDeclaration | recDeclaration;
     
-    body_section:
-        body_lines
-        ;
+    recDeclaration:
+        RECORD ID CURLL localDeclarations CURLR;
     
-    body_lines:
-        body_lines body_line
-        | body_line
-        ;
-    body_line:
-        INT INT INT INT STRING  { printf("new dinner: %d %d %d %d %s\n", $1, $2, $3, $4, $5); }
-        ;
+    varDeclaration:
+        typeSpecifier varDeclList;
     
-    footer:
-        END { printf("found the end\n");}
-        ;
+    scopedVarDeclaration:
+        scopedTypeSpecifier varDeclList;
+    
+    varDeclList:
+        varDeclList COMMA varDeclInitilize | varDeclInitilize;
+    
+    varDeclId:
+        ID | ID BRACL NUMCONST BRACR;
+    
+    scopedTypeSpecifier:
+        STATIC typeSpecifier | typeSpecifier;
+
+    typeSpecifier:
+        returnTypeSpecifier | RECTYPE;
+    
+    returnTypeSpecifier:
+        INT | BOOL | CHAR;
+    
+    funDeclaration:
+        typeSpecifier ID PARL params PARR statement | ID PARL params PARR statement;
+    
+    params:
+        paramList | ;
+    
+    paramList:
+        paramList SEMIC paramTypeList | paramTypeList;
+    
+    paramTypeList:
+        typeSpecifier paramIdList;
+
+    paramIdList:
+        paramIdList COMMA paramId | paramId;
+    
+    paramId:
+        ID | ID BRACL BRACR;
+    
+    statement:
+        expressionStmt | compoundStmt | selectionStmt | iterationStmt | returnStmt | breakStmt;
+    
+    compoundStmt:
+        CURLYL localDeclarations statementList CURLYR;
+    
+    localDeclarations:
+        localDeclarations scopedVarDeclaration | ;
+    
+    statementList:
+        statementList statement | ;
+    
+    expressionStmt:
+        expression SEMIC | ;
+    
+    selectionStmt:
+        IF PARL simpleExpression PARR statement | IF PARL simpleExpression PARR statement ELSE statement;
+    
+    iterationStmt:
+        WHILE PARL simpleExpression PARR statement;
+
+    returnStmt:
+        RETURN SEMIC | RETURN expression SEMIC;
+    
+    breakStmt:
+        BREAK SEMIC;
+
+    expression:
+        mutable EQUALS | mutable ADDE | mutable SUBE | mutable MULE | mutable DIVE | mutable INC | mutable DEC | simpleExpression;
+    
+    simpleExpression:
+        simpleExpression OR andExpression | andExpression;
+    
+    andExpression:
+        andExpression AND unaryRelExpression | unaryRelExpression;
+    
+    unaryRelExpression:
+        NOT unaryRelExpression | relExpression;
+    
+    relExpression:
+        sumExpression relop sumExpression | sumExpression;
+    
+    relop:
+        LEQ | GEQ | LSS | GSS | EQUIV | NEQUIV;
+    
+    sumExpression:
+        sumExpression sumop term | term;
+    
+    sumop:
+        ADD | SUB;
+    
+    term:
+        term mulup unaryExpression | unaryExpression;
+    
+    mulop:
+        MUL | DIV | MOD;
+    
+    unaryExpression:
+        unaryop unaryExpression | factor;
+    
+    unaryop:
+        SUB | MUL | COND;
+    
+    factor:
+        immutable | mutable;
+    
+    mutable:
+        ID | mutable BRACL expression BRACR | mutable DOT ID;
+    
+    immutable:
+        PARL expression PARR | call | constant;
+
+    call:
+        ID PARL args PARR;
+
+    args:
+        argList | ;
+    
+    argList:
+        argList COMMA expression | expression;
+    
+    constant:
+        NUMCONST | CHARCONST | BOOLT | BOOLF;
 
 %%
 
