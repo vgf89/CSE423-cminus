@@ -1,11 +1,16 @@
 %{
 #include <stdio.h>
+#include <string.h>
 extern int yylex();
 
 #include "parser.tab.h"
 
 int newline = 1;
 
+int i;
+char* rectable[10];
+int recvar = 0;
+int reccount = 0;
 %}
 
 digit [0-9]
@@ -27,7 +32,7 @@ letdig [{digit}|{letter}]
 "true"				{ yylval.bval = 1; return BOOLCONST;}
 "false"				{ yylval.bval = 0; return BOOLCONST;}
 "return"			{ return RETURN;}
-"record"			{ return RECORD;}
+"record"			{ recvar = 1; return RECORD;}
 "break"				{ return BREAK; }
 "while"				{ return WHILE; }
 "static"			{ return STATIC; }
@@ -60,7 +65,24 @@ letdig [{digit}|{letter}]
 "{"					{ return CURLL;}
 "}"					{ return CURLR;}
 ","					{ return COMMA;}
-{letter}({letter}|{digit})*		{ return ID;}	
+{letter}({letter}|{digit})*		{ 
+									if (recvar == 1) {
+										//printf("adding \"%s\" to record list\n", yytext);
+										rectable[reccount] = strdup(yytext);
+										reccount++;
+										recvar = 0;
+										return ID;
+									}
+									for(i = 0; i < reccount; i++) {
+										//printf("looking for a match of \"%s\"...\n", yytext);
+										//printf("%s\n", rectable[i]);
+										if (strcmp(yytext, rectable[i]) == 0) {
+											//printf("found \"%s\" in record types!\n", yytext);
+											return RECTYPE; 
+											} 
+									}
+									return ID;
+								}
 {digit}+						{ yylval.ival = atoi(yytext); return NUMCONST;}
 '([^\n|\\']|\\[^\0|\n])'		{ yylval.cval = yytext[0]; return CHARCONST;}	
 .					;

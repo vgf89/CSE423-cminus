@@ -137,100 +137,132 @@ program:
         ;
     
     paramList:
-        paramList SEMI paramTypeList | paramTypeList;
+        paramList SEMI paramTypeList | paramTypeList
+        ;
     
     paramTypeList:
-        typeSpecifier paramIdList;
+        typeSpecifier paramIdList
+        ;
 
     paramIdList:
-        paramIdList COMMA paramId | paramId;
+        paramIdList COMMA paramId | paramId
+        ;
     
     paramId:
-        ID | ID BRACL BRACR;
+        ID | ID BRACL BRACR
+        ;
     
     statement:
-        expressionStmt | compoundStmt | selectionStmt | iterationStmt | returnStmt | breakStmt;
+        expressionStmt | compoundStmt | selectionStmt | iterationStmt | returnStmt | breakStmt
+        ;
     
     compoundStmt:
-        CURLL localDeclarations statementList CURLR;
+        CURLL localDeclarations statementList CURLR
+        ;
     
     localDeclarations:
-        localDeclarations scopedVarDeclaration | ;
+        localDeclarations scopedVarDeclaration | 
+        ;
     
     statementList:
-        statementList statement | ;
+        statementList statement | 
+        ;
     
     expressionStmt:
-        expression SEMI | ;
+        expression SEMI | 
+        ;
     
     selectionStmt:
-        IF PARL simpleExpression PARR statement | IF PARL simpleExpression PARR statement ELSE statement;
+        IF PARL simpleExpression PARR statement | IF PARL simpleExpression PARR statement ELSE statement
+        ;
     
     iterationStmt:
-        WHILE PARL simpleExpression PARR statement;
+        WHILE PARL simpleExpression PARR statement
+        ;
 
     returnStmt:
-        RETURN SEMI | RETURN expression SEMI;
+        RETURN SEMI | RETURN expression SEMI
+        ;
     
     breakStmt:
-        BREAK SEMI;
+        BREAK SEMI
+        ;
 
     expression:
-        mutable EQUALS | mutable ADDE | mutable SUBE | mutable MULE | mutable DIVE | mutable INC | mutable DEC | simpleExpression;
+        mutable EQUALS expression | mutable ADDE expression | mutable SUBE expression | mutable MULE expression | mutable DIVE expression | mutable INC | mutable DEC | simpleExpression
+        ;
     
     simpleExpression:
-        simpleExpression OR andExpression | andExpression;
+        simpleExpression OR andExpression | andExpression
+        ;
     
     andExpression:
-        andExpression AND unaryRelExpression | unaryRelExpression;
+        andExpression AND unaryRelExpression | unaryRelExpression
+        ;
     
     unaryRelExpression:
-        NOT unaryRelExpression | relExpression;
+        NOT unaryRelExpression | relExpression
+        ;
     
     relExpression:
-        sumExpression relop sumExpression | sumExpression;
+        sumExpression relop sumExpression | sumExpression
+        ;
     
     relop:
-        LEQ | GEQ | LSS | GSS | EQUIV | NEQUIV;
+        LEQ | GEQ | LSS | GSS | EQUIV | NEQUIV
+        ;
     
     sumExpression:
-        sumExpression sumop term | term;
+        sumExpression sumop term | term
+        ;
     
     sumop:
-        ADD | SUB;
+        ADD | SUB
+        ;
     
     term:
-        term mulop unaryExpression | unaryExpression;
+        term mulop unaryExpression | unaryExpression
+        ;
     
     mulop:
-        MUL | DIV | MOD;
+        MUL | DIV | MOD
+        ;
     
     unaryExpression:
-        unaryop unaryExpression | factor;
+        unaryop unaryExpression | factor
+        ;
     
     unaryop:
-        SUB | MUL | COND;
+        SUB | MUL | COND
+        ;
     
     factor:
-        immutable | mutable;
+        immutable | mutable
+        ;
     
     mutable:
-        ID | mutable BRACL expression BRACR | mutable DOT ID;
+        ID | mutable BRACL expression BRACR | mutable DOT ID
+        ;
     
     immutable:
-        PARL expression PARR | call | constant;
+        PARL expression PARR | call | constant
+        ;
 
     call:
-        ID PARL args PARR;
+        ID PARL args PARR
+        ;
 
     args:
-        argList | ;
+        argList | 
+        ;
     
     argList:
-        argList COMMA expression | expression;
+        argList COMMA expression | expression
+        ;
     
     constant:
-        NUMCONST | CHARCONST | BOOLCONST;
+        NUMCONST | CHARCONST | BOOLCONST
+        ;
 
 %%
 
@@ -252,7 +284,7 @@ int main (int argc, char** argv)
 
 void yyerror(const char *s)
 {
-    printf("Parsing error (%d) token(%s): %s\n", newline, yytext, s);
+    printf("Parsing error:\n\tLine: %d, token: \"%s\", Error: %s\n", newline, yytext, s);
     // might as well halt now
     exit(-1);
 }
