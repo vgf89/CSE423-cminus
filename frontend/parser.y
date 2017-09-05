@@ -3,6 +3,7 @@
 
 // Stuff from flex that bison needs
 extern int yylex();
+extern int newline;
 extern int yyparse();
 extern FILE *yyin;
 
