@@ -27,7 +27,7 @@ letdig [{digit}|{letter}]
 ")"					{ printf("Found PARR on line %d: %s\n", newline, yytext); }
 "=="				{ printf("Found EQUIV on line %d: %s\n", newline, yytext); }
 "!="				{ printf("Found NEQUIV on line %d: %s\n", newline, yytext); }
-"="                 { printf("Found FOUND EQUALS on line %d: %s\n", newline, yytext); }
+"="                 { printf("Found EQUALS on line %d: %s\n", newline, yytext); }
 "<"                 { printf("Found LSS on line %d: %s\n", newline, yytext); }
 ">"                 { printf("Found GSS on line %d: %s\n", newline, yytext); }
 "<="                { printf("Found LEQ on line %d: %s\n", newline, yytext); }
