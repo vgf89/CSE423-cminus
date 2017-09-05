@@ -1,7 +1,7 @@
 %{
 #include <stdio.h>
 extern int yylex();
-char* filename = "filename";
+char* filename = "cminus_example.cm";
 int newline = 1;
 %}
 
