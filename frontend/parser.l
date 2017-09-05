@@ -54,7 +54,7 @@ letdig [{digit}|{letter}]
 ","					{ return ",";}
 {letter}({letter}|{digit})*		{ return ID;}	
 {digit}+						{ return NUMCONST;}
-'([^\n]|\\[^(0|\\n])'			{ return CHARCONST;}	
+'([^\n]|\\[^(\0|\n])'			{ return CHARCONST;}	
 .					;
 %%
 
