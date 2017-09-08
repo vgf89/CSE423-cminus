@@ -1,4 +1,4 @@
-BIN = parser
+BIN = c-
 CC = gcc
 CFLAGS = -g
 
