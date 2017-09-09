@@ -14,8 +14,11 @@ int recvar = 0;
 int reccount = 0;
 
 NCT numConstToken;
-IDT IDToken;
-KWT KeyWordToken;
+CCT charConstToken;
+BCT boolConstToken;
+RECT recordToken;
+IDT idToken;
+KWT keyWordToken;
 
 %}
 
@@ -24,107 +27,335 @@ letter	[a-zA-Z]
 letdig [{digit}|{letter}]
 
 %%
-[ \t\r]       		;
-"//"[^\n]*			; 
-\n 					{ newline++; }
-"if"                { printf("Line %d Token: %s\n", newline, yytext); return IF;}
-"else"				{ printf("Line %d Token: %s\n", newline, yytext); return ELSE;}
-"int"               { printf("Line %d Token: %s\n", newline, yytext); return INT;}
-"bool"				{ printf("Line %d Token: %s\n", newline, yytext); return BOOL;}
-"char"				{ printf("Line %d Token: %s\n", newline, yytext); return CHAR;}	
-"not"				{ printf("Line %d Token: NOT\n", newline); return NOT;}
-"and"				{ printf("Line %d Token: AND\n", newline); return AND;}
-"or"				{ printf("Line %d Token: OR", newline); return OR;}
-"true"				{ printf("Line %d Token: BOOLCONST Value: 1 Input: %s\n", newline, yytext); yylval.bval = 1; return BOOLCONST;}
-"false"				{ printf("Line %d Token: BOOLCONST Value: 0 Input: %s\n", newline, yytext); yylval.bval = 0; return BOOLCONST;}
-"return"			{ printf("Line %d Token: %s\n", newline, yytext); return RETURN;}
-"record"			{ printf("Line %d Token: %s\n", newline, yytext); recvar = 1; return RECORD;}
-"break"				{ printf("Line %d Token: %s\n", newline, yytext); return BREAK; }
-"while"				{ printf("Line %d Token: %s\n", newline, yytext); return WHILE; }
-"static"			{ printf("Line %d Token: %s\n", newline, yytext); return STATIC; }
-"("					{ printf("Line %d Token: %s\n", newline, yytext); return PARL;}
-")"					{ printf("Line %d Token: %s\n", newline, yytext); return PARR;}
-"=="				{ printf("Line %d Token: %s\n", newline, yytext); return EQUIV;}
-"!="				{ printf("Line %d Token: %s\n", newline, yytext); return NEQUIV;}
-"="                 { printf("Line %d Token: %s\n", newline, yytext); return EQUALS;}
-"<"                 { printf("Line %d Token: %s\n", newline, yytext); return LSS;}
-">"                 { printf("Line %d Token: %s\n", newline, yytext); return GSS;}
-"<="                { printf("Line %d Token: %s\n", newline, yytext); return LEQ;}
-">="                { printf("Line %d Token: %s\n", newline, yytext); return GEQ;}   	
-"+="				{ printf("Line %d Token: %s\n", newline, yytext); return ADDE;}
-"-="				{ printf("Line %d Token: %s\n", newline, yytext); return SUBE;}
-"*="				{ printf("Line %d Token: %s\n", newline, yytext); return MULE;}
-"/="				{ printf("Line %d Token: %s\n", newline, yytext); return DIVE;}
-"--"				{ printf("Line %d Token: %s\n", newline, yytext); return DEC;}
-"++"				{ printf("Line %d Token: %s\n", newline, yytext); return INC;}
-"*"					{ printf("Line %d Token: %s\n", newline, yytext); return MUL;}
-"/"					{ printf("Line %d Token: %s\n", newline, yytext); return DIV;}
-"+"					{ printf("Line %d Token: %s\n", newline, yytext); return ADD;}
-"-"					{ printf("Line %d Token: %s\n", newline, yytext); return SUB;}
-"%"					{ printf("Line %d Token: %s\n", newline, yytext); return MOD;}
-"?"					{ printf("Line %d Token: %s\n", newline, yytext); return COND;}
-"["					{ printf("Line %d Token: %s\n", newline, yytext); return BRACL;}
-"]"					{ printf("Line %d Token: %s\n", newline, yytext); return BRACR;}
-";"					{ printf("Line %d Token: %s\n", newline, yytext); return SEMI;}
-":"					{ printf("Line %d Token: %s\n", newline, yytext); return COLON;}
-"."					{ printf("Line %d Token: %s\n", newline, yytext); return DOT;}
-"{"					{ printf("Line %d Token: %s\n", newline, yytext); return CURLL;}
-"}"					{ printf("Line %d Token: %s\n", newline, yytext); return CURLR;}
-","					{ printf("Line %d Token: %s\n", newline, yytext); return COMMA;}
-{letter}({letter}|{digit})*		{ 
-									/*
-									if (recvar == 1) {
-										//printf("adding \"%s\" to record list\n", yytext);
-										rectable[reccount] = strdup(yytext);
-										reccount++;
-										recvar = 0;
-										return ID;
-									}
-									for(i = 0; i < reccount; i++) {
-										//printf("looking for a match of \"%s\"...\n", yytext);
-										//printf("%s\n", rectable[i]);
-										if (strcmp(yytext, rectable[i]) == 0) {
-											//printf("found \"%s\" in record types!\n", yytext);
-											return RECTYPE; 
-											} 
-									}
-									*/
-									printf("Line %d Token: ID Value: %s\n", newline, yytext);
-									yylval.idToken.tokenType = "ID";
-									yylval.idToken.IDvalue = strdup(yytext);
-									yylval.idToken.lineNumber = newline;
-									return ID;
-								}
-{digit}+						{ 
-									yylval.numConstToken.numericalValue = atoi(yytext);
-									yylval.numConstToken.stringThatWasTyped = strdup(yytext);
-									yylval.numConstToken.tokenType = "NUMCONST";
-									yylval.numConstToken.lineNumber = newline;
-									printf("Line %d Token: NUMCONST Value: %s\n", newline, yytext);
-									return NUMCONST;
-								}
-'([^\n|\\']|\\[^\0|\n])'		{ 
-									yylval.cval = yytext[1];
-									if (yytext[1] == '\\') {
-										switch (yytext[2]) {
-											case 'n':
-												yylval.cval = '\n';
-												break;
-											case 'r':
-												yylval.cval = '\r';
-												break;
-											case '0':
-												yylval.cval = '\0';
-												break;
-											default:
-												yylval.cval = yytext[2];
-												break; 
-										} 
-									}
-									printf("Line %d Token: CHARCONST Value: %d Input: %s\n", newline, yylval.cval, yytext);
-									return CHARCONST;
-								}
-.								{ yyerror("Invalid or misplaced input character");}
+[ \t\r]       			;
+"//"[^\n]*			;
+\'\\n'				{
+					yylval.charConstToken.lineNumber = newline;
+					yylval.charConstToken.tokenType = "CHARCONST";
+					yylval.charConstToken.stringThatWasTyped = strdup("'\\n'");
+					yylval.charConstToken.letterData = '\n';
+					return CHARCONST;
+				}
+\n 				{ newline++; }
+\'\\0'				{
+					yylval.charConstToken.lineNumber = newline;
+					yylval.charConstToken.tokenType = "CHARCONST";
+					yylval.charConstToken.stringThatWasTyped = strdup("'\\0'");
+					yylval.charConstToken.letterData = '\0';
+					return CHARCONST;
+				}
+\'[^\\\n]{1,1}\'		{
+					yylval.charConstToken.lineNumber = newline;
+					yylval.charConstToken.tokenType = "CHARCONST";
+					yylval.charConstToken.stringThatWasTyped = strdup(yytext);
+					yylval.charConstToken.letterData = yytext[1];
+					return CHARCONST;
+				}
+\'[\\](.){1,1}\'		{
+					yylval.charConstToken.lineNumber = newline;
+					yylval.charConstToken.tokenType = "CHARCONST";
+					yylval.charConstToken.stringThatWasTyped = strdup(yytext);
+					yylval.charConstToken.letterData = yytext[2];
+					return CHARCONST;
+				}
+"if"                		{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "IF";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return IF;
+				}
+"else"				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "ELSE";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return ELSE;
+				}
+"int"           		{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "INT";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return INT;
+				}
+"bool"				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "BOOL";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return BOOL;
+				}
+"char"				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "CHAR";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return CHAR;
+				}	
+"not"				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "NOT";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return NOT;
+				}
+"and"				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "AND";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return AND;
+				}
+"or"				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "OR";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return OR;
+				}
+"true"				{
+					yylval.boolConstToken.lineNumber = newline;
+					yylval.boolConstToken.tokenType = "BOOLCONST";
+					yylval.boolConstToken.stringThatWasTyped = strdup(yytext);
+					yylval.boolConstToken.numericalValue = 1;
+					return BOOLCONST;
+				}
+"false"				{
+					yylval.boolConstToken.lineNumber = newline;
+					yylval.boolConstToken.tokenType = "BOOLCONST";
+					yylval.boolConstToken.stringThatWasTyped = strdup(yytext);
+					yylval.boolConstToken.numericalValue = 0;
+					return BOOLCONST;
+				}
+"return"			{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "RETURN";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return RETURN;
+				}
+"record"			{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "RECORD";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					recvar = 1; 
+					return RECORD;
+				}
+"break"				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "BREAK";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return BREAK; 
+				}
+"while"				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "WHILE";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return WHILE; 
+				}
+"static"			{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "STATIC";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return STATIC; 
+				}
+"("				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "PARL";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);	
+					return PARL;
+				}
+")"				{ 
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "PARR";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);	
+					return PARR;
+				}
+"=="				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "EQ";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);	
+					return EQUIV;
+				}
+"!="				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "NOTEQ";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return NEQUIV;
+				}
+"="                 		{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "EQUALS";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return EQUALS;
+				}
+"<"                 		{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "LSS";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return LSS;
+				}
+">"                 		{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "GSS";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return GSS;
+				}
+"<="                		{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "LESSEQ";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return LEQ;
+				}
+">="                		{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "GRTEQ";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return GEQ;
+				}	
+"+="				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "ADDASS";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return ADDE;
+				}
+"-="				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "SUBASS";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return SUBE;
+				}
+"*="				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "MULASS";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);	
+					return MULE;
+				}
+"/="				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "DIVASS";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);	
+					return DIVE;
+				}
+"--"				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "DEC";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);		
+					return DEC;
+				}
+"++"				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "INC";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);	
+					return INC;
+				}
+"*"				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "MUL";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);	
+					return MUL;
+				}
+"/"				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "DIV";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return DIV;
+				}
+"+"				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "ADD";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return ADD;
+				}
+"-"				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "SUB";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return SUB;
+				}
+"%"				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "MOD";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return MOD;
+				}
+"?"				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "COND";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return COND;
+				}
+"["				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "BRACL";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return BRACL;
+				}
+"]"				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "BRACR";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return BRACR;
+				}
+";"				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "SEMI";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return SEMI;
+				}
+":"				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "COLON";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return COLON;
+				}
+"."				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "DOT";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return DOT;
+				}
+"{"				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "CURLL";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return CURLL;
+				}
+"}"				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "CULR";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return CURLR;
+				}
+","				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "COMMA";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return COMMA;
+				}
+{letter}({letter}|{digit})*	{ 
+				/*
+					if (recvar == 1) {
+						//printf("adding \"%s\" to record list\n", yytext);
+						rectable[reccount] = strdup(yytext);
+						reccount++;
+						recvar = 0;
+						return ID;
+					}
+					for(i = 0; i < reccount; i++) {
+						//printf("looking for a match of \"%s\"...\n", yytext);
+						//printf("%s\n", rectable[i]);
+						if (strcmp(yytext, rectable[i]) == 0) {
+							//printf("found \"%s\" in record types!\n", yytext);
+							return RECTYPE; 
+						} 
+					}
+					*/
+					yylval.idToken.lineNumber = newline;
+					yylval.idToken.tokenType = "ID";
+					yylval.idToken.IDvalue = strdup(yytext);
+					return ID;
+				}
+{digit}+			{
+					yylval.numConstToken.lineNumber = newline;
+					yylval.numConstToken.tokenType = "NUMCONST";
+					yylval.numConstToken.stringThatWasTyped = strdup(yytext);
+					yylval.numConstToken.numericalValue = atoi(yytext);
+					return NUMCONST;
+				}
+.				{ yyerror("Invalid or misplaced input character"); }
 %%
 
 /*
