@@ -1,6 +1,7 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include "scanType.h"
 char* filename = "testDataA1/scannerTest.c-";
 
@@ -250,18 +251,21 @@ program:
 
 int main (int argc, char** argv)
 {
-    FILE *myfile = fopen(filename, "r");
-    if (!myfile) {
-        printf("I can't open the file\n");
-        return -1;
-    }
-
-    yyin = myfile;
-
+	if(argc > 1) {
+	    char *filename = argv[1];
+	   	FILE *myfile = fopen(filename, "r");
+	   	if (!myfile) {
+	      	printf("I can't open the file\n");
+	      	exit(-1);
+	   	}
+	    yyin = myfile;
+	}
     do {
-        yyparse();
+        if(yyparse() != 0) {
+        	printf("exit\n");
+        	exit(-1);
+        }
     } while (!feof(yyin));
-
 }
 
 void yyerror(const char *s)
