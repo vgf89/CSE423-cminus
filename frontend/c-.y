@@ -19,29 +19,38 @@ extern int newline;
 // The union will figure out the yystype void pointer stuff
 // as they come back in arbitraily typed tokens
 %union {
-    int ival;
-    char cval;
-    int bval;
-
     NCT numConstToken;
+    BCT boolConstToken;
+    CCT charConstToken;
+    RECT recordToken;
     IDT idToken;
     KWT keyWordToken;
 }
 
 
 // Terminal symbols, based on crazy union stuff
-%token <ival> INT
-%token <bval> BOOL
-%token <cval> CHAR
 %token <numConstToken> NUMCONST
-%token CHARCONST
-%token BOOLCONST
+%token <charConstToken> CHARCONST
+%token <boolConstToken> BOOLCONST
+%token <recordToken> RECTYPE
+%token <idToken> ID
+
+// KeyWord tokens
+// Includes Math operators
 %token <keyWordToken> IF
 %token <keyWordToken> ELSE
+%token <keyWordToken> BOOL
+%token <keyWordToken> CHAR
+%token <keyWordToken> INT
 %token <keyWordToken> NOT
 %token <keyWordToken> AND
 %token <keyWordToken> OR
+//TRUE/FALSE?
 %token <keyWordToken> RETURN
+%token <keyWordToken> RECORD
+%token <keyWordToken> BREAK
+%token <keyWordToken> WHILE
+%token <keywordtoken> STATIC
 %token <keyWordToken> PARL
 %token <keyWordToken> PARR
 %token <keyWordToken> EQUIV
@@ -63,20 +72,14 @@ extern int newline;
 %token <keyWordToken> SUB
 %token <keyWordToken> MOD
 %token <keyWordToken> COND
-%token <keyWordToken> BRACR
 %token <keyWordToken> BRACL
+%token <keyWordToken> BRACR
 %token <keyWordToken> SEMI
+%token <keyWordToken> COLON
 %token <keyWordToken> DOT
-%token <keyWordToken> ID
-%token RECTYPE
 %token <keyWordToken> CURLL
 %token <keyWordToken> CURLR
 %token <keyWordToken> COMMA
-%token <keyWordToken> BREAK
-%token <keyWordToken> RECORD
-%token <keyWordToken> STATIC
-%token <keyWordToken> WHILE
-%token <keyWordToken> COLON
 
 //Rules following
 //Parsing top-down
@@ -93,12 +96,155 @@ program:
         ;
 
     declaration:
-        IF {}
-        | ELSE {}
-        | INT {}
-        | BOOL | CHAR | NOT | AND | OR | RETURN | PARL | PARR | EQUIV | NEQUIV | EQUALS | LSS | GSS | LEQ | GEQ | ADDE | SUBE | MULE | DIVE | DEC | INC | MUL | DIV | ADD | SUB
-        | MOD | COND | BRACR | BRACL | SEMI | DOT | ID | NUMCONST | CHARCONST | RECTYPE | CURLL | CURLR | COMMA | BREAK | RECORD | STATIC | WHILE | COLON
-        ;
+        NUMCONST { printf("Line %d Token: %s Value: %d  Input: %s\n",
+		yylval.numConstToken.lineNumber,
+		yylval.numConstToken.tokenType,
+		yylval.numConstToken.numericalValue,
+		yylval.numConstToken.stringThatWasTyped); }
+	| CHARCONST { printf("Line %d Token: %s Value: '%c'  Input: %s\n",
+		yylval.charConstToken.lineNumber,
+		yylval.charConstToken.tokenType,
+		yylval.charConstToken.letterData,
+		yylval.charConstToken.stringThatWasTyped); }
+	| BOOLCONST { printf("Line %d Token: %s Value: %d  Input: %s\n",
+		yylval.boolConstToken.lineNumber,
+		yylval.boolConstToken.tokenType,
+		yylval.boolConstToken.numericalValue,
+		yylval.boolConstToken.stringThatWasTyped); }
+	| RECTYPE { printf("Line %d Token: %s\n",
+		yylval.recordToken.lineNumber,
+		yylval.recordToken.tokenType); }
+	| ID { printf("Line %d Token: %s Value: %s\n",
+		yylval.idToken.lineNumber,
+		yylval.idToken.tokenType,
+		yylval.idToken.IDvalue); }
+	| IF { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.tokenType); }
+        | ELSE { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.tokenType); }
+        | INT { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.tokenType); }
+        | BOOL { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.tokenType); }
+	| CHAR { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.tokenType); }
+	| NOT { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.tokenType); }
+	| AND { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.tokenType); }
+	| OR { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.tokenType); }
+	| RETURN { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.tokenType); }
+	| RECORD { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.tokenType); }
+	| BREAK { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.tokenType); }
+	| WHILE { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.tokenType); }
+	| STATIC { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.tokenType); }
+	| PARL { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.KWTvalue); }
+	| PARR { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.KWTvalue); }
+	| EQUIV { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.tokenType); }
+	| NEQUIV { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.tokenType); }
+	| EQUALS { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.KWTvalue); }
+	| LSS { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.KWTvalue); }
+	| GSS { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.KWTvalue); }
+	| LEQ { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.tokenType); }
+	| GEQ { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.tokenType); }
+	| ADDE { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.tokenType); }
+	| SUBE { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.tokenType); }
+	| MULE { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.tokenType); }
+	| DIVE { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.tokenType); }
+	| DEC { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.tokenType); }
+	| INC { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.tokenType); }
+	| MUL { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.KWTvalue); }
+	| DIV { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.KWTvalue); }
+	| ADD { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.KWTvalue); }
+	| SUB { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.KWTvalue); }
+	| MOD { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.KWTvalue); }
+	| COND { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.KWTvalue); }
+	| BRACL { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.KWTvalue); }
+	| BRACR { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.KWTvalue); }
+	| SEMI { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.KWTvalue); }
+	| COLON { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.KWTvalue); }
+	| DOT { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.KWTvalue); }
+	| CURLL { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.KWTvalue); }
+	| CURLR { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.KWTvalue); }
+	| COMMA { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.KWTvalue); }
+	;
 
 %%
 
