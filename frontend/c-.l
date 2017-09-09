@@ -27,7 +27,7 @@ letter	[a-zA-Z]
 letdig [{digit}|{letter}]
 
 %%
-[ \t\r]       			;
+[ \t\r]       		;
 "//"[^\n]*			;
 \'\\n'				{
 					yylval.charConstToken.lineNumber = newline;
