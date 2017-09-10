@@ -4,7 +4,7 @@
 #include "scanType.h"
 extern int yylex();
 
-#include "c-.tab.h"
+#include "parser.tab.h"
 
 int newline = 1;
 
