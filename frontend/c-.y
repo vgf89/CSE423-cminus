@@ -73,6 +73,7 @@ extern int newline;
 %token <keyWordToken> SUB
 %token <keyWordToken> MOD
 %token <keyWordToken> COND
+%token <keyWordToken> NEG
 %token <keyWordToken> BRACL
 %token <keyWordToken> BRACR
 %token <keyWordToken> SEMI
@@ -164,10 +165,10 @@ program:
 	| PARR { printf("Line %d Token: %s\n",
 		yylval.keyWordToken.lineNumber,
 		yylval.keyWordToken.KWTvalue); }
-	| EQUIV { printf("Line %d Token: %s\n",
+	| NEQUIV { printf("Line %d Token: %s\n",
 		yylval.keyWordToken.lineNumber,
 		yylval.keyWordToken.tokenType); }
-	| NEQUIV { printf("Line %d Token: %s\n",
+	| EQUIV { printf("Line %d Token: %s\n",
 		yylval.keyWordToken.lineNumber,
 		yylval.keyWordToken.tokenType); }
 	| EQUALS { printf("Line %d Token: %s\n",
@@ -219,6 +220,9 @@ program:
 		yylval.keyWordToken.lineNumber,
 		yylval.keyWordToken.KWTvalue); }
 	| COND { printf("Line %d Token: %s\n",
+		yylval.keyWordToken.lineNumber,
+		yylval.keyWordToken.KWTvalue); }
+	| NEG { printf("Line %d Token: %s\n",
 		yylval.keyWordToken.lineNumber,
 		yylval.keyWordToken.KWTvalue); }
 	| BRACL { printf("Line %d Token: %s\n",

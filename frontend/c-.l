@@ -163,17 +163,17 @@ letdig [{digit}|{letter}]
 					yylval.keyWordToken.KWTvalue = strdup(yytext);	
 					return PARR;
 				}
-"=="				{
-					yylval.keyWordToken.lineNumber = newline;
-					yylval.keyWordToken.tokenType = "EQ";
-					yylval.keyWordToken.KWTvalue = strdup(yytext);	
-					return EQUIV;
-				}
 "!="				{
 					yylval.keyWordToken.lineNumber = newline;
-					yylval.keyWordToken.tokenType = "NOTEQ";
+					yylval.keyWordToken.tokenType = "NEQUIV";
 					yylval.keyWordToken.KWTvalue = strdup(yytext);
 					return NEQUIV;
+				}
+"=="				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "EQUIV";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);	
+					return EQUIV;
 				}
 "="                 		{
 					yylval.keyWordToken.lineNumber = newline;
@@ -276,6 +276,12 @@ letdig [{digit}|{letter}]
 					yylval.keyWordToken.tokenType = "COND";
 					yylval.keyWordToken.KWTvalue = strdup(yytext);
 					return COND;
+				}
+"!"				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "NEG";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return NEG;
 				}
 "["				{
 					yylval.keyWordToken.lineNumber = newline;
