@@ -1,4 +1,5 @@
-BIN = c-
+BIN = parser
+OUTPUT = c-
 CC = gcc
 CFLAGS = -g
 
@@ -8,7 +9,7 @@ LIBS = -lfl
 
 
 $(BIN): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(BIN)
+	$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(OUTPUT)
 
 $(BIN).tab.h $(BIN).tab.c: $(BIN).y
 	bison -v -t -d $(BIN).y
@@ -20,7 +21,7 @@ all:
 	make
 
 clean:
-	rm -f $(OBJS) lex.yy.c $(BIN).tab.h $(BIN).tab.c $(BIN).tar $(BIN).output $(BIN)
+	rm -f $(OBJS) lex.yy.c $(BIN).tab.h $(BIN).tab.c $(BIN).tar $(BIN).output $(OUTPUT)
 
 tar:
 	tar -cvf $(BIN).tar $(SRCS) makefile
