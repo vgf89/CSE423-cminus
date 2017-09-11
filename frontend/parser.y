@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "scanType.h"
-char* filename = "testDataA1/scannerTest.c-";
 
 // Stuff from flex that bison needs
 extern int yylex();
@@ -275,6 +274,4 @@ int main (int argc, char** argv)
 void yyerror(const char *s)
 {
     printf("ERROR(%d): %s: \"%s\"\n", newline, s, yytext);
-    // might as well halt now
-    //exit(-1);
 }

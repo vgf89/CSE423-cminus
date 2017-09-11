@@ -357,16 +357,3 @@ letdig [{digit}|{letter}]
 				}
 .				{ yyerror("Invalid or misplaced input character"); }
 %%
-
-/*
-int main(int argc, char** argv) {
-	// lex through the input:
-	FILE *myfile = fopen(filename, "r");
-	if (!myfile) {
-		printf("Can't open c- file!\n");
-		return(-1);
-	}
-	yyin = myfile;
-	yylex();
-	printf("%d lines read\n", newline);
-} */
