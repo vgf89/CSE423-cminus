@@ -165,15 +165,15 @@ letdig [{digit}|{letter}]
 				}
 "!="				{
 					yylval.keyWordToken.lineNumber = newline;
-					yylval.keyWordToken.tokenType = "NEQUIV";
+					yylval.keyWordToken.tokenType = "NOTEQ";
 					yylval.keyWordToken.KWTvalue = strdup(yytext);
-					return NEQUIV;
+					return NOTEQ;
 				}
 "=="				{
 					yylval.keyWordToken.lineNumber = newline;
-					yylval.keyWordToken.tokenType = "EQUIV";
+					yylval.keyWordToken.tokenType = "EQ";
 					yylval.keyWordToken.KWTvalue = strdup(yytext);	
-					return EQUIV;
+					return EQ;
 				}
 "="                 		{
 					yylval.keyWordToken.lineNumber = newline;
@@ -276,12 +276,6 @@ letdig [{digit}|{letter}]
 					yylval.keyWordToken.tokenType = "COND";
 					yylval.keyWordToken.KWTvalue = strdup(yytext);
 					return COND;
-				}
-"!"				{
-					yylval.keyWordToken.lineNumber = newline;
-					yylval.keyWordToken.tokenType = "NEG";
-					yylval.keyWordToken.KWTvalue = strdup(yytext);
-					return NEG;
 				}
 "["				{
 					yylval.keyWordToken.lineNumber = newline;
