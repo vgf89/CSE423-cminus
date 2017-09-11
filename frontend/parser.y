@@ -54,8 +54,8 @@ extern int newline;
 %token <keywordtoken> STATIC
 %token <keyWordToken> PARL
 %token <keyWordToken> PARR
-%token <keyWordToken> EQUIV
-%token <keyWordToken> NEQUIV
+%token <keyWordToken> EQ
+%token <keyWordToken> NOTEQ
 %token <keyWordToken> EQUALS
 %token <keyWordToken> LSS
 %token <keyWordToken> GSS
@@ -165,10 +165,10 @@ program:
 	| PARR { printf("Line %d Token: %s\n",
 		yylval.keyWordToken.lineNumber,
 		yylval.keyWordToken.KWTvalue); }
-	| NEQUIV { printf("Line %d Token: %s\n",
+	| NOTEQ { printf("Line %d Token: %s\n",
 		yylval.keyWordToken.lineNumber,
 		yylval.keyWordToken.tokenType); }
-	| EQUIV { printf("Line %d Token: %s\n",
+	| EQ { printf("Line %d Token: %s\n",
 		yylval.keyWordToken.lineNumber,
 		yylval.keyWordToken.tokenType); }
 	| EQUALS { printf("Line %d Token: %s\n",
