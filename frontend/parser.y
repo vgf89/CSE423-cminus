@@ -275,3 +275,8 @@ void yyerror(const char *s)
 {
     printf("ERROR(%d): %s: \"%s\"\n", newline, s, yytext);
 }
+
+void printTree(FILE *output, TreeNode parseTree) 
+{
+	//print tree here   
+}
