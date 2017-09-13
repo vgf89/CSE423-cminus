@@ -71,7 +71,7 @@ extern int newline;
 %token <keyWordToken> ADD
 %token <keyWordToken> SUB
 %token <keyWordToken> MOD
-%token <keyWordToken> COND
+%token <keyWordToken> RAND
 %token <keyWordToken> NEG
 %token <keyWordToken> BRACL
 %token <keyWordToken> BRACR
@@ -96,6 +96,151 @@ program:
         declarationList declaration | declaration
         ;
 
+    declaration:
+        varDeclaration | funDeclaration | recDeclaration
+        ;
+    
+    recDeclaration:
+        RECORD ID CURLL localDeclarations CURLR
+        ;
+    
+    varDeclaration:
+        typeSpecifier varDeclList SEMI
+        ;
+    
+    scopedVarDeclaration:
+        scopedTypeSpecifier varDeclList SEMI
+        ;
+    
+    varDeclList:
+        varDeclList COMMA varDeclInitialize | varDeclInitialize
+        ;
+
+    varDeclInitialize:
+        varDeclId | varDeclId COLON simpleExpression
+        ;
+    
+    varDeclId:
+        ID | ID BRACL NUMCONST BRACR
+        ;
+    
+    scopedTypeSpecifier:
+        STATIC typeSpecifier | typeSpecifier
+        ;
+
+    typeSpecifier:
+        returnTypeSpecifier | RECTYPE
+        ;
+    
+    returnTypeSpecifier:
+        INT | BOOL | CHAR
+        ;
+    
+    funDeclaration:
+        typeSpecifier ID PARL params PARR statement | ID PARL params PARR statement
+        ;
+    
+    params:
+        paramList | 
+        ;
+    
+    paramList:
+        paramList SEMI paramTypeList | paramTypeList;
+    
+    paramTypeList:
+        typeSpecifier paramIdList;
+
+    paramIdList:
+        paramIdList COMMA paramId | paramId;
+    
+    paramId:
+        ID | ID BRACL BRACR;
+    
+    statement:
+        expressionStmt | compoundStmt | selectionStmt | iterationStmt | returnStmt | breakStmt;
+    
+    compoundStmt:
+        CURLL localDeclarations statementList CURLR;
+    
+    localDeclarations:
+        localDeclarations scopedVarDeclaration | ;
+    
+    statementList:
+        statementList statement | ;
+    
+    expressionStmt:
+        expression SEMI | ;
+    
+    selectionStmt:
+        IF PARL simpleExpression PARR statement | IF PARL simpleExpression PARR statement ELSE statement;
+    
+    iterationStmt:
+        WHILE PARL simpleExpression PARR statement;
+
+    returnStmt:
+        RETURN SEMI | RETURN expression SEMI;
+    
+    breakStmt:
+        BREAK SEMI;
+
+    expression:
+        mutable EQUALS | mutable ADDE | mutable SUBE | mutable MULE | mutable DIVE | mutable INC | mutable DEC | simpleExpression;
+    
+    simpleExpression:
+        simpleExpression OR andExpression | andExpression;
+    
+    andExpression:
+        andExpression AND unaryRelExpression | unaryRelExpression;
+    
+    unaryRelExpression:
+        NOT unaryRelExpression | relExpression;
+    
+    relExpression:
+        sumExpression relop sumExpression | sumExpression;
+    
+    relop:
+        LEQ | GEQ | LSS | GSS | EQ | NOTEQ;
+    
+    sumExpression:
+        sumExpression sumop term | term;
+    
+    sumop:
+        ADD | SUB;
+    
+    term:
+        term mulop unaryExpression | unaryExpression;
+    
+    mulop:
+        MUL | DIV | MOD;
+    
+    unaryExpression:
+        unaryop unaryExpression | factor;
+    
+    unaryop:
+        SUB | MUL | RAND;
+    
+    factor:
+        immutable | mutable;
+    
+    mutable:
+        ID | mutable BRACL expression BRACR | mutable DOT ID;
+    
+    immutable:
+        PARL expression PARR | call | constant;
+
+    call:
+        ID PARL args PARR;
+
+    args:
+        argList | ;
+    
+    argList:
+        argList COMMA expression | expression;
+    
+    constant:
+        NUMCONST | CHARCONST | BOOLCONST
+
+{/*
     declaration:
         NUMCONST { printf("Line %d Token: %s Value: %d  Input: %s\n",
 		yylval.numConstToken.lineNumber,
@@ -218,7 +363,7 @@ program:
 	| MOD { printf("Line %d Token: %s\n",
 		yylval.keyWordToken.lineNumber,
 		yylval.keyWordToken.KWTvalue); }
-	| COND { printf("Line %d Token: %s\n",
+	| RAND { printf("Line %d Token: %s\n",
 		yylval.keyWordToken.lineNumber,
 		yylval.keyWordToken.KWTvalue); }
 	| NEG { printf("Line %d Token: %s\n",
@@ -249,6 +394,7 @@ program:
 		yylval.keyWordToken.lineNumber,
 		yylval.keyWordToken.KWTvalue); }
 	;
+*/};
 
 %%
 
@@ -274,9 +420,4 @@ int main (int argc, char** argv)
 void yyerror(const char *s)
 {
     printf("ERROR(%d): %s: \"%s\"\n", newline, s, yytext);
-}
-
-void printTree(FILE *output, TreeNode parseTree) 
-{
-	//print tree here   
 }
