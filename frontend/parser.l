@@ -275,7 +275,7 @@ letdig [{digit}|{letter}]
 					yylval.keyWordToken.lineNumber = newline;
 					yylval.keyWordToken.tokenType = "COND";
 					yylval.keyWordToken.KWTvalue = strdup(yytext);
-					return COND;
+					return RAND;
 				}
 "["				{
 					yylval.keyWordToken.lineNumber = newline;
