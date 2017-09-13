@@ -184,7 +184,7 @@ program:
         BREAK SEMI;
 
     expression:
-        mutable EQUALS | mutable ADDE | mutable SUBE | mutable MULE | mutable DIVE | mutable INC | mutable DEC | simpleExpression;
+        mutable EQUALS expression | mutable ADDE expression | mutable SUBE expression | mutable MULE expression | mutable DIVE expression | mutable INC expression | mutable DEC expression | simpleExpression;
     
     simpleExpression:
         simpleExpression OR andExpression | andExpression;
