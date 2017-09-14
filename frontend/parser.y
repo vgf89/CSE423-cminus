@@ -217,7 +217,7 @@ program:
         unaryop unaryExpression | factor;
     
     unaryop:
-        SUB | MUL | RAND;
+        SUB | MUL | RAND | NEG;
     
     factor:
         immutable | mutable;

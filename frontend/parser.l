@@ -175,24 +175,6 @@ letdig [{digit}|{letter}]
 					yylval.keyWordToken.KWTvalue = strdup(yytext);	
 					return EQ;
 				}
-"="                 		{
-					yylval.keyWordToken.lineNumber = newline;
-					yylval.keyWordToken.tokenType = "EQUALS";
-					yylval.keyWordToken.KWTvalue = strdup(yytext);
-					return EQUALS;
-				}
-"<"                 		{
-					yylval.keyWordToken.lineNumber = newline;
-					yylval.keyWordToken.tokenType = "LSS";
-					yylval.keyWordToken.KWTvalue = strdup(yytext);
-					return LSS;
-				}
-">"                 		{
-					yylval.keyWordToken.lineNumber = newline;
-					yylval.keyWordToken.tokenType = "GSS";
-					yylval.keyWordToken.KWTvalue = strdup(yytext);
-					return GSS;
-				}
 "<="                		{
 					yylval.keyWordToken.lineNumber = newline;
 					yylval.keyWordToken.tokenType = "LESSEQ";
@@ -228,6 +210,24 @@ letdig [{digit}|{letter}]
 					yylval.keyWordToken.tokenType = "DIVASS";
 					yylval.keyWordToken.KWTvalue = strdup(yytext);	
 					return DIVE;
+				}
+"="                 		{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "EQUALS";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return EQUALS;
+				}
+"<"                 		{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "LSS";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return LSS;
+				}
+">"                 		{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "GSS";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return GSS;
 				}
 "--"				{
 					yylval.keyWordToken.lineNumber = newline;
@@ -276,6 +276,12 @@ letdig [{digit}|{letter}]
 					yylval.keyWordToken.tokenType = "COND";
 					yylval.keyWordToken.KWTvalue = strdup(yytext);
 					return RAND;
+				}
+"!"				{
+					yylval.keyWordToken.lineNumber = newline;
+					yylval.keyWordToken.tokenType = "NEG";
+					yylval.keyWordToken.KWTvalue = strdup(yytext);
+					return NEG;
 				}
 "["				{
 					yylval.keyWordToken.lineNumber = newline;
@@ -352,7 +358,7 @@ letdig [{digit}|{letter}]
 					yylval.numConstToken.lineNumber = newline;
 					yylval.numConstToken.tokenType = "NUMCONST";
 					yylval.numConstToken.stringThatWasTyped = strdup(yytext);
-					yylval.numConstToken.numericalValue = atoi(yytext);
+					yylval.numConstToken.numericalValue = atoll(yytext);
 					return NUMCONST;
 				}
 .				{ yyerror("Invalid or misplaced input character"); }
