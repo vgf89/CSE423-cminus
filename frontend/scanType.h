@@ -4,7 +4,7 @@ typedef struct NCT {
     char *tokenType;
     char* stringThatWasTyped;
 
-    int numericalValue;
+    long long numericalValue;
 } NCT;
 
 //CHARCONST Type
