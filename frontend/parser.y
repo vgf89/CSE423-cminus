@@ -400,8 +400,30 @@ program:
 
 int main (int argc, char** argv)
 {
+	char *filename = argv[1];
+	int c = 0;
+	while ((c = getopt(argc, argv, "d:")) != -1) { 
+    	switch (c) {
+    	case 'd':
+    			if(optarg != NULL)
+					filename = optarg;
+
+    			yydebug = 1;
+            	break;  
+		case '\?':
+                printf("c-: Invalid option \n");
+                return -1;
+                break;
+        case ':':
+                printf("c-: Requires a filename argument\n");
+                return -1;
+                break;
+       	default:   
+       			printf("incorrect input\n");
+                return -1;
+        }
+    }
 	if(argc > 1) {
-	    char *filename = argv[1];
 	   	FILE *myfile = fopen(filename, "r");
 	   	if (!myfile) {
 	      	printf("I can't open the file\n");

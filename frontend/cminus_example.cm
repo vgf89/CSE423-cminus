@@ -36,4 +36,3 @@ int ant(int bat, cat[]; bool dog, elk; int fox)
 }
 // note that functions are defined using a statement
 int max(int a, b) if (a>b) return a; else return b;
-char test = ';';
