@@ -13,6 +13,8 @@ extern FILE *yyin;
 
 void yyerror(const char *s);
 
+TreeNode *tree;
+
 extern int newline;
 %}
 
@@ -444,7 +446,46 @@ void yyerror(const char *s)
     printf("ERROR(%d): %s: \"%s\"\n", newline, s, yytext);
 }
 
-//void printTree(FILE *output, TreeNode parseTree) 
-//{
+void printTree(FILE *output, TreeNode parseTree) 
+{
 	//print tree here   
-//}
+}
+/*
+        NCT numType;
+        CCT charType;
+        BCT boolType;
+        RECT rectType;
+        IDT idType;
+        KWT keywordType;
+*/
+TreeNode makeNCT(NCT numType) {
+	TreeNode *node = (TreeNode*) calloc (sizeof(TreeNode));
+	node->numType = numType;
+	return node;
+}
+TreeNode makeCCT(CCT charType) {
+	TreeNode *node = (TreeNode*) calloc (sizeof(TreeNode));
+	node->charType = charType;
+	return node;
+}
+TreeNode makeBCT(BCT boolType) {
+	TreeNode *node = (TreeNode*) calloc (sizeof(TreeNode));
+	node->boolType = boolType;
+	return node;
+}
+TreeNode makeRECT(RECT rectType) {
+	TreeNode *node = (TreeNode*) calloc (sizeof(TreeNode));
+	node->rectType = rectType;
+	return node;
+}
+TreeNode makeNCT(IDT idType) {
+	TreeNode *node = (TreeNode*) calloc (sizeof(TreeNode));
+	node->idType = idType;
+	return node;
+}
+TreeNode makeKWT(KWT keywordType) {
+	TreeNode *node = (TreeNode*) calloc (sizeof(TreeNode));
+	node->keywordType = keywordType;
+	return node;
+}
+
