@@ -464,33 +464,33 @@ void printTree(FILE *output, TreeNode parseTree)
         IDT idType;
         KWT keywordType;
 */
-TreeNode makeNCT(NCT numType) {
-	TreeNode *node = (TreeNode*) calloc (sizeof(TreeNode));
-	node->numType = numType;
+TreeNode *makeNCT(NCT numType) {
+	TreeNode *node = (TreeNode*) calloc (1, sizeof(TreeNode));
+	node->kind.numType = numType;
 	return node;
 }
-TreeNode makeCCT(CCT charType) {
-	TreeNode *node = (TreeNode*) calloc (sizeof(TreeNode));
-	node->charType = charType;
+TreeNode *makeCCT(CCT charType) {
+	TreeNode *node = (TreeNode*) calloc (1, sizeof(TreeNode));
+	node->kind.charType = charType;
 	return node;
 }
-TreeNode makeBCT(BCT boolType) {
-	TreeNode *node = (TreeNode*) calloc (sizeof(TreeNode));
-	node->boolType = boolType;
+TreeNode *makeBCT(BCT boolType) {
+	TreeNode *node = (TreeNode*) calloc (1, sizeof(TreeNode));
+	node->kind.boolType = boolType;
 	return node;
 }
-TreeNode makeRECT(RECT rectType) {
-	TreeNode *node = (TreeNode*) calloc (sizeof(TreeNode));
-	node->rectType = rectType;
+TreeNode *makeRECT(RECT rectType) {
+	TreeNode *node = (TreeNode*) calloc (1, sizeof(TreeNode));
+	node->kind.rectType = rectType;
 	return node;
 }
-TreeNode makeNCT(IDT idType) {
-	TreeNode *node = (TreeNode*) calloc (sizeof(TreeNode));
-	node->idType = idType;
+TreeNode *makeIDT(IDT idType) {
+	TreeNode *node = (TreeNode*) calloc (1, sizeof(TreeNode));
+	node->kind.idType = idType;
 	return node;
 }
-TreeNode makeKWT(KWT keywordType) {
-	TreeNode *node = (TreeNode*) calloc (sizeof(TreeNode));
-	node->keywordType = keywordType;
+TreeNode *makeKWT(KWT keywordType) {
+	TreeNode *node = (TreeNode*) calloc (1, sizeof(TreeNode));
+	node->kind.keywordType = keywordType;
 	return node;
 }
