@@ -157,7 +157,7 @@ program:
         ID | ID BRACL BRACR;
     
     statement:
-        expressionStmt | compoundStmt | selectionStmt | iterationStmt | returnStmt | breakStmt;
+        expressionStmt | compoundStmt | selectionStmt | iterationStmt | returnStmt | breakStmt | SEMI;
     
     compoundStmt:
         CURLL localDeclarations statementList CURLR;
