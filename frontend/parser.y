@@ -402,7 +402,7 @@ int main (int argc, char** argv)
 {
 	char *filename = argv[1];
 	int c = 0;
-	while ((c = getopt(argc, argv, "d:")) != -1) { 
+	while ((c = getopt(argc, argv, "d")) != -1) { 
     	switch (c) {
     	case 'd':
     			if(optarg != NULL)
