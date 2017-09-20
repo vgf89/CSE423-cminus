@@ -16,6 +16,8 @@ void yyerror(const char *s);
 TreeNode *tree;
 
 extern int newline;
+int numwarn = 0;
+int numerror = 0;
 %}
 
 // The union will figure out the yystype void pointer stuff
@@ -435,10 +437,14 @@ int main (int argc, char** argv)
 	}
     do {
         if(yyparse() != 0) {
-        	printf("exit\n");
+        	printf("Number of warnings: %d\n", numwarn);
+			printf("Number of errors: %d\n", numerror);
+		//printf("exit\n");
         	exit(-1);
         }
     } while (!feof(yyin));
+    printf("Number of warnings: %d\n", numwarn);
+    printf("Number of errors: %d\n", numerror);
 }
 
 void yyerror(const char *s)
@@ -488,4 +494,3 @@ TreeNode makeKWT(KWT keywordType) {
 	node->keywordType = keywordType;
 	return node;
 }
-

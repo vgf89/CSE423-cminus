@@ -52,7 +52,9 @@ typedef struct KWT {
 
 typedef struct treeNode {
     //connecivity in the tree
+    
     struct treeNode *child[MAXCHILDREN]; //children of the node
+
     //struct treeNode *sibling;            //siblings for the node 
 
     //what kind of node
