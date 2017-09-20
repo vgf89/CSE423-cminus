@@ -332,7 +332,6 @@ letdig [{digit}|{letter}]
 					return COMMA;
 				}
 {letter}({letter}|{digit})*	{ 
-				/*
 					if (recvar == 1) {
 						//printf("adding \"%s\" to record list\n", yytext);
 						rectable[reccount] = strdup(yytext);
@@ -348,7 +347,6 @@ letdig [{digit}|{letter}]
 							return RECTYPE; 
 						} 
 					}
-					*/
 					yylval.idToken.lineNumber = newline;
 					yylval.idToken.tokenType = "ID";
 					yylval.idToken.IDvalue = strdup(yytext);

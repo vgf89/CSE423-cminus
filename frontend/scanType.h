@@ -1,3 +1,5 @@
+
+
 //NUMCONST Type
 typedef struct NCT {
     int lineNumber;
