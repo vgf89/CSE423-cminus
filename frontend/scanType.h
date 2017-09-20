@@ -47,7 +47,7 @@ typedef struct KWT {
     char* tokenType;
     char* KWTvalue;
 } KWT;
-
+/*
 typedef struct treeNode {
     //connecivity in the tree
     struct treeNode *child[MAXCHILDREN]; //children of the node
@@ -76,3 +76,4 @@ typedef struct treeNode {
     bool isRecord;        //is staticly allocated
     bool isStatic;        //is staticly allocated 
 } TreeNode;
+*/
