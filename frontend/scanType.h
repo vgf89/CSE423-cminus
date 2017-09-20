@@ -1,4 +1,4 @@
-
+#define MAXCHILDREN 2048
 
 //NUMCONST Type
 typedef struct NCT {
@@ -49,22 +49,25 @@ typedef struct KWT {
     char* tokenType;
     char* KWTvalue;
 } KWT;
-/*
+
 typedef struct treeNode {
     //connecivity in the tree
     struct treeNode *child[MAXCHILDREN]; //children of the node
     struct treeNode *sibling;            //siblings for the node 
 
     //what kind of node
-    int lineno;              //linenum 
-    NodeKind nodeKind;       //type of node
+    //NodeKind nodeKind;       //type of node
     union {
-        DeclKind decl;       //used when DeclK
-        StmtKind stmt;       //used when StmtK
-        ExpKind exp;         //used when ExpK
+        NCT numType;
+        CCT charType;
+        BCT boolType;
+        RECT rectType;
+        IDT idType;
+        KWT keywordType;
     } kind;
 
     //extra properties about the node depending on type of the node
+    /*
     union {                   //relevent data to type -> attr
         OpKind op;            //type of token (same as in bison)
         int value;            //used when an integer constant or boolean
@@ -72,10 +75,9 @@ typedef struct treeNode {
         char *string;         //used when a sring constant
         char *name;           //used when Idk
     } attr;
-
     ExpType expType;      //used when ExpK for type checking
-    bool isArray;         //is this an array
-    bool isRecord;        //is staticly allocated
-    bool isStatic;        //is staticly allocated 
+    */
+    int isArray;         //is this an array
+    int isRecord;        //is staticly allocated
+    int isStatic;        //is staticly allocated 
 } TreeNode;
-*/
