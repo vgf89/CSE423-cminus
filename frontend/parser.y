@@ -13,7 +13,7 @@ extern FILE *yyin;
 
 void yyerror(const char *s);
 
-TreeNode *tree;
+extern TreeNode *tree;
 
 extern int newline;
 int numwarn = 0;
