@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "scanType.h"
+#include "tree.h"
 
 // Stuff from flex that bison needs
 extern int yylex();
