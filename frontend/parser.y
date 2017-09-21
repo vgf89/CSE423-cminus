@@ -243,7 +243,7 @@ program:
     
     constant:
         NUMCONST | CHARCONST | BOOLCONST
-
+        ;
 %%
 
 int main (int argc, char** argv)
