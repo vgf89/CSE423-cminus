@@ -97,11 +97,14 @@ program:
     declarationList
 
     declarationList:
-        declarationList declaration | declaration
+        declarationList declaration
+        | declaration
         ;
 
     declaration:
-        varDeclaration | funDeclaration | recDeclaration
+        varDeclaration
+        | funDeclaration
+        | recDeclaration
         ;
     
     recDeclaration:
@@ -117,132 +120,218 @@ program:
         ;
     
     varDeclList:
-        varDeclList COMMA varDeclInitialize | varDeclInitialize
+        varDeclList COMMA varDeclInitialize
+        | varDeclInitialize
         ;
 
     varDeclInitialize:
-        varDeclId | varDeclId COLON simpleExpression
+        varDeclId
+        | varDeclId COLON simpleExpression
         ;
     
     varDeclId:
-        ID | ID BRACL NUMCONST BRACR
+        ID
+        | ID BRACL NUMCONST BRACR
         ;
     
     scopedTypeSpecifier:
-        STATIC typeSpecifier | typeSpecifier
+        STATIC typeSpecifier
+        | typeSpecifier
         ;
 
     typeSpecifier:
-        returnTypeSpecifier | RECTYPE
+        returnTypeSpecifier
+        | RECTYPE
         ;
     
     returnTypeSpecifier:
-        INT | BOOL | CHAR
+        INT
+        | BOOL
+        | CHAR
         ;
     
     funDeclaration:
-        typeSpecifier ID PARL params PARR statement | ID PARL params PARR statement
+        typeSpecifier ID PARL params PARR statement
+        | ID PARL params PARR statement
         ;
     
     params:
-        paramList | 
+        paramList
+        | 
         ;
     
     paramList:
-        paramList SEMI paramTypeList | paramTypeList;
+        paramList SEMI paramTypeList
+        | paramTypeList
+        ;
     
     paramTypeList:
-        typeSpecifier paramIdList;
+        typeSpecifier paramIdList
+        ;
 
     paramIdList:
-        paramIdList COMMA paramId | paramId;
+        paramIdList COMMA paramId
+        | paramId
+        ;
     
     paramId:
-        ID | ID BRACL BRACR;
+        ID
+        | ID BRACL BRACR;
     
     statement:
-        expressionStmt | compoundStmt | selectionStmt | iterationStmt | returnStmt | breakStmt | SEMI;
+        expressionStmt
+        | compoundStmt
+        | selectionStmt
+        | iterationStmt
+        | returnStmt
+        | breakStmt
+        | SEMI
+        ;
     
     compoundStmt:
         CURLL localDeclarations statementList CURLR;
     
     localDeclarations:
-        localDeclarations scopedVarDeclaration | ;
+        localDeclarations scopedVarDeclaration
+        |
+        ;
     
     statementList:
-        statementList statement | ;
+        statementList statement
+        |
+        ;
     
     expressionStmt:
-        expression SEMI | ;
+        expression SEMI
+        |
+        ;
     
     selectionStmt:
-        IF PARL simpleExpression PARR statement | IF PARL simpleExpression PARR statement ELSE statement;
+        IF PARL simpleExpression PARR statement
+        | IF PARL simpleExpression PARR statement ELSE statement
+        ;
     
     iterationStmt:
-        WHILE PARL simpleExpression PARR statement;
+        WHILE PARL simpleExpression PARR statement
+        ;
 
     returnStmt:
-        RETURN SEMI | RETURN expression SEMI;
+        RETURN SEMI
+        | RETURN expression SEMI
+        ;
     
     breakStmt:
-        BREAK SEMI;
+        BREAK SEMI
+        ;
 
     expression:
-        mutable EQUALS expression | mutable ADDE expression | mutable SUBE expression | mutable MULE expression | mutable DIVE expression | mutable INC | mutable DEC | simpleExpression;
+        mutable EQUALS expression
+        | mutable ADDE expression
+        | mutable SUBE expression
+        | mutable MULE expression
+        | mutable DIVE expression
+        | mutable INC
+        | mutable DEC
+        | simpleExpression
+        ;
     
     simpleExpression:
-        simpleExpression OR andExpression | andExpression;
+        simpleExpression OR andExpression
+        | andExpression
+        ;
     
     andExpression:
-        andExpression AND unaryRelExpression | unaryRelExpression;
+        andExpression AND unaryRelExpression
+        | unaryRelExpression
+        ;
     
     unaryRelExpression:
-        NOT unaryRelExpression | relExpression;
+        NOT unaryRelExpression
+        | relExpression
+        ;
     
     relExpression:
-        sumExpression relop sumExpression | sumExpression;
+        sumExpression relop sumExpression
+        | sumExpression
+        ;
     
     relop:
-        LEQ | GEQ | LSS | GSS | EQ | NOTEQ;
+        LEQ
+        | GEQ
+        | LSS
+        | GSS
+        | EQ
+        | NOTEQ
+        ;
     
     sumExpression:
-        sumExpression sumop term | term;
+        sumExpression sumop term
+        | term
+        ;
     
     sumop:
-        ADD | SUB;
+        ADD
+        | SUB
+        ;
     
     term:
-        term mulop unaryExpression | unaryExpression;
+        term mulop unaryExpression
+        | unaryExpression
+        ;
     
     mulop:
-        MUL | DIV | MOD;
+        MUL
+        | DIV
+        | MOD
+        ;
     
     unaryExpression:
-        unaryop unaryExpression | factor;
+        unaryop unaryExpression
+        | factor
+        ;
     
     unaryop:
-        SUB | MUL | RAND | NEG;
+        SUB
+        | MUL
+        | RAND
+        | NEG
+        ;
     
     factor:
-        immutable | mutable;
+        immutable
+        | mutable
+        ;
     
     mutable:
-        ID | mutable BRACL expression BRACR | mutable DOT ID;
+        ID
+        | mutable BRACL expression BRACR
+        | mutable DOT ID
+        ;
     
     immutable:
-        PARL expression PARR | call | constant;
+        PARL expression PARR
+        | call
+        | constant
+        ;
 
     call:
-        ID PARL args PARR;
+        ID PARL args PARR
+        ;
 
     args:
-        argList | ;
+        argList
+        |
+        ;
     
     argList:
-        argList COMMA expression | expression;
+        argList COMMA expression
+        | expression
+        ;
     
     constant:
-        NUMCONST | CHARCONST | BOOLCONST
+        NUMCONST
+        | CHARCONST
+        | BOOLCONST
         ;
 %%
 
