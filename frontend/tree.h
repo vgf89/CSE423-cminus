@@ -25,3 +25,11 @@ typedef struct treeNode {
     int isRecord;        //is staticly allocated
     int isStatic;        //is staticly allocated 
 } TreeNode;
+
+void printTree(FILE *output, TreeNode parseTree);
+
+TreeNode *newNode();
+
+TreeNode *makeID(char* ID);
+
+TreeNode *makeExpression(TreeNode* left, TreeNode* right);
