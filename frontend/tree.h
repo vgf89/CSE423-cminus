@@ -12,7 +12,7 @@ typedef struct treeNode {
 
     //extra properties about the node depending on type of the node
 
-    enum {id, intconst, operators} kind;
+    enum {Var, Func, Param, Compound, Const, Id, Op, Assign, If, Break, Call, Return} kind;
 
     union {                   //relevent data to type -> attr
         char* id;
