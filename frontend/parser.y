@@ -13,7 +13,7 @@ extern FILE *yyin;
 
 void yyerror(const char *s);
 
-TreeNode *tree;
+extern TreeNode *root;
 
 extern int newline;
 int numwarn = 0;
@@ -29,6 +29,12 @@ int numerror = 0;
     RECT recordToken;
     IDT idToken;
     KWT keyWordToken;
+}
+
+%union {
+	int num;
+	char* string;
+	struct TreeNode *node;
 }
 
 
@@ -399,37 +405,20 @@ void printTree(FILE *output, TreeNode parseTree)
 */
 
 TreeNode *newNode() {
-	TreeNode *node = (TreeNode*) calloc (1, sizeof(TreeNode));
+	TreeNode *node = (TreeNode*) malloc (sizeof(TreeNode));
 	return node;
 }
 
-TreeNode *makeNCT(NCT numType) {
-	TreeNode *node = newNode();
-	node->kind.numType = numType;
-	return node;
+TreeNode *makeID(char* ID) {
+	TreeNode *n = newNode();
+	n->kind = idType;
+	n->val.ID = ID;
+	return n;
 }
-TreeNode *makeCCT(CCT charType) {
-	TreeNode *node = newNode();
-	node->kind.charType = charType;
-	return node;
-}
-TreeNode *makeBCT(BCT boolType) {
-	TreeNode *node = newNode();
-	node->kind.boolType = boolType;
-	return node;
-}
-TreeNode *makeRECT(RECT rectType) {
-	TreeNode *node = newNode();
-	node->kind.rectType = rectType;
-	return node;
-}
-TreeNode *makeIDT(IDT idType) {
-	TreeNode *node = newNode();
-	node->kind.idType = idType;
-	return node;
-}
-TreeNode *makeKWT(KWT keywordType) {
-	TreeNode *node = newNode();
-	node->kind.keywordType = keywordType;
-	return node;
+
+TreeNode *makeExpression(TreeNode* left, TreeNode* right) {
+	TreeNode *n = newNode();
+	n->val.exp.left = left;
+	n->val.exp.right = right;
+	return n;
 }
