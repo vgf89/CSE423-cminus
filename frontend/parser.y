@@ -397,33 +397,39 @@ void printTree(FILE *output, TreeNode parseTree)
         IDT idType;
         KWT keywordType;
 */
-TreeNode *makeNCT(NCT numType) {
+
+TreeNode *newNode() {
 	TreeNode *node = (TreeNode*) calloc (1, sizeof(TreeNode));
+	return node;
+}
+
+TreeNode *makeNCT(NCT numType) {
+	TreeNode *node = newNode();
 	node->kind.numType = numType;
 	return node;
 }
 TreeNode *makeCCT(CCT charType) {
-	TreeNode *node = (TreeNode*) calloc (1, sizeof(TreeNode));
+	TreeNode *node = newNode();
 	node->kind.charType = charType;
 	return node;
 }
 TreeNode *makeBCT(BCT boolType) {
-	TreeNode *node = (TreeNode*) calloc (1, sizeof(TreeNode));
+	TreeNode *node = newNode();
 	node->kind.boolType = boolType;
 	return node;
 }
 TreeNode *makeRECT(RECT rectType) {
-	TreeNode *node = (TreeNode*) calloc (1, sizeof(TreeNode));
+	TreeNode *node = newNode();
 	node->kind.rectType = rectType;
 	return node;
 }
 TreeNode *makeIDT(IDT idType) {
-	TreeNode *node = (TreeNode*) calloc (1, sizeof(TreeNode));
+	TreeNode *node = newNode();
 	node->kind.idType = idType;
 	return node;
 }
 TreeNode *makeKWT(KWT keywordType) {
-	TreeNode *node = (TreeNode*) calloc (1, sizeof(TreeNode));
+	TreeNode *node = newNode();
 	node->kind.keywordType = keywordType;
 	return node;
 }
