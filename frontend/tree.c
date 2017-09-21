@@ -17,7 +17,7 @@ void printTree(FILE *output, TreeNode parseTree, int siblingNum)
 */
 
 TreeNode *newNode() {
-	TreeNode *node = (TreeNode*) malloc (sizeof(TreeNode));
+	TreeNode *node = (TreeNode*) calloc (1, sizeof(TreeNode));
 	return node;
 }
 
@@ -27,10 +27,43 @@ TreeNode *makeID(char* ID) {
 	n->val.ID = ID;
 	return n;
 }
-
-TreeNode *makeExpression(TreeNode* left, TreeNode* right) {
+TreeNode *makeEquExpression(TreeNode* left, TreeNode* right) {
 	TreeNode *n = newNode();
 	n->val.exp.left = left;
 	n->val.exp.right = right;
+	return n;
+}
+TreeNode *makeAddExpression(TreeNode* left, TreeNode* right) {
+	TreeNode *n = newNode();
+	n->val.addE.left = left;
+	n->val.addE.right = right;
+	return n;
+}
+TreeNode *makeSubExpression(TreeNode* left, TreeNode* right) {
+	TreeNode *n = newNode();
+	n->val.subE.left = left;
+	n->val.subE.right = right;
+	return n;
+}
+TreeNode *makeMulExpression(TreeNode* left, TreeNode* right) {
+	TreeNode *n = newNode();
+	n->val.mulE.left = left;
+	n->val.mulE.right = right;
+	return n;
+}
+TreeNode *makeDivExpression(TreeNode* left, TreeNode* right) {
+	TreeNode *n = newNode();
+	n->val.divE.left = left;
+	n->val.divE.right = right;
+	return n;
+}
+TreeNode *makeIncExpression(TreeNode* left) {
+	TreeNode *n = newNode();
+	n->val.incE.left = left;
+	return n;
+}
+TreeNode *makeDecExpression(TreeNode* left) {
+	TreeNode *n = newNode();
+	n->val.decE.left = left;
 	return n;
 }

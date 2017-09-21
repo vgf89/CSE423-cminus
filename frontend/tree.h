@@ -17,9 +17,18 @@ typedef struct treeNode {
     union {                   //relevent data to type -> attr
         char* id;
         int intconst;
+        struct {treeNode *left, *right} equE;
         struct {treeNode *left, *right} addE;
+        struct {treeNode *left, *right} subE;
+        struct {treeNode *left, *right} mulE;
+        struct {treeNode *left, *right} divE;
+        struct {treeNode *left} incE;
+        struct {treeNode *left} decE;
     } val;
-    ExpType expType;      //used when ExpK for type checking
+
+    //ExpType expType;      //used when ExpK for type checking
+
+    int linenum;
 
     int isArray;         //is this an array
     int isRecord;        //is staticly allocated
@@ -31,5 +40,10 @@ void printTree(FILE *output, TreeNode parseTree);
 TreeNode *newNode();
 
 TreeNode *makeID(char* ID);
-
-TreeNode *makeExpression(TreeNode* left, TreeNode* right);
+TreeNode *makeEquExpression(TreeNode* left, TreeNode* right);
+TreeNode *makeAddExpression(TreeNode* left, TreeNode* right);
+TreeNode *makeSubExpression(TreeNode* left, TreeNode* right);
+TreeNode *makeMulExpression(TreeNode* left, TreeNode* right);
+TreeNode *makeDivExpression(TreeNode* left, TreeNode* right);
+TreeNode *makeIncExpression(TreeNode* left);
+TreeNode *makeDecExpression(TreeNode* left);
