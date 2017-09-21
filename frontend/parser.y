@@ -15,7 +15,6 @@ void yyerror(const char *s);
 
 extern TreeNode *tree;
 
-extern int newline;
 int numwarn = 0;
 int numerror = 0;
 %}
