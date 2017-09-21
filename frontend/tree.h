@@ -14,7 +14,10 @@ typedef struct treeNode {
 
     enum {Var, Func, Param, Compound, Const, Id, Op, Assign, If, Break, Call, Return} kind;
 
+    enum {IntType, VoidType, CharType, BoolType, RecordType} type;
+
     union {                   //relevent data to type -> attr
+
         char* id;
         int intconst;
         struct {treeNode *left, *right} equE;
