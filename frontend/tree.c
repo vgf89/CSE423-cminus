@@ -55,7 +55,7 @@ TreeNode *newNode() {
 
 TreeNode *makeID(char* ID) {
 	TreeNode *n = newNode();
-	n->kind = idType;
+	n->kind = Id;
 	n->val.ID = ID;
 	return n;
 }
@@ -99,3 +99,29 @@ TreeNode *makeDecExpression(TreeNode* left) {
 	n->val.decE.left = left;
 	return n;
 }
+
+TreeNode *makeBoolConst(int b) {
+	TreeNode *n = newNode();
+	n->kind = Const;
+	n->val.boolconst = b;
+	return n;
+}
+
+TreeNode *makeIntConst(int i) {
+	TreeNode *n = newNode();
+	n->kind = Const;
+	n->val.intconst = i;
+	return n;
+}
+
+TreeNode *makeCharConst(char c) {
+	TreeNode *n = newNode();
+	n->kind = Const;
+	n->val.charconst = c;
+	return n;
+}
+
+TreeNode *makeCall(TreeNode* left, TreeNode* right)
+
+
+

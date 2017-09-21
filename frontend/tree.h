@@ -17,9 +17,10 @@ typedef struct treeNode {
     enum {IntType, VoidType, CharType, BoolType, RecordType} type;
 
     union {                   //relevent data to type -> attr
-
         char* id;
+        int boolconst;
         int intconst;
+        char charconst;
         struct {treeNode *left, *right} equE;
         struct {treeNode *left, *right} addE;
         struct {treeNode *left, *right} subE;
@@ -50,3 +51,9 @@ TreeNode *makeMulExpression(TreeNode* left, TreeNode* right);
 TreeNode *makeDivExpression(TreeNode* left, TreeNode* right);
 TreeNode *makeIncExpression(TreeNode* left);
 TreeNode *makeDecExpression(TreeNode* left);
+
+TreeNode *makeintConst(int i);
+TreeNode *makeboolConst(int b);
+TreeNode *makeCharConst(char c);
+
+
