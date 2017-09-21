@@ -121,7 +121,9 @@ TreeNode *makeCharConst(char c) {
 	return n;
 }
 
-TreeNode *makeCall(TreeNode* left, TreeNode* right)
+TreeNode *makeCall(TreeNode* id, TreeNode* args) {
+	
+}
 
 
 

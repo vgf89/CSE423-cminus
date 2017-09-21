@@ -1,9 +1,10 @@
+#include <stdio.h>
 #define MAXCHILDREN 2048
 
 typedef struct treeNode {
     //connecivity in the tree
 
-    struct treeNode *child[MAXCHILDREN]; //children of the node
+    struct treeNode *children[MAXCHILDREN]; //children of the node
 
     struct treeNode *sibling;            //siblings for the node 
 
@@ -21,13 +22,13 @@ typedef struct treeNode {
         int boolconst;
         int intconst;
         char charconst;
-        struct {treeNode *left, *right} equE;
-        struct {treeNode *left, *right} addE;
-        struct {treeNode *left, *right} subE;
-        struct {treeNode *left, *right} mulE;
-        struct {treeNode *left, *right} divE;
-        struct {treeNode *left} incE;
-        struct {treeNode *left} decE;
+        struct { struct treeNode *left, *right; } equE;
+        struct { struct treeNode *left, *right; } addE;
+        struct { struct treeNode *left, *right; } subE;
+        struct { struct treeNode *left, *right; } mulE;
+        struct { struct treeNode *left, *right; } divE;
+        struct { struct treeNode *left; } incE;
+        struct { struct treeNode *left; } decE;
     } val;
 
     //ExpType expType;      //used when ExpK for type checking
