@@ -1,5 +1,5 @@
 #include "tree.h"
-#include "scanType.h>"
+#include "scanType.h"
 
 void printTree(FILE *output, TreeNode parseTree) 
 {
