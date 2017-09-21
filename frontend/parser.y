@@ -335,9 +335,9 @@ program:
         ;
     
     constant:
-        NUMCONST
-        | CHARCONST
-        | BOOLCONST
+        NUMCONST        { $$ = makeIntConst($1.numericalValue); }
+        | CHARCONST     { $$ = makeCharConst($1.letterData); }
+        | BOOLCONST     { $$ = makeBoolConst($1.numericalValue); }
         ;
 %%
 
