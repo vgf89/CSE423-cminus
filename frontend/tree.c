@@ -3,7 +3,7 @@ void printTree(FILE *output, TreeNode parseTree)
 	
 }
 
-void printTree(FILE *output, TreeNode parseTree, int siblingNum) 
+void printTreeSibling(FILE *output, TreeNode parseTree, int siblingNum) 
 {
 	//print tree here   
 }
