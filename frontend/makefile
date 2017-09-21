@@ -3,8 +3,8 @@ OUTPUT = c-
 CC = gcc
 CFLAGS = -g
 
-SRCS = $(BIN).l $(BIN).y
-OBJS = lex.yy.o $(BIN).tab.o
+SRCS = $(BIN).l $(BIN).y tree.h scanType.h
+OBJS = lex.yy.o $(BIN).tab.o tree.o
 LIBS = -lfl
 
 
@@ -16,6 +16,9 @@ $(BIN).tab.h $(BIN).tab.c: $(BIN).y
 
 lex.yy.c: $(BIN).l $(BIN).tab.h
 	flex $(BIN).l
+
+tree.c: tree.h scanType.h
+	$(CC) $(CFLAGS) -c tree.h
 
 all:
 	make
