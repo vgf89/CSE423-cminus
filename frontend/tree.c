@@ -26,6 +26,17 @@ void printTreeSibling(FILE *output, TreeNode parseTree, int siblingNum, int tree
 
 	//Special case for initial print so we don't write Child before it
 	if(siblingNum == -1 && treeLevel == 0) {
+		printNode(output, parseTree);
+	}
+	else if(siblingNum)
+			
+}
+
+/*
+ * 
+ */
+void printNode(FILE *output, TreeNode *parseTree)
+{
 		if(parseTree.kind == Var)
 			printVar(output, parseTree.val.id, parseTree.type, parseTree.linenum);
 
@@ -61,8 +72,6 @@ void printTreeSibling(FILE *output, TreeNode parseTree, int siblingNum, int tree
 
 		else if (parseTree.kind == Return)
 			printReturn(output, parseTree.linenum);
-	}
-			
 }
 
 
