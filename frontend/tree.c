@@ -88,7 +88,7 @@ void printIf(File *output)
 {
 
 }
-void printBreak(File *output, char *name)
+void printBreak(File *output)
 {
 
 }
@@ -96,7 +96,7 @@ void printCall(File *output, char *name)
 {
 
 }
-void printReturn(File *output, char *name)
+void printReturn(File *output)
 {
 
 }
