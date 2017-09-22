@@ -24,50 +24,48 @@ void printTreeSibling(FILE *output, TreeNode parseTree, int siblingNum, int tree
 		printf("!\t");
 	}
 
-	if(siblingNum == -1 && treeLevel == 0)
+	//Special case for initial print so we don't write Child before it
+	if(siblingNum == -1 && treeLevel == 0) {
 		if(parseTree.kind == Var)
-			printVar(output, parseTree.val.id), parseTree.type;
+			printVar(output, parseTree.val.id, parseTree.type, parseTree.linenum);
+
 		else if (parseTree.kind == Func)
-			printFunc(output, parseTree.val.id, parseTree.type);
+			printFunc(output, parseTree.val.id, parseTree.type, parseTree.linenum);
+
 		else if (parseTree.kind == Param)
-			printParam(output, parseTree.val.id, parseTree.type);
+			printParam(output, parseTree.val.id, parseTree.type, parseTree.linenum);
+
 		else if (parseTree.kind == Compound)
-			printCompound(output);
+			printCompound(output, parseTree.linenum);
+
 		else if (parseTree.kind == Const)
-			printConst(output, parseTree.val.Const);
+			printConst(output, parseTree, parseTree.linenum);
+
 		else if (parseTree.kind == Id)
-			printId(output, parseTree.val.Id);
+			printId(output, parseTree.val.id, parseTree.linenum);
+
 		else if (parseTree.kind == Op)
-			printOp(output, parseTree.val.Op);
+			printOp(output, parseTree.val.op, parseTree.linenum);
+
 		else if (parseTree.kind == Assign)
-			printAssign(output, parseTree.val.Assign);
+			printAssign(output, parseTree.linenum);
+
 		else if (parseTree.kind == If)
-			printIf(output, parseTree.val.If);
+			printIf(output, parseTree.linenum);
+
 		else if (parseTree.kind == Break)
-			printBreak(output, parseTree.val.Break);
+			printBreak(output, parseTree.linenum);
+
 		else if (parseTree.kind == Call)
-			printCall(output, parseTree.val.Call);
+			printCall(output, parseTree.val.id, parseTree.linenum);
+
 		else if (parseTree.kind == Return)
-			printReturn(parseTree.kind == parseTree.val.)
+			printReturn(output, parseTree.linenum);
+	}
+			
 }
 
-void printVar(FILE *output, char *name, int type, int linenum)
-{
 
-}
-
-void printFunc(FILE *output, char *name, int type, int linenum)
-{
-
-}
-void printParam(FILE *output, char *name, int type, int linenum)
-{
-
-}
-void printCompound(FILE *output, int linenum)
-{
-
-}
 void printConst(FILE *output, TreeNode *parseTree, int type, int linenum)
 {
 
