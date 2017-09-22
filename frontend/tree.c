@@ -56,47 +56,47 @@ void printVar(FILE *output, char *name, int type)
 
 }
 
-void printFunc(File *output, char *name, int type)
+void printFunc(FILE *output, char *name, int type)
 {
 
 }
-void printParam(File *output, char *name, int type)
+void printParam(FILE *output, char *name, int type)
 {
 
 }
-void printCompound(File *output)
+void printCompound(FILE *output)
 {
 
 }
-void printConst(File *output, TreeNode *parseTree, int type)
+void printConst(FILE *output, TreeNode *parseTree, int type)
 {
 
 }
-void printId(File *output, char *name)
+void printId(FILE *output, char *name)
 {
 
 }
-void printOp(File *output, char *op)
+void printOp(FILE *output, char *op)
 {
 
 }
-void printAssign(File *output)
+void printAssign(FILE *output)
 {
 
 }
-void printIf(File *output)
+void printIf(FILE *output)
 {
 
 }
-void printBreak(File *output)
+void printBreak(FILE *output)
 {
 
 }
-void printCall(File *output, char *name)
+void printCall(FILE *output, char *name)
 {
 
 }
-void printReturn(File *output)
+void printReturn(FILE *output)
 {
 
 }
