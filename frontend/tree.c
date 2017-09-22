@@ -51,52 +51,52 @@ void printTreeSibling(FILE *output, TreeNode parseTree, int siblingNum, int tree
 			printReturn(parseTree.kind == parseTree.val.)
 }
 
-void printVar(FILE *output, char *name, int type)
+void printVar(FILE *output, char *name, int type, int linenum)
 {
 
 }
 
-void printFunc(FILE *output, char *name, int type)
+void printFunc(FILE *output, char *name, int type, int linenum)
 {
 
 }
-void printParam(FILE *output, char *name, int type)
+void printParam(FILE *output, char *name, int type, int linenum)
 {
 
 }
-void printCompound(FILE *output)
+void printCompound(FILE *output, int linenum)
 {
 
 }
-void printConst(FILE *output, TreeNode *parseTree, int type)
+void printConst(FILE *output, TreeNode *parseTree, int type, int linenum)
 {
 
 }
-void printId(FILE *output, char *name)
+void printId(FILE *output, char *name, int linenum)
 {
 
 }
-void printOp(FILE *output, char *op)
+void printOp(FILE *output, char *op, int linenum)
 {
 
 }
-void printAssign(FILE *output)
+void printAssign(FILE *output, int linenum)
 {
 
 }
-void printIf(FILE *output)
+void printIf(FILE *output, int linenum)
 {
 
 }
-void printBreak(FILE *output)
+void printBreak(FILE *output, int linenum)
 {
 
 }
-void printCall(FILE *output, char *name)
+void printCall(FILE *output, char *name, int linenum)
 {
 
 }
-void printReturn(FILE *output)
+void printReturn(FILE *output, int linenum)
 {
 
 }

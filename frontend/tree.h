@@ -43,18 +43,18 @@ typedef struct treeNode {
 
 void printTree(FILE *output, TreeNode parseTree);
 void printTreeSibling(FILE *output, TreeNode parseTree, int siblingNum, int treeLevel);
-void printVar(FILE *output, char *name, int type);
-void printFunc(FILE *output, char *name, int type);
-void printParam(FILE *output, char *name, int type);
-void printCompound(FILE *output);
-void printConst(FILE *output, TreeNode *parseTree, int type);
-void printId(FILE *output, char *name);
-void printOp(FILE *output, char *op);
-void printAssign(FILE *output);
-void printIf(FILE *output);
-void printBreak(FILE *output);
-void printCall(FILE *output, char *name);
-void printReturn(FILE *output);
+void printVar(FILE *output, char *name, int type, int linenum);
+void printFunc(FILE *output, char *name, int type, int linenum);
+void printParam(FILE *output, char *name, int type, int linenum);
+void printCompound(FILE *output, int linenum);
+void printConst(FILE *output, TreeNode *parseTree, int type, int linenum);
+void printId(FILE *output, char *name, int linenum);
+void printOp(FILE *output, char *op, int linenum);
+void printAssign(FILE *output, int linenum);
+void printIf(FILE *output, int linenum);
+void printBreak(FILE *output, int linenum);
+void printCall(FILE *output, char *name, int linenum);
+void printReturn(FILE *output, int linenum);
 
 
 TreeNode *newNode();
