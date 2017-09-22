@@ -65,25 +65,25 @@ TreeNode *makeEquExpression(TreeNode* left, TreeNode* right) {
 	n->val.exp.right = right;
 	return n;
 }
-TreeNode *makeAddExpression(TreeNode* left, TreeNode* right) {
+TreeNode *makeAddEExpression(TreeNode* left, TreeNode* right) {
 	TreeNode *n = newNode();
 	n->val.addE.left = left;
 	n->val.addE.right = right;
 	return n;
 }
-TreeNode *makeSubExpression(TreeNode* left, TreeNode* right) {
+TreeNode *makeSubEExpression(TreeNode* left, TreeNode* right) {
 	TreeNode *n = newNode();
 	n->val.subE.left = left;
 	n->val.subE.right = right;
 	return n;
 }
-TreeNode *makeMulExpression(TreeNode* left, TreeNode* right) {
+TreeNode *makeMulEExpression(TreeNode* left, TreeNode* right) {
 	TreeNode *n = newNode();
 	n->val.mulE.left = left;
 	n->val.mulE.right = right;
 	return n;
 }
-TreeNode *makeDivExpression(TreeNode* left, TreeNode* right) {
+TreeNode *makeDivEExpression(TreeNode* left, TreeNode* right) {
 	TreeNode *n = newNode();
 	n->val.divE.left = left;
 	n->val.divE.right = right;
@@ -121,9 +121,6 @@ TreeNode *makeCharConst(char c) {
 	return n;
 }
 
-TreeNode *makeCall(TreeNode* id, TreeNode* args) {
-	
-}
 
 
 

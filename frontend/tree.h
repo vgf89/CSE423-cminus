@@ -19,6 +19,7 @@ typedef struct treeNode {
 
     union {                   //relevent data to type -> attr
         char* id;
+        char* op;
         int boolconst;
         int intconst;
         char charconst;
@@ -46,10 +47,10 @@ TreeNode *newNode();
 
 TreeNode *makeID(char* ID);
 TreeNode *makeEquExpression(TreeNode* left, TreeNode* right);
-TreeNode *makeAddExpression(TreeNode* left, TreeNode* right);
-TreeNode *makeSubExpression(TreeNode* left, TreeNode* right);
-TreeNode *makeMulExpression(TreeNode* left, TreeNode* right);
-TreeNode *makeDivExpression(TreeNode* left, TreeNode* right);
+TreeNode *makeAddEExpression(TreeNode* left, TreeNode* right);
+TreeNode *makeSubEExpression(TreeNode* left, TreeNode* right);
+TreeNode *makeMulEExpression(TreeNode* left, TreeNode* right);
+TreeNode *makeDivEExpression(TreeNode* left, TreeNode* right);
 TreeNode *makeIncExpression(TreeNode* left);
 TreeNode *makeDecExpression(TreeNode* left);
 
