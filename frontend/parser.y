@@ -231,13 +231,13 @@ program:
         ;
 
     expression:
-        mutable EQUALS expression
-        | mutable ADDE expression
-        | mutable SUBE expression
-        | mutable MULE expression
-        | mutable DIVE expression
-        | mutable INC
-        | mutable DEC
+        mutable EQUALS expression   { $$ = makeEquExpression($1, $3); }
+        | mutable ADDE expression   { $$ = makeAddEExpression($1, $3); }
+        | mutable SUBE expression   { $$ = makeSubEExpression($1, $3); }
+        | mutable MULE expression   { $$ = makeMulEExpression($1, $3); }
+        | mutable DIVE expression   { $$ = makeDivEExpression($1, $3); }
+        | mutable INC   { $$ = makeIncExpression($1); }
+        | mutable DEC   { $$ = makeDecExpression($1); }
         | simpleExpression
         ;
     
