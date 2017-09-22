@@ -231,28 +231,28 @@ program:
         ;
 
     expression:
-        mutable EQUALS expression
-        | mutable ADDE expression
-        | mutable SUBE expression
-        | mutable MULE expression
-        | mutable DIVE expression
-        | mutable INC
-        | mutable DEC
+        mutable EQUALS expression   { $$ = makeEquExpression($1, $3); }
+        | mutable ADDE expression   { $$ = makeAddEExpression($1, $3); }
+        | mutable SUBE expression   { $$ = makeSubEExpression($1, $3); }
+        | mutable MULE expression   { $$ = makeMulEExpression($1, $3); }
+        | mutable DIVE expression   { $$ = makeDivEExpression($1, $3); }
+        | mutable INC   { $$ = makeIncExpression($1); }
+        | mutable DEC   { $$ = makeDecExpression($1); }
         | simpleExpression
         ;
     
     simpleExpression:
-        simpleExpression OR andExpression
+        simpleExpression OR andExpression   { $$ = makeOrExpression($1, 3); }
         | andExpression
         ;
     
     andExpression:
-        andExpression AND unaryRelExpression
+        andExpression AND unaryRelExpression   { $$ = makeAndExpression($1, 3); }
         | unaryRelExpression
         ;
     
     unaryRelExpression:
-        NOT unaryRelExpression
+        NOT unaryRelExpression   { $$ = makeNotExpression($2); }
         | relExpression
         ;
     
@@ -335,9 +335,9 @@ program:
         ;
     
     constant:
-        NUMCONST
-        | CHARCONST
-        | BOOLCONST
+        NUMCONST        { $$ = makeIntConst($1.numericalValue); }
+        | CHARCONST     { $$ = makeCharConst($1.letterData); }
+        | BOOLCONST     { $$ = makeBoolConst($1.numericalValue); }
         ;
 %%
 
