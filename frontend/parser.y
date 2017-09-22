@@ -242,17 +242,17 @@ program:
         ;
     
     simpleExpression:
-        simpleExpression OR andExpression
+        simpleExpression OR andExpression   { $$ = makeOrExpression($1, 3); }
         | andExpression
         ;
     
     andExpression:
-        andExpression AND unaryRelExpression
+        andExpression AND unaryRelExpression   { $$ = makeAndExpression($1, 3); }
         | unaryRelExpression
         ;
     
     unaryRelExpression:
-        NOT unaryRelExpression
+        NOT unaryRelExpression   { $$ = makeNotExpression($2); }
         | relExpression
         ;
     
