@@ -47,6 +47,20 @@ typedef struct treeNode {
 } TreeNode;
 
 void printTree(FILE *output, TreeNode parseTree);
+void printTreeSibling(FILE *output, TreeNode parseTree, int siblingNum, int treeLevel);
+void printVar(FILE *output, char *name, int type, int linenum);
+void printFunc(FILE *output, char *name, int type, int linenum);
+void printParam(FILE *output, char *name, int type, int linenum);
+void printCompound(FILE *output, int linenum);
+void printConst(FILE *output, TreeNode *parseTree, int type, int linenum);
+void printId(FILE *output, char *name, int linenum);
+void printOp(FILE *output, char *op, int linenum);
+void printAssign(FILE *output, int linenum);
+void printIf(FILE *output, int linenum);
+void printBreak(FILE *output, int linenum);
+void printCall(FILE *output, char *name, int linenum);
+void printReturn(FILE *output, int linenum);
+
 
 TreeNode *newNode();
 
