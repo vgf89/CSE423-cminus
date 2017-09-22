@@ -9,7 +9,7 @@ void printTree(FILE *output, TreeNode parseTree)
 		int i = 0;
 		int siblingNum = -1;
 		int treeLevel = 0;
-		while(children[i] != 0 && i < MAXCHILDREN) {
+		while(parseTree.children[i] != 0 && i < MAXCHILDREN) {
 			printTreeSibling(output, parseTree.children[i], siblingNum, treeLevel);
 			i++;
 			siblingNum++;
@@ -19,23 +19,84 @@ void printTree(FILE *output, TreeNode parseTree)
 
 void printTreeSibling(FILE *output, TreeNode parseTree, int siblingNum, int treeLevel) 
 {
-	for (int i = 0; i < treeLevel; i++) {
+	int i;
+	for (i = 0; i < treeLevel; i++) {
 		printf("!\t");
 	}
 
 	if(siblingNum == -1 && treeLevel == 0)
 		if(parseTree.kind == Var)
-			printVar(output, parseTree.val.id);
-		else if(parseTree.kind == )
-
-		else if(parseTree.kind == )
-
-		else if(parseTree.kind == )
-			
-		else if(parseTree.kind == )
+			printVar(output, parseTree.val.id), parseTree.type;
+		else if (parseTree.kind == Func)
+			printFunc(output, parseTree.val.id, parseTree.type);
+		else if (parseTree.kind == Param)
+			printParam(output, parseTree.val.id, parseTree.type);
+		else if (parseTree.kind == Compound)
+			printCompound(output);
+		else if (parseTree.kind == Const)
+			printConst(output, parseTree.val.Const);
+		else if (parseTree.kind == Id)
+			printId(output, parseTree.val.Id);
+		else if (parseTree.kind == Op)
+			printOp(output, parseTree.val.Op);
+		else if (parseTree.kind == Assign)
+			printAssign(output, parseTree.val.Assign);
+		else if (parseTree.kind == If)
+			printIf(output, parseTree.val.If);
+		else if (parseTree.kind == Break)
+			printBreak(output, parseTree.val.Break);
+		else if (parseTree.kind == Call)
+			printCall(output, parseTree.val.Call);
+		else if (parseTree.kind == Return)
+			printReturn(parseTree.kind == parseTree.val.)
 }
 
-void printVar(FILE *output, char *name)
+void printVar(FILE *output, char *name, int type)
+{
+
+}
+
+void printFunc(File *output, char *name, int type)
+{
+
+}
+void printParam(File *output, char *name, int type)
+{
+
+}
+void printCompound(File *output)
+{
+
+}
+void printConst(File *output, TreeNode *parseTree, int type)
+{
+
+}
+void printId(File *output, char *name)
+{
+
+}
+void printOp(File *output, char *op)
+{
+
+}
+void printAssign(File *output)
+{
+
+}
+void printIf(File *output)
+{
+
+}
+void printBreak(File *output, char *name)
+{
+
+}
+void printCall(File *output, char *name)
+{
+
+}
+void printReturn(File *output, char *name)
 {
 
 }
