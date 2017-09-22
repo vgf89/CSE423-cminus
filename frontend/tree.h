@@ -17,6 +17,8 @@ typedef struct treeNode {
 
     enum {IntType, VoidType, CharType, BoolType, RecordType} type;
 
+    enum {OR, AND, NOT, LEQ, GEQ, LSS, GSS, EQ, NOTEQ, ADD, SUB, MUL, DIV, MOD, RAND, NEG} opType;
+
     union {                   //relevent data to type -> attr
         char* id;
         char* op;
@@ -30,6 +32,9 @@ typedef struct treeNode {
         struct { struct treeNode *left, *right; } divE;
         struct { struct treeNode *left; } incE;
         struct { struct treeNode *left; } decE;
+        struct { struct treeNode *left, *right; } and;
+        struct { struct treeNode *left, *right; } or;
+        struct { struct treeNode *left } not;
     } val;
 
     //ExpType expType;      //used when ExpK for type checking

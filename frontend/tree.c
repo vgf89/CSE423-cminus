@@ -59,6 +59,7 @@ TreeNode *makeID(char* ID) {
 	n->val.ID = ID;
 	return n;
 }
+
 TreeNode *makeEquExpression(TreeNode* left, TreeNode* right) {
 	TreeNode *n = newNode();
 	n->val.exp.left = left;
@@ -120,6 +121,30 @@ TreeNode *makeCharConst(char c) {
 	n->val.charconst = c;
 	return n;
 }
+
+TreeNode *makeOrExpression(TreeNode *left, TreeNode *right) {
+	TreeNode *n = newNode();
+	n->kind = Op;
+	n->val.or.left = left;
+	n->val.or.right = right;
+	return n;
+}
+
+TreeNode *makeAndExpression(TreeNode *left, TreeNode *right) {
+	TreeNode *n = newNode();
+	n->kind = Op;
+	n->val.and.left = left;
+	n->val.and.right = right;
+	return n;
+}
+
+TreeNode *makeNotExpression(TreeNode *left) {
+	TreeNode *n = newNode();
+	n->kind = Op;
+	n->val.not.left = left;
+	return n;
+}
+
 
 
 
