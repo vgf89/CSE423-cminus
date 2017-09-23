@@ -1,5 +1,6 @@
 #include "tree.h"
 #include "scanType.h"
+#include <stdlib.h>
 
 void printTree(FILE *output, TreeNode parseTree) 
 {
@@ -37,8 +38,8 @@ void printTreeSibling(FILE *output, TreeNode parseTree, int siblingNum, int tree
  */
 void printNode(FILE *output, TreeNode *parseTree)
 {
-		if(parseTree.kind == Var)
-			printVar(output, parseTree.val.id, parseTree.type, parseTree.linenum);
+		if(parseTree->kind == Var)
+			printVar(output, parseTree, parseTree->val.id, parseTree->type, parseTree->linenum);
 
 		else if (parseTree.kind == Func)
 			printFunc(output, parseTree.val.id, parseTree.type, parseTree.linenum);
@@ -74,7 +75,42 @@ void printNode(FILE *output, TreeNode *parseTree)
 			printReturn(output, parseTree.linenum);
 }
 
+void printType(int type)
+{
+	switch(type){
+		case IntType:
+			printf("int");
+		case VoidType:
+		case CharType:
+		case BoolType:
+		case RecordType:
+		default:
+			printf(" ");
+	}
+}
+void printVar(FILE *output, TreeNode *parseTree, char *name, int type, int linenum)
+{
+	printf("Var %s ", name);
+	if (parseTree->isArray) {
+		printf("is array ");
+	}
+	printf("of type ");
+	printType(type);
+	printf(" [line: %d]\n", linenum);
 
+}
+void printFunc(FILE *output, char *name, int type, int linenum)
+{
+
+}
+void printParam(FILE *output, char *name, int type, int linenum)
+{
+
+}
+void printCompound(FILE *output, int linenum)
+{
+
+}
 void printConst(FILE *output, TreeNode *parseTree, int type, int linenum)
 {
 
@@ -124,14 +160,14 @@ TreeNode *newNode() {
 TreeNode *makeID(char* ID) {
 	TreeNode *n = newNode();
 	n->kind = Id;
-	n->val.ID = ID;
+	n->val.id = ID;
 	return n;
 }
 
 TreeNode *makeEquExpression(TreeNode* left, TreeNode* right) {
 	TreeNode *n = newNode();
-	n->val.exp.left = left;
-	n->val.exp.right = right;
+	n->val.equE.left = left;
+	n->val.equE.right = right;
 	return n;
 }
 TreeNode *makeAddEExpression(TreeNode* left, TreeNode* right) {
