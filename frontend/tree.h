@@ -35,6 +35,8 @@ typedef struct treeNode {
         struct { struct treeNode *left, *right; } and;
         struct { struct treeNode *left, *right; } or;
         struct { struct treeNode *left; } not;
+        struct { struct treeNode *left, *right; } compound;
+        struct { struct treeNode *expression; } returnStatement;
     } val;
 
     //ExpType expType;      //used when ExpK for type checking

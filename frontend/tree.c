@@ -233,6 +233,7 @@ TreeNode *makeDecExpression(TreeNode* left) {
 
 TreeNode *makeBoolConst(int b) {
 	TreeNode *n = newNode();
+	n->type = BoolType;
 	n->kind = Const;
 	n->val.boolconst = b;
 	return n;
@@ -240,6 +241,7 @@ TreeNode *makeBoolConst(int b) {
 
 TreeNode *makeIntConst(int i) {
 	TreeNode *n = newNode();
+	n->type = IntType;
 	n->kind = Const;
 	n->val.intconst = i;
 	return n;
@@ -247,6 +249,7 @@ TreeNode *makeIntConst(int i) {
 
 TreeNode *makeCharConst(char c) {
 	TreeNode *n = newNode();
+	n->type = CharType;
 	n->kind = Const;
 	n->val.charconst = c;
 	return n;
@@ -255,6 +258,7 @@ TreeNode *makeCharConst(char c) {
 TreeNode *makeOrExpression(TreeNode *left, TreeNode *right) {
 	TreeNode *n = newNode();
 	n->kind = Op;
+	n->opType = OR;
 	n->val.or.left = left;
 	n->val.or.right = right;
 	return n;
@@ -263,6 +267,7 @@ TreeNode *makeOrExpression(TreeNode *left, TreeNode *right) {
 TreeNode *makeAndExpression(TreeNode *left, TreeNode *right) {
 	TreeNode *n = newNode();
 	n->kind = Op;
+	n->opType = AND;
 	n->val.and.left = left;
 	n->val.and.right = right;
 	return n;
@@ -274,6 +279,23 @@ TreeNode *makeNotExpression(TreeNode *left) {
 	n->val.not.left = left;
 	return n;
 }
+
+TreeNode *makeCompound(TreeNode *left, TreeNode *right) {
+	TreeNode *n = newNode();
+	n->kind = compound;
+	n->val.compound.left = left;
+	n->val.compound.right = right;
+}
+
+TreeNode *makeReturnStatement(TreeNode *expression) {
+	TreeNode *n = newNode();
+	n->kind = Return;
+	n->val.returnStatement.expression = expression;
+}
+
+
+
+
 
 
 
