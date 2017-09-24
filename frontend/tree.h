@@ -17,8 +17,8 @@ typedef struct treeNode {
 
     enum {IntType, VoidType, CharType, BoolType, RecordType} type;
 
-    enum {OR, AND, NOT, LEQ, GEQ, LSS, GSS, EQ, NOTEQ, ADD, SUB, MUL, DIV, MOD, RAND, NEG} opType;
-
+    enum {Or, And, Not, Leq, Geq, Lss, Gss, Eq, Noteq, Add, Sub, Mul, Div, Mod, Rand, Neg, Inc, Dec} opType;
+    
     union {                   //relevent data to type -> attr
         char* id;
         char* op;
@@ -35,6 +35,8 @@ typedef struct treeNode {
         struct { struct treeNode *left, *right; } and;
         struct { struct treeNode *left, *right; } or;
         struct { struct treeNode *left; } not;
+        struct { struct treeNode *left, *right; } compound;
+        struct { struct treeNode *expression; } returnStatement;
     } val;
 
     //ExpType expType;      //used when ExpK for type checking
@@ -75,8 +77,17 @@ TreeNode *makeDivEExpression(TreeNode* left, TreeNode* right);
 TreeNode *makeIncExpression(TreeNode* left);
 TreeNode *makeDecExpression(TreeNode* left);
 
+TreeNode *makeNotExpression(TreeNode *left);
+TreeNode *makeAndExpression(TreeNode *left, TreeNode *right);
+TreeNode *makeOrExpression(TreeNode *left, TreeNode *right);
+
 TreeNode *makeintConst(int i);
 TreeNode *makeboolConst(int b);
 TreeNode *makeCharConst(char c);
+
+TreeNode *makeBreakStatement( );
+TreeNode *makeReturnStatement(TreeNode *expression);
+TreeNode *makeCompound(TreeNode *left, TreeNode *right);
+
 
 
