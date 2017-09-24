@@ -192,42 +192,50 @@ TreeNode *makeID(char* ID) {
 
 TreeNode *makeEquExpression(TreeNode* left, TreeNode* right) {
 	TreeNode *n = newNode();
+	n->kind = Assign;
 	n->val.equE.left = left;
 	n->val.equE.right = right;
+	n->opType = Eq;
 	return n;
 }
 TreeNode *makeAddEExpression(TreeNode* left, TreeNode* right) {
 	TreeNode *n = newNode();
 	n->val.addE.left = left;
 	n->val.addE.right = right;
+	n->opType = Add;
 	return n;
 }
 TreeNode *makeSubEExpression(TreeNode* left, TreeNode* right) {
 	TreeNode *n = newNode();
 	n->val.subE.left = left;
 	n->val.subE.right = right;
+	n->opType = Sub;
 	return n;
 }
 TreeNode *makeMulEExpression(TreeNode* left, TreeNode* right) {
 	TreeNode *n = newNode();
 	n->val.mulE.left = left;
 	n->val.mulE.right = right;
+	n->opType = Mul;
 	return n;
 }
 TreeNode *makeDivEExpression(TreeNode* left, TreeNode* right) {
 	TreeNode *n = newNode();
 	n->val.divE.left = left;
 	n->val.divE.right = right;
+	n->opType = Div;
 	return n;
 }
 TreeNode *makeIncExpression(TreeNode* left) {
 	TreeNode *n = newNode();
 	n->val.incE.left = left;
+	n->opType = Inc;
 	return n;
 }
 TreeNode *makeDecExpression(TreeNode* left) {
 	TreeNode *n = newNode();
 	n->val.decE.left = left;
+	n->opType = Dec;
 	return n;
 }
 
@@ -258,7 +266,7 @@ TreeNode *makeCharConst(char c) {
 TreeNode *makeOrExpression(TreeNode *left, TreeNode *right) {
 	TreeNode *n = newNode();
 	n->kind = Op;
-	n->opType = OR;
+	n->opType = Or;
 	n->val.or.left = left;
 	n->val.or.right = right;
 	return n;
@@ -267,7 +275,7 @@ TreeNode *makeOrExpression(TreeNode *left, TreeNode *right) {
 TreeNode *makeAndExpression(TreeNode *left, TreeNode *right) {
 	TreeNode *n = newNode();
 	n->kind = Op;
-	n->opType = AND;
+	n->opType = And;
 	n->val.and.left = left;
 	n->val.and.right = right;
 	return n;
@@ -276,6 +284,7 @@ TreeNode *makeAndExpression(TreeNode *left, TreeNode *right) {
 TreeNode *makeNotExpression(TreeNode *left) {
 	TreeNode *n = newNode();
 	n->kind = Op;
+	n->opType = Not;
 	n->val.not.left = left;
 	return n;
 }
@@ -292,6 +301,16 @@ TreeNode *makeReturnStatement(TreeNode *expression) {
 	n->kind = Return;
 	n->val.returnStatement.expression = expression;
 }
+
+TreeNode *makeBreakStatement( ) {
+	TreeNode *n = newNode();
+	n->kind = Break;
+}
+
+TreeNode *makeFunc( ) {
+
+}
+
 
 
 
