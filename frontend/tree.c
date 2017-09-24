@@ -294,29 +294,53 @@ TreeNode *makeCompound(TreeNode *left, TreeNode *right) {
 	n->kind = compound;
 	n->val.compound.left = left;
 	n->val.compound.right = right;
+	return n;
 }
 
 TreeNode *makeReturnStatement(TreeNode *expression) {
 	TreeNode *n = newNode();
 	n->kind = Return;
 	n->val.returnStatement.expression = expression;
+	return n;
 }
 
 TreeNode *makeBreakStatement( ) {
 	TreeNode *n = newNode();
 	n->kind = Break;
+	return n; 
 }
 
-TreeNode *makeFunc( ) {
-
+TreeNode *makeFuncStatement(TreeNode *typeSpecifier, TreeNode *Id, TreeNode *parameterList, TreeNode *statement) {
+	TreeNode *n = newNode();
+	n->kind = Func;
+	n->val.Func.typeSpecifier = typeSpecifier;
+	n->val.Func.Id = Id;
+	n->val.Func.parameterList = parameterList;
+	n->val.Func.statement = statement;
+	n->type = typeSpecifier->type;
+	return n;
 }
 
+TreeNode *makeIntType() {
+	TreeNode *n = newNode();
+	n->type = IntType;
+	return n;
+}
 
+TreeNode *makeBoolType() {
+	TreeNode *n = newNode();
+	n->type = BoolType;
+	return n;
+} 
 
+TreeNode *makeCharType() {
+	TreeNode *n = newNode();
+	n->type = CharType;
+	return n;
+} 
 
-
-
-
-
-
-
+TreeNode *makeRecordType() {
+	TreeNode *n = newNode();
+	n->type = RecordType;
+	return n;
+}

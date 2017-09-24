@@ -37,6 +37,7 @@ typedef struct treeNode {
         struct { struct treeNode *left; } not;
         struct { struct treeNode *left, *right; } compound;
         struct { struct treeNode *expression; } returnStatement;
+        struct { struct treeNode *typeSpecifier, *parameterList, *statement; char* id;} Func;
     } val;
 
     //ExpType expType;      //used when ExpK for type checking
@@ -84,6 +85,11 @@ TreeNode *makeOrExpression(TreeNode *left, TreeNode *right);
 TreeNode *makeintConst(int i);
 TreeNode *makeboolConst(int b);
 TreeNode *makeCharConst(char c);
+
+TreeNode *makeRecordType(); 
+TreeNode *makeIntType();
+TreeNode *makeCharType();
+TreeNode *makeBoolType();
 
 TreeNode *makeBreakStatement( );
 TreeNode *makeReturnStatement(TreeNode *expression);
