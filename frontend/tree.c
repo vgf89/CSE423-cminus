@@ -2,77 +2,100 @@
 #include "scanType.h"
 #include <stdlib.h>
 
-void printTree(FILE *output, TreeNode parseTree) 
+
+void printTree(TreeNode *parseTree) 
 {
-	if(parseTree.children[0] == 0)
+	//If sentinal node has no children the program is empty, else it has one child which is the true root.
+	if(parseTree->children[0] == NULL) {
+		printf("Tree is empty.\n");
 		return;
-	else {
-		int i = 0;
+	}
+	else {	
 		int siblingNum = -1;
+		int childNum = -1;
 		int treeLevel = 0;
-		while(parseTree.children[i] != 0 && i < MAXCHILDREN) {
-			printTreeSibling(output, parseTree.children[i], siblingNum, treeLevel);
-			i++;
-			siblingNum++;
+		TreeNode *root = parseTree->children[0];
+
+		//Special case for printing of root so we don't write "Child" before it
+		printNode(root);
+		
+		while(root->children[childNum + 1] != NULL) {
+			childNum++;
+			printSubTree(root->children[childNum], siblingNum, childNum, treeLevel + 1);
+		}
+
+		childNum = -1;
+		if(root->sibling != NULL) {
+			printSubTree(root->sibling, siblingNum + 1, childNum, treeLevel);
 		}
 	}
 }
 
-void printTreeSibling(FILE *output, TreeNode *parseTree, int siblingNum, int treeLevel) 
+void printSubTree(TreeNode *curNode, int siblingNum, int childNum, int treeLevel) 
 {
-	int i;
-	for (i = 0; i < treeLevel; i++) {
+	for (int i = 0; i < treeLevel; i++) {
 		printf("!\t");
 	}
 
-	//Special case for initial print so we don't write Child before it
-	if(siblingNum == -1 && treeLevel == 0) {
-		printNode(output, parseTree);
+	if(childNum > -1 && siblingNum == -1) {
+		printf("Child: %d  ", childNum);
+		printNode(curNode);
+		siblingNum = -1;
 	}
-	else if(siblingNum) ;
-			
+	else {
+		printf("Sibling: %d  ", siblingNum);
+		printNode(curNode);
+		childNum = -1;
+	}
+	while(curNode->children[childNum + 1] != NULL) {
+		childNum++;
+		printSubTree(curNode->children[childNum], siblingNum, childNum, treeLevel + 1);
+	}
+	if(curNode->sibling != NULL) {
+		printSubTree(curNode->sibling, siblingNum + 1, childNum, treeLevel);
+	}
 }
 
 /*
  * 
  */
-void printNode(FILE *output, TreeNode *parseTree)
+void printNode(TreeNode *parseTree)
 {
 		if(parseTree->kind == Var)
-			printVar(output, parseTree, parseTree->val.id, parseTree->type, parseTree->linenum);
+			printVar(parseTree, parseTree->val.id, parseTree->type, parseTree->linenum);
 
 		else if (parseTree->kind == Func)
-			printFunc(output, parseTree->val.id, parseTree->type, parseTree->linenum);
+			printFunc(parseTree->val.id, parseTree->type, parseTree->linenum);
 
 		else if (parseTree->kind == Param)
-			printParam(output, parseTree->val.id, parseTree->type, parseTree->linenum);
+			printParam(parseTree->val.id, parseTree->type, parseTree->linenum);
 
 		else if (parseTree->kind == Compound)
-			printCompound(output, parseTree->linenum);
+			printCompound(parseTree->linenum);
 
 		else if (parseTree->kind == Const)
-			printConst(output, parseTree, parseTree->type, parseTree->linenum);
+			printConst(parseTree, parseTree->type, parseTree->linenum);
 
 		else if (parseTree->kind == Id)
-			printId(output, parseTree->val.id, parseTree->linenum);
+			printId(parseTree->val.id, parseTree->linenum);
 
 		else if (parseTree->kind == Op)
-			printOp(output, parseTree->val.op, parseTree->linenum);
+			printOp(parseTree->val.op, parseTree->linenum);
 
 		else if (parseTree->kind == Assign)
-			printAssign(output, parseTree->linenum);
+			printAssign(parseTree->linenum);
 
 		else if (parseTree->kind == If)
-			printIf(output, parseTree->linenum);
+			printIf(parseTree->linenum);
 
 		else if (parseTree->kind == Break)
-			printBreak(output, parseTree->linenum);
+			printBreak(parseTree->linenum);
 
 		else if (parseTree->kind == Call)
-			printCall(output, parseTree->val.id, parseTree->linenum);
+			printCall(parseTree->val.id, parseTree->linenum);
 
 		else if (parseTree->kind == Return)
-			printReturn(output, parseTree->linenum);
+			printReturn(parseTree->linenum);
 }
 
 void printType(int type)
@@ -97,7 +120,7 @@ void printType(int type)
 			return;
 	}
 }
-void printVar(FILE *output, TreeNode *parseTree, char *name, int type, int linenum)
+void printVar(TreeNode *parseTree, char *name, int type, int linenum)
 {
 	printf("Var %s ", name);
 	if (parseTree->isArray) {
@@ -107,23 +130,23 @@ void printVar(FILE *output, TreeNode *parseTree, char *name, int type, int linen
 	printType(type);
 	printf(" [line: %d]\n", linenum);
 }
-void printFunc(FILE *output, char *name, int type, int linenum)
+void printFunc(char *name, int type, int linenum)
 {
 	printf("Func %s returns type ", name);
 	printType(type);
 	printf(" [line: %d]\n", linenum);
 }
-void printParam(FILE *output, char *name, int type, int linenum)
+void printParam(char *name, int type, int linenum)
 {
 	printf("Param %s of type ", name);
 	printType(type);
 	printf(" [line: %d]\n", linenum);
 }
-void printCompound(FILE *output, int linenum)
+void printCompound(int linenum)
 {
 	printf("Compound [line: %d]\n", linenum);
 }
-void printConst(FILE *output, TreeNode *parseTree, int type, int linenum)
+void printConst(TreeNode *parseTree, int type, int linenum)
 {
 	printf("Const: ");
 	switch(type) {
@@ -141,31 +164,31 @@ void printConst(FILE *output, TreeNode *parseTree, int type, int linenum)
 	}
 	printf(" [line: %d]\n", linenum);
 }
-void printId(FILE *output, char *name, int linenum)
+void printId(char *name, int linenum)
 {
 	printf("Id: %s [line: %d]\n", name, linenum);
 }
-void printOp(FILE *output, char *op, int linenum)
+void printOp(char *op, int linenum)
 {
 	printf("Op: %s [line: %d]\n", op, linenum);
 }
-void printAssign(FILE *output, int linenum)
+void printAssign(int linenum)
 {
 	printf("Assign: = [line: %d]\n", linenum);
 }
-void printIf(FILE *output, int linenum)
+void printIf(int linenum)
 {
 	printf("If [line: %d]\n", linenum);
 }
-void printBreak(FILE *output, int linenum)
+void printBreak(int linenum)
 {
 	printf("Break [line: %d]\n", linenum);
 }
-void printCall(FILE *output, char *name, int linenum)
+void printCall(char *name, int linenum)
 {
 	printf("Call: %s [line: %d]\n", name, linenum);
 }
-void printReturn(FILE *output, int linenum)
+void printReturn(int linenum)
 {
 	printf("Return [line: %d]\n", linenum);
 }
