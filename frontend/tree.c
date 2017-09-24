@@ -37,7 +37,7 @@ void printSubTree(TreeNode *curNode, int siblingNum, int childNum, int treeLevel
 		printf("!\t");
 	}
 
-	if(childNum > -1 && siblingNum == -1) {
+	if(childNum > -1) {
 		printf("Child: %d  ", childNum);
 		printNode(curNode);
 		siblingNum = -1;
@@ -45,11 +45,16 @@ void printSubTree(TreeNode *curNode, int siblingNum, int childNum, int treeLevel
 	else {
 		printf("Sibling: %d  ", siblingNum);
 		printNode(curNode);
-		childNum = -1;
 	}
+
+	childNum = -1;
 	while(curNode->children[childNum + 1] != NULL) {
+		//we only want to increase tree depth for the first child of a new depth
+		if(childNum == 0) {
+			treeLevel++;
+		}
 		childNum++;
-		printSubTree(curNode->children[childNum], siblingNum, childNum, treeLevel + 1);
+		printSubTree(curNode->children[childNum], siblingNum, childNum, treeLevel);
 	}
 	if(curNode->sibling != NULL) {
 		printSubTree(curNode->sibling, siblingNum + 1, childNum, treeLevel);
