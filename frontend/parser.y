@@ -184,10 +184,30 @@ program:
         ID
         | ID BRACL BRACR;
     
+    statementList:
+        statementList statement
+        |
+        ;
+    
     statement:
+        matched
+        | unmatched
+        ;
+
+    matched:
+        IF PARL simpleExpression PARR matched ELSE matched
+        | otherStmt
+        ;
+
+    unmatched: 
+        IF PARL simpleExpression PARR matched 
+        | IF PARL simpleExpression PARR unmatched
+        | IF PARL simpleExpression PARR matched ELSE unmatched
+        ;
+
+    otherStmt:
         expressionStmt
         | compoundStmt
-        | selectionStmt
         | iterationStmt
         | returnStmt
         | breakStmt
@@ -202,19 +222,9 @@ program:
         |
         ;
     
-    statementList:
-        statementList statement
-        |
-        ;
-    
     expressionStmt:
         expression SEMI
         |
-        ;
-    
-    selectionStmt:
-        IF PARL simpleExpression PARR statement
-        | IF PARL simpleExpression PARR statement ELSE statement
         ;
     
     iterationStmt:
@@ -383,7 +393,7 @@ int main (int argc, char** argv)
         }
     } while (!feof(yyin));
 
-    printTree(stdout, root);
+    //printTree(stdout, root);
 
     printf("Number of warnings: %d\n", numwarn);
     printf("Number of errors: %d\n", numerror);
