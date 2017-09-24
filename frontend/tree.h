@@ -13,7 +13,7 @@ typedef struct treeNode {
 
     //extra properties about the node depending on type of the node
 
-    enum {Var, Func, Param, Compound, Const, Id, Op, Assign, If, Break, Call, Return} kind;
+    enum {Var, Func, Param, Compound, Const, Id, Op, Assign, If, Break, Call, Return, While} kind;
 
     enum {IntType, VoidType, CharType, BoolType, RecordType} type;
 
@@ -38,6 +38,7 @@ typedef struct treeNode {
         struct { struct treeNode *left, *right; } compound;
         struct { struct treeNode *expression; } returnStatement;
         struct { struct treeNode *typeSpecifier, *parameterList, *statement; char* id;} Func;
+        struct { struct treeNode *args; char* id; }
     } val;
 
     //ExpType expType;      //used when ExpK for type checking

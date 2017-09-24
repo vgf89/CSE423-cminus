@@ -211,10 +211,11 @@ TreeNode *newNode() {
 	return node;
 }
 
-TreeNode *makeID(char* ID) {
+TreeNode *makeID(char* ID, int isArray) {
 	TreeNode *n = newNode();
 	n->kind = Id;
 	n->val.id = ID;
+	n->isArray = isArray
 	return n;
 }
 
@@ -372,3 +373,15 @@ TreeNode *makeRecordType() {
 	n->type = RecordType;
 	return n;
 }
+
+TreeNode *makeCall(TreeNode *id, TreeNode *args) {
+	TreeNode *n = newNode();
+	n->type = Call;
+	n->val.id = id->val.id;
+	return n;
+}
+
+
+
+
+

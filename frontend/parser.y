@@ -181,8 +181,8 @@ program:
         ;
     
     paramId:
-        ID
-        | ID BRACL BRACR;
+        ID                      //{ $$ = makeId($1, 0) }
+        | ID BRACL BRACR;       //{ $$ = makeId($1, 1) }
     
     statementList:
         statementList statement
@@ -215,7 +215,7 @@ program:
         ;
     
     compoundStmt:
-        CURLL localDeclarations statementList CURLR;
+        CURLL localDeclarations statementList CURLR;   // { $$ = makeCompound($2, $4); }
     
     localDeclarations:
         localDeclarations scopedVarDeclaration
@@ -228,16 +228,16 @@ program:
         ;
     
     iterationStmt:
-        WHILE PARL simpleExpression PARR statement
+        WHILE PARL simpleExpression PARR statement 
         ;
 
     returnStmt:
-        RETURN SEMI
-        | RETURN expression SEMI
+        RETURN SEMI                 //{ $$ = makeReturnStatement( NULL ); }
+        | RETURN expression SEMI    //{ $$ = makeReturnStatement($2); }
         ;
     
     breakStmt:
-        BREAK SEMI
+        BREAK SEMI  { $$ = makeBreakStatement(); }
         ;
 
     expression:
