@@ -14,7 +14,7 @@ extern FILE *yyin;
 
 void yyerror(const char *s);
 
-extern TreeNode *root;
+static TreeNode *root;
 
 int numwarn = 0;
 int numerror = 0;
@@ -92,15 +92,15 @@ int numerror = 0;
 %token <keyWordToken> CURLR
 %token <keyWordToken> COMMA
 
+//Types for grammar
+%type<node> declarationList
+
+
+
 //Rules following
-//Parsing top-down
-//Not doing much here, just printing back what bison sees
-//make sure to make left-recursive as to do action before going to the next
-//so as not to overflow the stack with large programs
 %%
 program:
-
-    declarationList
+    declarationList    { root = $1; }
 
     declarationList:
         declarationList declaration
@@ -231,28 +231,28 @@ program:
         ;
 
     expression:
-        mutable EQUALS expression   { $$ = makeEquExpression($1, $3); }
-        | mutable ADDE expression   { $$ = makeAddEExpression($1, $3); }
-        | mutable SUBE expression   { $$ = makeSubEExpression($1, $3); }
-        | mutable MULE expression   { $$ = makeMulEExpression($1, $3); }
-        | mutable DIVE expression   { $$ = makeDivEExpression($1, $3); }
-        | mutable INC   { $$ = makeIncExpression($1); }
-        | mutable DEC   { $$ = makeDecExpression($1); }
+        mutable EQUALS expression//   { $$ = makeEquExpression($1, $3); }
+        | mutable ADDE expression//   { $$ = makeAddEExpression($1, $3); }
+        | mutable SUBE expression//   { $$ = makeSubEExpression($1, $3); }
+        | mutable MULE expression//   { $$ = makeMulEExpression($1, $3); }
+        | mutable DIVE expression//   { $$ = makeDivEExpression($1, $3); }
+        | mutable INC//   { $$ = makeIncExpression($1); }
+        | mutable DEC//   { $$ = makeDecExpression($1); }
         | simpleExpression
         ;
     
     simpleExpression:
-        simpleExpression OR andExpression   { $$ = makeOrExpression($1, 3); }
+        simpleExpression OR andExpression//   { $$ = makeOrExpression($1, 3); }
         | andExpression
         ;
     
     andExpression:
-        andExpression AND unaryRelExpression   { $$ = makeAndExpression($1, 3); }
+        andExpression AND unaryRelExpression//   { $$ = makeAndExpression($1, 3); }
         | unaryRelExpression
         ;
     
     unaryRelExpression:
-        NOT unaryRelExpression   { $$ = makeNotExpression($2); }
+        NOT unaryRelExpression//   { $$ = makeNotExpression($2); }
         | relExpression
         ;
     
@@ -335,9 +335,9 @@ program:
         ;
     
     constant:
-        NUMCONST        { $$ = makeIntConst($1.numericalValue); }
-        | CHARCONST     { $$ = makeCharConst($1.letterData); }
-        | BOOLCONST     { $$ = makeBoolConst($1.numericalValue); }
+        NUMCONST//        { $$ = makeIntConst($1.numericalValue); }
+        | CHARCONST//     { $$ = makeCharConst($1.letterData); }
+        | BOOLCONST//     { $$ = makeBoolConst($1.numericalValue); }
         ;
 %%
 
@@ -382,6 +382,9 @@ int main (int argc, char** argv)
         	exit(-1);
         }
     } while (!feof(yyin));
+
+    printTree(stdout, root);
+
     printf("Number of warnings: %d\n", numwarn);
     printf("Number of errors: %d\n", numerror);
 }
