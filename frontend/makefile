@@ -18,7 +18,7 @@ lex.yy.c: $(BIN).l $(BIN).tab.h
 	flex $(BIN).l
 
 tree.c: tree.h scanType.h
-	$(CC) $(CFLAGS) -c tree.h
+	$(CC) $(CFLAGS) -c tree.h -o tree.o
 
 all:
 	make
