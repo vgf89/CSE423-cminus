@@ -3,21 +3,25 @@
 
 void printTree(FILE *output, TreeNode parseTree) 
 {
+	//empty program
 	if(parseTree.children[0] == 0)
 		return;
-	else {
+
+	else {	
 		int i = 0;
 		int siblingNum = -1;
+		int childNum = 0;
 		int treeLevel = 0;
+		
 		while(parseTree.children[i] != 0 && i < MAXCHILDREN) {
-			printTreeSibling(output, parseTree.children[i], siblingNum, treeLevel);
+			printSubTree(output, parseTree.children[i], siblingNum, childNum, treeLevel);
 			i++;
 			siblingNum++;
 		}
 	}
 }
 
-void printTreeSibling(FILE *output, TreeNode parseTree, int siblingNum, int treeLevel) 
+void printSubTree(FILE *output, TreeNode parseTree, int siblingNum, int childNum, int treeLevel) 
 {
 	int i;
 	for (i = 0; i < treeLevel; i++) {
@@ -25,11 +29,12 @@ void printTreeSibling(FILE *output, TreeNode parseTree, int siblingNum, int tree
 	}
 
 	//Special case for initial print so we don't write Child before it
-	if(siblingNum == -1 && treeLevel == 0) {
+	if(siblingNum == -1 && treeLevel == 0)
 		printNode(output, parseTree);
+
+	else if (siblingNum == -1) {
+
 	}
-	else if(siblingNum)
-			
 }
 
 /*
