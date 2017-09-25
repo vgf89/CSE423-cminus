@@ -176,8 +176,8 @@ program:
         ;
     
     funDeclaration:
-        typeSpecifier ID PARL params PARR statement     { $$ = makeFuncStatement( ); }
-        | ID PARL params PARR statement {  }
+        typeSpecifier ID PARL params PARR statement     { $$ = makeFuncStatement( $1, $2, $4, $6 ); }
+        | ID PARL params PARR statement                 { $$ = makeFuncStatement( NULL, $1, $3, $5 ); }
         ;
     
     params:

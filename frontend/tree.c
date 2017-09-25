@@ -411,10 +411,15 @@ treeNode *makeBreakStatement( ) {
 
 treeNode *makeFuncStatement( treeNode* typeSpecifier, char* id, treeNode* params, treeNode* statment ) {
 	treeNode *n = newNode();
-	n->type = typeSpecifier->type;
+	if (typeSpecifier == NULL) {
+		n->type = VoidType;
+	} else {
+		n->type = typeSpecifier->type;
+	}
 	n->kind = Func;
 	n->val.id = id;
 	n->children[0] = params;
+	n->children[1] = statment;
 	return n;
 }
 
