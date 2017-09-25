@@ -278,6 +278,9 @@ treeNode *makeScopedVarDeclaration(treeNode *scopedTypedSpecifier, treeNode *var
 
 
 
+
+
+
 treeNode *makeID(char* id, int isArray) {
 	treeNode *n = newNode();
 	n->kind = Id;
@@ -406,14 +409,12 @@ treeNode *makeBreakStatement( ) {
 	return n; 
 }
 
-treeNode *makeFuncStatement(treeNode *typeSpecifier, treeNode *Id, treeNode *parameterList, treeNode *statement) {
+treeNode *makeFuncStatement( treeNode* typeSpecifier, char* id, treeNode* params, treeNode* statment ) {
 	treeNode *n = newNode();
-	n->kind = Func;
-	n->val.Func.typeSpecifier = typeSpecifier;
-	n->val.Func.id = Id;
-	n->val.Func.parameterList = parameterList;
-	n->val.Func.statement = statement;
 	n->type = typeSpecifier->type;
+	n->kind = Func;
+	n->val.id = id;
+	n->children[0] = params;
 	return n;
 }
 

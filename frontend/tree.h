@@ -75,6 +75,8 @@ treeNode *makeRecordDeclaration(char* id, treeNode* localDeclarations);
 treeNode *makeLocalDeclaration(treeNode* localDeclarations, treeNode* scopedVarDeclaration);
 treeNode *makeScopedVarDeclaration(treeNode *scopedTypedSpecifier, treeNode *varDeclList);
 
+treeNode *makeFuncStatement( treeNode* typeSpecifier, char* id, treeNode* params, treeNode* statment )
+
 treeNode *makeID(char* id, int isArray);
 treeNode *makeEquExpression(treeNode* left, treeNode* right);
 treeNode *makeAddEExpression(treeNode* left, treeNode* right);

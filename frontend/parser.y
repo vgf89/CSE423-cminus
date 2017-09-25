@@ -166,29 +166,17 @@ program:
 
     typeSpecifier:
         returnTypeSpecifier { $$ = $1; }
-        | RECTYPE           {
-            $$ = newNode();
-            $$->type = RecordType;
-            }
+        | RECTYPE       { $$ = makeRecordType(); }
         ;
     
     returnTypeSpecifier:
-        INT { 
-            $$ = newNode();
-            $$->type = IntType;
-         }
-        | BOOL { 
-            $$ = newNode();
-            $$->type = BoolType;
-         }
-        | CHAR { 
-            $$ = newNode();
-            $$->type = CharType;
-         }
+        INT             { $$ = makeIntType(); }
+        | BOOL          { $$ = makeBoolType(); }
+        | CHAR          { $$ = makeCharType(); }
         ;
     
     funDeclaration:
-        typeSpecifier ID PARL params PARR statement //{$$ = makeFuncStatement($1, $2, $4, $6); }
+        typeSpecifier ID PARL params PARR statement     { $$ = makeFuncStatement( ); }
         | ID PARL params PARR statement {  }
         ;
     
@@ -212,8 +200,8 @@ program:
         ;
     
     paramId:
-        ID                      //{ $$ = makeId($1, 0) }
-        | ID BRACL BRACR;       //{ $$ = makeId($1, 1) }
+        ID                      { $$ = makeId($1, 0) }
+        | ID BRACL BRACR;       { $$ = makeId($1, 1) }
     
     statementList:
         statementList statement
