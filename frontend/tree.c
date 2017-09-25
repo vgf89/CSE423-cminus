@@ -278,10 +278,10 @@ treeNode *makeScopedVarDeclaration(treeNode *scopedTypedSpecifier, treeNode *var
 
 
 
-treeNode *makeID(char* ID, int isArray) {
+treeNode *makeID(char* id, int isArray) {
 	treeNode *n = newNode();
 	n->kind = Id;
-	n->val.id = ID;
+	n->val.id = id;
 	n->isArray = isArray;
 	return n;
 }
