@@ -3,18 +3,18 @@
 #include <stdlib.h>
 
 
-void printTree(TreeNode *parseTree) 
+void printTree(treeNode *parseTree) 
 {
 	//If sentinal node has no children the program is empty, else it has one child which is the true root.
-	if(parseTree->children[0] == NULL) {
-		printf("Tree is empty.\n");
-		return;
-	}
-	else {	
+	//if(parseTree->children[0] == NULL) {
+	//	printf("Tree is empty.\n");
+	//	return;
+	//}
+	//else {	
 		int siblingNum = -1;
 		int childNum = -1;
 		int treeLevel = 0;
-		TreeNode *root = parseTree->children[0];
+		treeNode *root = parseTree;//->children[0];
 
 		//Special case for printing of root so we don't write "Child" before it
 		printNode(root);
@@ -28,10 +28,10 @@ void printTree(TreeNode *parseTree)
 		if(root->sibling != NULL) {
 			printSubTree(root->sibling, siblingNum + 1, childNum, treeLevel);
 		}
-	}
+	//}
 }
 
-void printSubTree(TreeNode *curNode, int siblingNum, int childNum, int treeLevel) 
+void printSubTree(treeNode *curNode, int siblingNum, int childNum, int treeLevel) 
 {
 	for (int i = 0; i < treeLevel; i++) {
 		printf("!\t");
@@ -64,10 +64,13 @@ void printSubTree(TreeNode *curNode, int siblingNum, int childNum, int treeLevel
 /*
  * 
  */
-void printNode(TreeNode *parseTree)
+void printNode(treeNode *parseTree)
 {
 		if(parseTree->kind == Var)
 			printVar(parseTree, parseTree->val.id, parseTree->type, parseTree->linenum);
+		
+		else if (parseTree->kind == Rec)
+			printRec(parseTree, parseTree->val.id, parseTree->linenum);
 
 		else if (parseTree->kind == Func)
 			printFunc(parseTree->val.id, parseTree->type, parseTree->linenum);
@@ -125,7 +128,7 @@ void printType(int type)
 			return;
 	}
 }
-void printVar(TreeNode *parseTree, char *name, int type, int linenum)
+void printVar(treeNode *parseTree, char *name, int type, int linenum)
 {
 	printf("Var %s ", name);
 	if (parseTree->isArray) {
@@ -133,6 +136,11 @@ void printVar(TreeNode *parseTree, char *name, int type, int linenum)
 	}
 	printf("of type ");
 	printType(type);
+	printf(" [line: %d]\n", linenum);
+}
+void printRec(treeNode *parseTree, char *name, int linenum)
+{
+	printf("Record %s ", name);
 	printf(" [line: %d]\n", linenum);
 }
 void printFunc(char *name, int type, int linenum)
@@ -151,7 +159,7 @@ void printCompound(int linenum)
 {
 	printf("Compound [line: %d]\n", linenum);
 }
-void printConst(TreeNode *parseTree, int type, int linenum)
+void printConst(treeNode *parseTree, int type, int linenum)
 {
 	printf("Const: ");
 	switch(type) {
@@ -206,94 +214,148 @@ void printReturn(int linenum)
         KWT keywordType;
 */
 
-TreeNode *newNode() {
-	TreeNode *node = (TreeNode*) calloc (1, sizeof(TreeNode));
+treeNode *newNode() {
+	treeNode *node = (treeNode*) calloc (1, sizeof(treeNode));
+	node->kind = Incomplete;
 	return node;
 }
 
-TreeNode *makeID(char* ID, int isArray) {
-	TreeNode *n = newNode();
-	n->kind = Id;
-	n->val.id = ID;
-	n->isArray = isArray
+
+
+
+treeNode *makeRecordDeclaration(char* id, treeNode* localDeclarations) {
+	//printf("In makeRecordDeclaration\n");
+	printf("id = %x\n", id);
+	treeNode *n = newNode();
+	n->kind = Rec;
+	n->val.id = id;
+	n->children[0] = localDeclarations;
 	return n;
 }
 
-TreeNode *makeEquExpression(TreeNode* left, TreeNode* right) {
-	TreeNode *n = newNode();
+
+
+
+treeNode *makeDeclaration(treeNode* declarationList, treeNode* declaration) {
+	treeNode* t = declarationList;
+	printf("1\n"); 
+	if (t != NULL)
+	{
+		while (t->sibling != NULL) {
+			t = t->sibling;
+		}
+		t->sibling = declaration;
+		return declarationList;
+	} else {
+		return declaration;
+	}
+}
+
+treeNode *makeLocalDeclaration(treeNode* localDeclarations, treeNode* scopedVarDeclaration) {
+
+	treeNode* t = localDeclarations;
+	if (t != NULL)
+	{
+		printf("test %d\n", t);
+		while (t->sibling != NULL) {
+			t = t->sibling;
+		}
+		t->sibling = scopedVarDeclaration;
+		return localDeclarations;
+	} else {
+		return scopedVarDeclaration;
+	}
+	
+}
+
+
+
+
+
+
+treeNode *makeID(char* ID, int isArray) {
+	treeNode *n = newNode();
+	n->kind = Id;
+	n->val.id = ID;
+	n->isArray = isArray;
+	return n;
+}
+
+treeNode *makeEquExpression(treeNode* left, treeNode* right) {
+	treeNode *n = newNode();
 	n->kind = Assign;
 	n->val.equE.left = left;
 	n->val.equE.right = right;
 	n->opType = Eq;
 	return n;
 }
-TreeNode *makeAddEExpression(TreeNode* left, TreeNode* right) {
-	TreeNode *n = newNode();
+treeNode *makeAddEExpression(treeNode* left, treeNode* right) {
+	treeNode *n = newNode();
 	n->val.addE.left = left;
 	n->val.addE.right = right;
 	n->opType = Add;
 	return n;
 }
-TreeNode *makeSubEExpression(TreeNode* left, TreeNode* right) {
-	TreeNode *n = newNode();
+treeNode *makeSubEExpression(treeNode* left, treeNode* right) {
+	treeNode *n = newNode();
 	n->val.subE.left = left;
 	n->val.subE.right = right;
 	n->opType = Sub;
 	return n;
 }
-TreeNode *makeMulEExpression(TreeNode* left, TreeNode* right) {
-	TreeNode *n = newNode();
+treeNode *makeMulEExpression(treeNode* left, treeNode* right) {
+	treeNode *n = newNode();
 	n->val.mulE.left = left;
 	n->val.mulE.right = right;
 	n->opType = Mul;
 	return n;
 }
-TreeNode *makeDivEExpression(TreeNode* left, TreeNode* right) {
-	TreeNode *n = newNode();
+treeNode *makeDivEExpression(treeNode* left, treeNode* right) {
+	treeNode *n = newNode();
 	n->val.divE.left = left;
 	n->val.divE.right = right;
 	n->opType = Div;
 	return n;
 }
-TreeNode *makeIncExpression(TreeNode* left) {
-	TreeNode *n = newNode();
+treeNode *makeIncExpression(treeNode* left) {
+	treeNode *n = newNode();
 	n->val.incE.left = left;
 	n->opType = Inc;
 	return n;
 }
-TreeNode *makeDecExpression(TreeNode* left) {
-	TreeNode *n = newNode();
+treeNode *makeDecExpression(treeNode* left) {
+	treeNode *n = newNode();
 	n->val.decE.left = left;
 	n->opType = Dec;
 	return n;
 }
 
-TreeNode *makeBoolConst(int b) {
-	TreeNode *n = newNode();
+treeNode *makeBoolConst(int b) {
+	treeNode *n = newNode();
 	n->type = BoolType;
 	n->kind = Const;
 	n->val.boolconst = b;
 	return n;
 }
 
-TreeNode *makeIntConst(int i) {
-	TreeNode *n = newNode();
+treeNode *makeIntConst(int i) {
+	treeNode *n = newNode();
 	n->type = IntType;
 	n->kind = Const;
 	n->val.intconst = i;
 	return n;
 }
 
-TreeNode *makeCharConst(char c) {
-	TreeNode *n = newNode();
+treeNode *makeCharConst(char c) {
+	treeNode *n = newNode();
 	n->type = CharType;
 	n->kind = Const;
 	n->val.charconst = c;
 	return n;
 }
 
-TreeNode *makeOrExpression(TreeNode *left, TreeNode *right) {
-	TreeNode *n = newNode();
+treeNode *makeOrExpression(treeNode *left, treeNode *right) {
+	treeNode *n = newNode();
 	n->kind = Op;
 	n->opType = Or;
 	n->val.or.left = left;
@@ -301,8 +363,8 @@ TreeNode *makeOrExpression(TreeNode *left, TreeNode *right) {
 	return n;
 }
 
-TreeNode *makeAndExpression(TreeNode *left, TreeNode *right) {
-	TreeNode *n = newNode();
+treeNode *makeAndExpression(treeNode *left, treeNode *right) {
+	treeNode *n = newNode();
 	n->kind = Op;
 	n->opType = And;
 	n->val.and.left = left;
@@ -310,72 +372,72 @@ TreeNode *makeAndExpression(TreeNode *left, TreeNode *right) {
 	return n;
 }
 
-TreeNode *makeNotExpression(TreeNode *left) {
-	TreeNode *n = newNode();
+treeNode *makeNotExpression(treeNode *left) {
+	treeNode *n = newNode();
 	n->kind = Op;
 	n->opType = Not;
 	n->val.not.left = left;
 	return n;
 }
 
-TreeNode *makeCompound(TreeNode *left, TreeNode *right) {
-	TreeNode *n = newNode();
-	n->kind = compound;
+treeNode *makeCompound(treeNode *left, treeNode *right) {
+	treeNode *n = newNode();
+	n->kind = Compound;
 	n->val.compound.left = left;
 	n->val.compound.right = right;
 	return n;
 }
 
-TreeNode *makeReturnStatement(TreeNode *expression) {
-	TreeNode *n = newNode();
+treeNode *makeReturnStatement(treeNode *expression) {
+	treeNode *n = newNode();
 	n->kind = Return;
 	n->val.returnStatement.expression = expression;
 	return n;
 }
 
-TreeNode *makeBreakStatement( ) {
-	TreeNode *n = newNode();
+treeNode *makeBreakStatement( ) {
+	treeNode *n = newNode();
 	n->kind = Break;
 	return n; 
 }
 
-TreeNode *makeFuncStatement(TreeNode *typeSpecifier, TreeNode *Id, TreeNode *parameterList, TreeNode *statement) {
-	TreeNode *n = newNode();
+treeNode *makeFuncStatement(treeNode *typeSpecifier, treeNode *Id, treeNode *parameterList, treeNode *statement) {
+	treeNode *n = newNode();
 	n->kind = Func;
 	n->val.Func.typeSpecifier = typeSpecifier;
-	n->val.Func.Id = Id;
+	n->val.Func.id = Id;
 	n->val.Func.parameterList = parameterList;
 	n->val.Func.statement = statement;
 	n->type = typeSpecifier->type;
 	return n;
 }
 
-TreeNode *makeIntType() {
-	TreeNode *n = newNode();
+treeNode *makeIntType() {
+	treeNode *n = newNode();
 	n->type = IntType;
 	return n;
 }
 
-TreeNode *makeBoolType() {
-	TreeNode *n = newNode();
+treeNode *makeBoolType() {
+	treeNode *n = newNode();
 	n->type = BoolType;
 	return n;
 } 
 
-TreeNode *makeCharType() {
-	TreeNode *n = newNode();
+treeNode *makeCharType() {
+	treeNode *n = newNode();
 	n->type = CharType;
 	return n;
 } 
 
-TreeNode *makeRecordType() {
-	TreeNode *n = newNode();
+treeNode *makeRecordType() {
+	treeNode *n = newNode();
 	n->type = RecordType;
 	return n;
 }
 
-TreeNode *makeCall(TreeNode *id, TreeNode *args) {
-	TreeNode *n = newNode();
+treeNode *makeCall(treeNode *id, treeNode *args) {
+	treeNode *n = newNode();
 	n->type = Call;
 	n->val.id = id->val.id;
 	return n;

@@ -14,7 +14,7 @@ extern FILE *yyin;
 
 void yyerror(const char *s);
 
-static TreeNode *root;
+static treeNode *root;
 
 int numwarn = 0;
 int numerror = 0;
@@ -29,12 +29,12 @@ int numerror = 0;
     RECT recordToken;
     IDT idToken;
     KWT keyWordToken;
-}
 
+}
 %union {
 	int num;
 	char* string;
-	struct TreeNode *node;
+	struct treeNode * node;
 }
 
 
@@ -93,36 +93,42 @@ int numerror = 0;
 %token <keyWordToken> COMMA
 
 //Types for grammar
-%type<node> declarationList
+%type<node> declarationList declaration localDeclarations varDeclaration funDeclaration recDeclaration scopedVarDeclaration
 
 
 
 //Rules following
 %%
 program:
-    declarationList    { root = $1; }
+    declarationList    { root = $1; 
+        printf("at root %x\n", root);}
 
     declarationList:
-        declarationList declaration
-        | declaration
+        declarationList declaration { $$ = makeDeclaration($1, $2); }
+        | declaration { $$ = $1; }
         ;
 
     declaration:
-        varDeclaration
-        | funDeclaration
-        | recDeclaration
+        varDeclaration {printf("2\n");}//  $$ = newNode(); }
+        | funDeclaration {printf("3\n");}//  $$ = newNode(); }
+        | recDeclaration {printf("4\n"); $$ = $1;}
         ;
     
     recDeclaration:
         RECORD ID CURLL localDeclarations CURLR
+            { printf("5\n"); $$ = makeRecordDeclaration($2.IDvalue, $4); }
         ;
     
     varDeclaration:
-        typeSpecifier varDeclList SEMI
+        typeSpecifier varDeclList SEMI { }
         ;
     
     scopedVarDeclaration:
-        scopedTypeSpecifier varDeclList SEMI
+        scopedTypeSpecifier varDeclList SEMI {
+            printf("6\t"); 
+            $$ = newNode(); //TODO: handle list of variables, similar to makeDeclaration (see declarationList rule)
+            printf("%x\n", $$);
+        }
         ;
     
     varDeclList:
@@ -157,8 +163,8 @@ program:
         ;
     
     funDeclaration:
-        typeSpecifier ID PARL params PARR statement
-        | ID PARL params PARR statement
+        typeSpecifier ID PARL params PARR statement //{$$ = makeFuncStatement($1, $2, $4, $6); }
+        | ID PARL params PARR statement {  }
         ;
     
     params:
@@ -218,8 +224,11 @@ program:
         CURLL localDeclarations statementList CURLR;   // { $$ = makeCompound($2, $4); }
     
     localDeclarations:
-        localDeclarations scopedVarDeclaration
-        |
+        localDeclarations scopedVarDeclaration {
+                printf("here!   \t%x\t%x\n", $1, $2);
+                $$ = makeLocalDeclaration($1, $2);
+            }
+        |   { $$ = NULL; }
         ;
     
     expressionStmt:
@@ -237,7 +246,7 @@ program:
         ;
     
     breakStmt:
-        BREAK SEMI  { $$ = makeBreakStatement(); }
+        BREAK SEMI//  { $$ = makeBreakStatement(); }
         ;
 
     expression:
@@ -393,7 +402,7 @@ int main (int argc, char** argv)
         }
     } while (!feof(yyin));
 
-    //printTree(stdout, root);
+    printTree(root);
 
     printf("Number of warnings: %d\n", numwarn);
     printf("Number of errors: %d\n", numerror);

@@ -130,7 +130,7 @@ letdig [{digit}|{letter}]
 					yylval.keyWordToken.lineNumber = newline;
 					yylval.keyWordToken.tokenType = "RECORD";
 					yylval.keyWordToken.KWTvalue = strdup(yytext);
-					recvar = 1; 
+					//recvar = 1; 
 					return RECORD;
 				}
 "break"				{
@@ -344,7 +344,7 @@ letdig [{digit}|{letter}]
 						//printf("%s\n", rectable[i]);
 						if (strcmp(yytext, rectable[i]) == 0) {
 							//printf("found \"%s\" in record types!\n", yytext);
-							return RECTYPE; 
+							return RECTYPE;
 						} 
 					}
 					yylval.idToken.lineNumber = newline;

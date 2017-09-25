@@ -13,7 +13,7 @@ typedef struct treeNode {
 
     //extra properties about the node depending on type of the node
 
-    enum {Var, Func, Param, Compound, Const, Id, Op, Assign, If, Break, Call, Return, While} kind;
+    enum {Var, Func, Rec, Param, Compound, Const, Id, Op, Assign, If, Break, Call, Return, While, Incomplete} kind;
 
     enum {IntType, VoidType, CharType, BoolType, RecordType} type;
 
@@ -38,7 +38,7 @@ typedef struct treeNode {
         struct { struct treeNode *left, *right; } compound;
         struct { struct treeNode *expression; } returnStatement;
         struct { struct treeNode *typeSpecifier, *parameterList, *statement; char* id;} Func;
-        struct { struct treeNode *args; char* id; }
+        //struct { struct treeNode *args; char* id; } // What is this supposed to be?
     } val;
 
     //ExpType expType;      //used when ExpK for type checking
@@ -48,17 +48,18 @@ typedef struct treeNode {
     int isArray;         //is this an array
     int isRecord;        //is staticly allocated
     int isStatic;        //is staticly allocated 
-} TreeNode;
+} treeNode;
 
 char* getType(int type);
-void printTree(TreeNode *parseTree);
-void printSubTree(TreeNode *parseTree, int siblingNum, int childNum, int treeLevel);
-void printNode(TreeNode *parseTree);
-void printVar(TreeNode *parseTree, char *name, int type, int linenum);
+void printTree(treeNode *parseTree);
+void printSubTree(treeNode *parseTree, int siblingNum, int childNum, int treeLevel);
+void printNode(treeNode *parseTree);
+void printRec(treeNode *parseTree, char *name, int linenum);
+void printVar(treeNode *parseTree, char *name, int type, int linenum);
 void printFunc(char *name, int type, int linenum);
 void printParam(char *name, int type, int linenum);
 void printCompound(int linenum);
-void printConst(TreeNode *parseTree, int type, int linenum);
+void printConst(treeNode *parseTree, int type, int linenum);
 void printId(char *name, int linenum);
 void printOp(char *op, int linenum);
 void printAssign(int linenum);
@@ -68,33 +69,36 @@ void printCall(char *name, int linenum);
 void printReturn(int linenum);
 
 
-TreeNode *newNode();
+treeNode *newNode();
 
-TreeNode *makeID(char* ID);
-TreeNode *makeEquExpression(TreeNode* left, TreeNode* right);
-TreeNode *makeAddEExpression(TreeNode* left, TreeNode* right);
-TreeNode *makeSubEExpression(TreeNode* left, TreeNode* right);
-TreeNode *makeMulEExpression(TreeNode* left, TreeNode* right);
-TreeNode *makeDivEExpression(TreeNode* left, TreeNode* right);
-TreeNode *makeIncExpression(TreeNode* left);
-TreeNode *makeDecExpression(TreeNode* left);
+treeNode *makeRecordDeclaration(char* id, treeNode* localDeclarations);
+treeNode *makeLocalDeclaration(treeNode* localDeclarations, treeNode* scopedVarDeclaration);
 
-TreeNode *makeNotExpression(TreeNode *left);
-TreeNode *makeAndExpression(TreeNode *left, TreeNode *right);
-TreeNode *makeOrExpression(TreeNode *left, TreeNode *right);
+treeNode *makeID(char* ID, int isArray);
+treeNode *makeEquExpression(treeNode* left, treeNode* right);
+treeNode *makeAddEExpression(treeNode* left, treeNode* right);
+treeNode *makeSubEExpression(treeNode* left, treeNode* right);
+treeNode *makeMulEExpression(treeNode* left, treeNode* right);
+treeNode *makeDivEExpression(treeNode* left, treeNode* right);
+treeNode *makeIncExpression(treeNode* left);
+treeNode *makeDecExpression(treeNode* left);
 
-TreeNode *makeintConst(int i);
-TreeNode *makeboolConst(int b);
-TreeNode *makeCharConst(char c);
+treeNode *makeNotExpression(treeNode *left);
+treeNode *makeAndExpression(treeNode *left, treeNode *right);
+treeNode *makeOrExpression(treeNode *left, treeNode *right);
 
-TreeNode *makeRecordType(); 
-TreeNode *makeIntType();
-TreeNode *makeCharType();
-TreeNode *makeBoolType();
+treeNode *makeintConst(int i);
+treeNode *makeboolConst(int b);
+treeNode *makeCharConst(char c);
 
-TreeNode *makeBreakStatement( );
-TreeNode *makeReturnStatement(TreeNode *expression);
-TreeNode *makeCompound(TreeNode *left, TreeNode *right);
+treeNode *makeRecordType(); 
+treeNode *makeIntType();
+treeNode *makeCharType();
+treeNode *makeBoolType();
+
+treeNode *makeBreakStatement( );
+treeNode *makeReturnStatement(treeNode *expression);
+treeNode *makeCompound(treeNode *left, treeNode *right);
 
 
 
