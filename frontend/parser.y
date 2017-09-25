@@ -102,8 +102,11 @@ int numerror = 0;
 %type<node> scopedVarDeclaration
 %type<node> scopedTypeSpecifier
 %type<node> varDeclList
+%type<node> varDeclInitialize
 %type<node> typeSpecifier
 %type<node> returnTypeSpecifier
+%type<node> simpleExpression
+%type<node> varDeclId
 
 
 //Rules following
@@ -143,24 +146,25 @@ program:
         ;
     
     varDeclList:
-        varDeclList COMMA varDeclInitialize { $$ = NULL; }
-        | varDeclInitialize { $$ = NULL; }
+        varDeclList COMMA varDeclInitialize { $$ = addVarDeclarationInitialize($1, $3); }
+        | varDeclInitialize { $$ = $1; }
         ;
 
     varDeclInitialize:
-        varDeclId
-        | varDeclId COLON simpleExpression
+        varDeclId   { $$ = $1; }
+        | varDeclId COLON simpleExpression   { $$ = addSimpleExpressionToVarDeclarationID($1, $3); }
         ;
     
     varDeclId:
-        ID
-        | ID BRACL NUMCONST BRACR
+        ID  { $$ = makeVarDeclarationId($1.IDvalue, 0, 0); }
+        | ID BRACL NUMCONST BRACR  { $$ = makeVarDeclarationId($1.IDvalue, 1, $3); }
         ;
     
     scopedTypeSpecifier:
         STATIC typeSpecifier { 
             $2->isStatic = 1;
-            $$ = $2; }
+            $$ = $2;
+        }
         | typeSpecifier { $$ = $1; }
         ;
 
@@ -274,8 +278,8 @@ program:
         ;
     
     simpleExpression:
-        simpleExpression OR andExpression//   { $$ = makeOrExpression($1, 3); }
-        | andExpression
+        simpleExpression OR andExpression { $$ = NULL; }//   { $$ = makeOrExpression($1, 3); }
+        | andExpression { $$ = NULL; }
         ;
     
     andExpression:

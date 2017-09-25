@@ -46,6 +46,7 @@ typedef struct treeNode {
     int linenum;
 
     int isArray;         //is this an array
+    int arrayLength;
     int isRecord;        //is staticly allocated
     int isStatic;        //is staticly allocated 
 } treeNode;
@@ -74,6 +75,7 @@ treeNode *newNode();
 treeNode *makeRecordDeclaration(char* id, treeNode* localDeclarations);
 treeNode *makeLocalDeclaration(treeNode* localDeclarations, treeNode* scopedVarDeclaration);
 treeNode *makeScopedVarDeclaration(treeNode *scopedTypedSpecifier, treeNode *varDeclList);
+treeNode *makeVarDeclaration(char* id);
 
 treeNode *makeFuncStatement( treeNode* typeSpecifier, char* id, treeNode* params, treeNode* statment )
 
