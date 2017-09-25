@@ -6,11 +6,11 @@
 void printTree(treeNode *parseTree) 
 {
 	//If sentinal node has no children the program is empty, else it has one child which is the true root.
-	//if(parseTree->children[0] == NULL) {
-	//	printf("Tree is empty.\n");
-	//	return;
-	//}
-	//else {	
+	if(parseTree == NULL) {
+		printf("Tree is empty.\n");
+		return;
+	}
+	else {	
 		int siblingNum = -1;
 		int childNum = -1;
 		int treeLevel = 0;
@@ -28,7 +28,7 @@ void printTree(treeNode *parseTree)
 		if(root->sibling != NULL) {
 			printSubTree(root->sibling, siblingNum + 1, childNum, treeLevel);
 		}
-	//}
+	}
 }
 
 void printSubTree(treeNode *curNode, int siblingNum, int childNum, int treeLevel) 

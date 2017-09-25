@@ -73,8 +73,7 @@ treeNode *newNode();
 
 treeNode *makeRecordDeclaration(char* id, treeNode* localDeclarations);
 treeNode *makeLocalDeclaration(treeNode* localDeclarations, treeNode* scopedVarDeclaration);
-
-treeNode *makeID(char* ID, int isArray);
+treeNode *makeID(char* id, int isArray);
 treeNode *makeEquExpression(treeNode* left, treeNode* right);
 treeNode *makeAddEExpression(treeNode* left, treeNode* right);
 treeNode *makeSubEExpression(treeNode* left, treeNode* right);
