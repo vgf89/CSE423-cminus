@@ -50,7 +50,7 @@ typedef struct treeNode {
     int isStatic;        //is staticly allocated 
 } treeNode;
 
-char* getType(int type);
+void printType(int type);
 void printTree(treeNode *parseTree);
 void printSubTree(treeNode *parseTree, int siblingNum, int childNum, int treeLevel);
 void printNode(treeNode *parseTree);
