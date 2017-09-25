@@ -205,7 +205,8 @@ program:
     
     paramId:
         ID                      { $$ = makeId($1, 0) }
-        | ID BRACL BRACR;       { $$ = makeId($1, 1) }
+        | ID BRACL BRACR       { $$ = makeId($1, 1) }
+        ;
     
     statementList:
         statementList statement
