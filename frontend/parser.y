@@ -107,6 +107,13 @@ int numerror = 0;
 %type<node> returnTypeSpecifier
 %type<node> simpleExpression
 %type<node> varDeclId
+%type<node> paramList
+%type<node> paramTypeList
+%type<node> paramIdList
+%type<node> paramId
+%type<node> params
+%type<node> statement
+%type<node> statementList
 
 
 //Rules following
@@ -114,7 +121,7 @@ int numerror = 0;
 program:
     declarationList {
         root = $1; 
-        printf("at root %x\n", root);
+        //printf("at root %x\n", root);
     }
 
     declarationList:
@@ -123,14 +130,14 @@ program:
         ;
 
     declaration:
-        varDeclaration {printf("2\n");}//  $$ = newNode(); }
-        | funDeclaration {printf("3\n");}//  $$ = newNode(); }
-        | recDeclaration {printf("4\n"); $$ = $1;}
+        varDeclaration { $$ = NULL; }
+        | funDeclaration { $$ = $1; }
+        | recDeclaration { $$ = $1; }
         ;
     
     recDeclaration:
         RECORD ID CURLL localDeclarations CURLR
-            { printf("5\n"); $$ = makeRecordDeclaration($2.IDvalue, $4); }
+            { $$ = makeRecordDeclaration($2.IDvalue, $4); }
         ;
     
     varDeclaration:
@@ -157,7 +164,7 @@ program:
     
     varDeclId:
         ID  { $$ = makeVarDeclarationId($1.IDvalue, 0, 0); }
-        | ID BRACL NUMCONST BRACR  { $$ = makeVarDeclarationId($1.IDvalue, 1, $3); }
+        | ID BRACL NUMCONST BRACR  { $$ = makeVarDeclarationId($1.IDvalue, 1, $3.numericalValue); }
         ;
     
     scopedTypeSpecifier:
@@ -180,17 +187,17 @@ program:
         ;
     
     funDeclaration:
-        typeSpecifier ID PARL params PARR statement     { $$ = makeFuncStatement( $1, $2, $4, $6 ); }
-        | ID PARL params PARR statement                 { $$ = makeFuncStatement( NULL, $1, $3, $5 ); }
+        typeSpecifier ID PARL params PARR statement { $$ = makeFuncStatement( $1, $2.IDvalue, $4, $6 ); }
+        | ID PARL params PARR statement             { $$ = makeFuncStatement( NULL, $1.IDvalue, $3, $5 ); }
         ;
     
     params:
         paramList   { $$ = $1; }   
-        | 
-        ;           { $$ = NULL; }
+        |           { $$ = NULL; }
+        ;
     
     paramList:
-        paramList SEMI paramTypeList { $$ = makeParamList($1, $2); }
+        paramList SEMI paramTypeList { $$ = makeParamList($1, $3); }
         | paramTypeList {$$ = makeParamList(NULL, $1); }
         ;
     
@@ -199,22 +206,23 @@ program:
         ;
 
     paramIdList:
-        paramIdList COMMA paramId   { $$ = makeParamIdList($1, $2); }
+        paramIdList COMMA paramId   { $$ = makeParamIdList($1, $3); }
         | paramId                   { $$ = makeParamIdList(NULL, $1); }
         ;
     
     paramId:
-        ID                      { $$ = makeId($1, 0); }
-        | ID BRACL BRACR;       { $$ = makeId($1, 1); }
+        ID                      { $$ = makeParam($1.IDvalue, 0); }
+        | ID BRACL BRACR        { $$ = makeParam($1.IDvalue, 1); }
+        ;
     
     statementList:
-        statementList statement
+        statementList statement { $$ = NULL; }
         |
         ;
     
     statement:
-        matched
-        | unmatched
+        matched { $$ = NULL; }
+        | unmatched { $$ = NULL; }
         ;
 
     matched:
@@ -241,10 +249,7 @@ program:
         CURLL localDeclarations statementList CURLR;   // { $$ = makeCompound($2, $4); }
     
     localDeclarations:
-        localDeclarations scopedVarDeclaration {
-                printf("here!   \t%x\t%x\n", $1, $2);
-                $$ = makeLocalDeclaration($1, $2);
-            }
+        localDeclarations scopedVarDeclaration { $$ = makeLocalDeclaration($1, $2); }
         |   { $$ = NULL; }
         ;
     

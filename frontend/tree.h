@@ -58,7 +58,7 @@ void printNode(treeNode *parseTree);
 void printRec(treeNode *parseTree, char *name, int linenum);
 void printVar(treeNode *parseTree, char *name, int type, int linenum);
 void printFunc(char *name, int type, int linenum);
-void printParam(char *name, int type, int linenum);
+void printParam(treeNode *parseTree, char *name, int type, int linenum);
 void printCompound(int linenum);
 void printConst(treeNode *parseTree, int type, int linenum);
 void printId(char *name, int linenum);
@@ -75,12 +75,19 @@ treeNode *newNode();
 treeNode *makeRecordDeclaration(char* id, treeNode* localDeclarations);
 treeNode *makeLocalDeclaration(treeNode* localDeclarations, treeNode* scopedVarDeclaration);
 treeNode *makeScopedVarDeclaration(treeNode *scopedTypedSpecifier, treeNode *varDeclList);
+treeNode *addVarDeclarationInitialize(treeNode *varDeclList, treeNode *varDeclInitialize);
 
+treeNode *makeDeclaration(treeNode* declarationList, treeNode* declaration);
 treeNode *makeVarDeclaration(char* id);
+treeNode *makeVarDeclarationId(char* id, int isArray, int arraylength);
+treeNode *addSimpleExpressionToVarDeclarationID(treeNode *varDeclId, treeNode *simpleExpression);
 
-treeNode *makeFuncStatement( treeNode* typeSpecifier, char* id, treeNode* params, treeNode* statment )
+treeNode *makeFuncStatement(treeNode* typeSpecifier, char* id, treeNode* params, treeNode* statement );
+treeNode *makeParamList(treeNode* paramList, treeNode* paramTypeList);
+treeNode *makeParamTypeList(treeNode* typeSpecifier, treeNode* paramIdList);
+treeNode *makeParamIdList(treeNode* paramIdList, treeNode* paramId);
 
-treeNode *makeID(char* id, int isArray);
+treeNode *makeId(char* id, int isArray);
 treeNode *makeEquExpression(treeNode* left, treeNode* right);
 treeNode *makeAddEExpression(treeNode* left, treeNode* right);
 treeNode *makeSubEExpression(treeNode* left, treeNode* right);

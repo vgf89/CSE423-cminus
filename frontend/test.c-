@@ -1,12 +1,15 @@
-
 record Point {
-    int x, y, z, aaaaaay;
-    int a, b, c;
-    char testchar, abc;
-    bool testbool, yayornay;
+    char asdf;
+    char testme1, testme2;
+    int hello, hello2;
+    int hello3;
+    bool hi, hi2;
+    bool hi3;
 }
 
-record Point2 {
-    int x, y, z, yes;
-    int a, b, c;
+wallace(int w, x; int y[], z; int aaay; bool explitive) {
+}
+
+int function2(char test) {
+
 }

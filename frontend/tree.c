@@ -34,7 +34,7 @@ void printTree(treeNode *parseTree)
 void printSubTree(treeNode *curNode, int siblingNum, int childNum, int treeLevel) 
 {
 	for (int i = 0; i < treeLevel; i++) {
-		printf("!\t");
+		printf("!   ");
 	}
 
 	if(childNum > -1) {
@@ -54,7 +54,7 @@ void printSubTree(treeNode *curNode, int siblingNum, int childNum, int treeLevel
 			treeLevel++;
 		}
 		childNum++;
-		printSubTree(curNode->children[childNum], siblingNum, childNum, treeLevel);
+		printSubTree(curNode->children[childNum], siblingNum, childNum, treeLevel + 1);
 	}
 	if(curNode->sibling != NULL) {
 		printSubTree(curNode->sibling, siblingNum + 1, childNum, treeLevel);
@@ -76,7 +76,7 @@ void printNode(treeNode *parseTree)
 			printFunc(parseTree->val.id, parseTree->type, parseTree->linenum);
 
 		else if (parseTree->kind == Param)
-			printParam(parseTree->val.id, parseTree->type, parseTree->linenum);
+			printParam(parseTree, parseTree->val.id, parseTree->type, parseTree->linenum);
 
 		else if (parseTree->kind == Compound)
 			printCompound(parseTree->linenum);
@@ -149,9 +149,11 @@ void printFunc(char *name, int type, int linenum)
 	printType(type);
 	printf(" [line: %d]\n", linenum);
 }
-void printParam(char *name, int type, int linenum)
+void printParam(treeNode *parseTree, char *name, int type, int linenum)
 {
-	printf("Param %s of type ", name);
+	printf("Param %s ", name);
+	if (parseTree->isArray) printf("is array ");
+	printf("of type ");
 	printType(type);
 	printf(" [line: %d]\n", linenum);
 }
@@ -225,7 +227,6 @@ treeNode *newNode() {
 
 treeNode *makeRecordDeclaration(char* id, treeNode* localDeclarations) {
 	//printf("In makeRecordDeclaration\n");
-	printf("id = %x\n", id);
 	treeNode *n = newNode();
 	n->kind = Rec;
 	n->val.id = id;
@@ -235,7 +236,6 @@ treeNode *makeRecordDeclaration(char* id, treeNode* localDeclarations) {
 
 treeNode *makeDeclaration(treeNode* declarationList, treeNode* declaration) {
 	treeNode* t = declarationList;
-	printf("1\n"); 
 	if (t != NULL)
 	{
 		while (t->sibling != NULL) {
@@ -252,7 +252,6 @@ treeNode *makeLocalDeclaration(treeNode* localDeclarations, treeNode* scopedVarD
 	treeNode* t = localDeclarations;
 	if (t != NULL)
 	{
-		printf("test %d\n", t);
 		while (t->sibling != NULL) {
 			t = t->sibling;
 		}
@@ -319,7 +318,7 @@ treeNode *addSimpleExpressionToVarDeclarationID(treeNode *varDeclId, treeNode *s
 
 
 
-treeNode *makeID(char* id, int isArray) {
+treeNode *makeId(char* id, int isArray) {
 	treeNode *n = newNode();
 	n->kind = Id;
 	n->val.id = id;
@@ -447,7 +446,7 @@ treeNode *makeBreakStatement( ) {
 	return n; 
 }
 
-treeNode *makeFuncStatement( treeNode* typeSpecifier, char* id, treeNode* params, treeNode* statment ) {
+treeNode *makeFuncStatement( treeNode* typeSpecifier, char* id, treeNode* params, treeNode* statement ) {
 	treeNode *n = newNode();
 	if (typeSpecifier == NULL) {
 		n->type = VoidType;
@@ -457,7 +456,7 @@ treeNode *makeFuncStatement( treeNode* typeSpecifier, char* id, treeNode* params
 	n->kind = Func;
 	n->val.id = id;
 	n->children[0] = params;
-	n->children[1] = statment;
+	n->children[1] = statement;
 	return n;
 }
 
@@ -468,7 +467,7 @@ treeNode* makeParamList(treeNode* paramList, treeNode* paramTypeList) {
 		while (t->sibling != NULL) {
 			t = t->sibling;
 		}
-		t->sibling = declaration;
+		t->sibling = paramTypeList;
 		return paramList;
 	} else {
 		return paramTypeList;
@@ -479,13 +478,13 @@ treeNode* makeParamTypeList(treeNode* typeSpecifier, treeNode* paramIdList) {
 	treeNode *t = paramIdList; 
 	while (t != NULL)
 	{
-		t->type = typedSpecifier->type;
+		t->type = typeSpecifier->type;
 		t = t->sibling;
 	}
 	return paramIdList;
 }
 
-treeNode makeParamIdList(treeNode* paramIdList, treeNode* paramId) {
+treeNode *makeParamIdList(treeNode* paramIdList, treeNode* paramId) {
 	treeNode* t = paramIdList;
 	if (t != NULL)
 	{
@@ -497,6 +496,14 @@ treeNode makeParamIdList(treeNode* paramIdList, treeNode* paramId) {
 	} else {
 		return paramId;
 	}
+}
+
+treeNode *makeParam(char* id, int isArray) {
+	treeNode *n = newNode();
+	n->kind = Param;
+	n->val.id = id;
+	n->isArray = isArray;
+	return n;
 }
 
 treeNode *makeIntType() {
