@@ -233,9 +233,6 @@ treeNode *makeRecordDeclaration(char* id, treeNode* localDeclarations) {
 	return n;
 }
 
-
-
-
 treeNode *makeDeclaration(treeNode* declarationList, treeNode* declaration) {
 	treeNode* t = declarationList;
 	printf("1\n"); 
@@ -252,7 +249,6 @@ treeNode *makeDeclaration(treeNode* declarationList, treeNode* declaration) {
 }
 
 treeNode *makeLocalDeclaration(treeNode* localDeclarations, treeNode* scopedVarDeclaration) {
-
 	treeNode* t = localDeclarations;
 	if (t != NULL)
 	{
@@ -268,7 +264,16 @@ treeNode *makeLocalDeclaration(treeNode* localDeclarations, treeNode* scopedVarD
 	
 }
 
-
+treeNode *makeScopedVarDeclaration(treeNode *scopedTypedSpecifier, treeNode *varDeclList) {
+	//Iterate over each sibling in varDeclList and set its type to scopedTypeSpecifier
+	treeNode *t = varDeclList;
+	while (t != NULL)
+	{
+		t->type = scopedTypedSpecifier->type;
+		t = t->sibling;
+	}
+	return varDeclList;
+}
 
 
 
@@ -442,7 +447,6 @@ treeNode *makeCall(treeNode *id, treeNode *args) {
 	n->val.id = id->val.id;
 	return n;
 }
-
 
 
 

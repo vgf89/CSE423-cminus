@@ -32,9 +32,9 @@ int numerror = 0;
 
 }
 %union {
-	int num;
-	char* string;
-	struct treeNode * node;
+    int num;
+    char* string;
+    struct treeNode * node;
 }
 
 
@@ -93,15 +93,26 @@ int numerror = 0;
 %token <keyWordToken> COMMA
 
 //Types for grammar
-%type<node> declarationList declaration localDeclarations varDeclaration funDeclaration recDeclaration scopedVarDeclaration
-
+%type<node> declarationList
+%type<node> declaration
+%type<node> localDeclarations
+%type<node> varDeclaration
+%type<node> funDeclaration
+%type<node> recDeclaration
+%type<node> scopedVarDeclaration
+%type<node> scopedTypeSpecifier
+%type<node> varDeclList
+%type<node> typeSpecifier
+%type<node> returnTypeSpecifier
 
 
 //Rules following
 %%
 program:
-    declarationList    { root = $1; 
-        printf("at root %x\n", root);}
+    declarationList {
+        root = $1; 
+        printf("at root %x\n", root);
+    }
 
     declarationList:
         declarationList declaration { $$ = makeDeclaration($1, $2); }
@@ -125,15 +136,15 @@ program:
     
     scopedVarDeclaration:
         scopedTypeSpecifier varDeclList SEMI {
-            printf("6\t"); 
-            $$ = newNode(); //TODO: handle list of variables, similar to makeDeclaration (see declarationList rule)
-            printf("%x\n", $$);
+            treeNode *t = newNode();
+            t->type = IntType;
+            $$ = makeScopedVarDeclaration($1, $2);
         }
         ;
     
     varDeclList:
-        varDeclList COMMA varDeclInitialize
-        | varDeclInitialize
+        varDeclList COMMA varDeclInitialize { $$ = NULL; }
+        | varDeclInitialize { $$ = NULL; }
         ;
 
     varDeclInitialize:
@@ -147,19 +158,33 @@ program:
         ;
     
     scopedTypeSpecifier:
-        STATIC typeSpecifier
-        | typeSpecifier
+        STATIC typeSpecifier { 
+            $2->isStatic = 1;
+            $$ = $2; }
+        | typeSpecifier { $$ = $1; }
         ;
 
     typeSpecifier:
-        returnTypeSpecifier
-        | RECTYPE
+        returnTypeSpecifier { $$ = $1; }
+        | RECTYPE           {
+            $$ = newNode();
+            $$->type = RecordType;
+            }
         ;
     
     returnTypeSpecifier:
-        INT
-        | BOOL
-        | CHAR
+        INT { 
+            $$ = newNode();
+            $$->type = IntType;
+         }
+        | BOOL { 
+            $$ = newNode();
+            $$->type = BoolType;
+         }
+        | CHAR { 
+            $$ = newNode();
+            $$->type = CharType;
+         }
         ;
     
     funDeclaration:
@@ -362,17 +387,17 @@ program:
 
 int main (int argc, char** argv)
 {
-	char *filename = argv[1];
-	int c = 0;
-	while ((c = getopt(argc, argv, "d")) != -1) { 
-    	switch (c) {
-    	case 'd':
-    			if(optarg != NULL)
-					filename = optarg;
+    char *filename = argv[1];
+    int c = 0;
+    while ((c = getopt(argc, argv, "d")) != -1) { 
+        switch (c) {
+        case 'd':
+                if(optarg != NULL)
+                    filename = optarg;
 
-    			yydebug = 1;
-            	break;  
-		case '\?':
+                yydebug = 1;
+                break;  
+        case '\?':
                 printf("c-: Invalid option \n");
                 return -1;
                 break;
@@ -380,25 +405,25 @@ int main (int argc, char** argv)
                 printf("c-: Requires a filename argument\n");
                 return -1;
                 break;
-       	default:   
-       			printf("incorrect input\n");
+        default:   
+                printf("incorrect input\n");
                 return -1;
         }
     }
-	if(argc > 1) {
-	   	FILE *myfile = fopen(filename, "r");
-	   	if (!myfile) {
-	      	printf("I can't open the file\n");
-	      	exit(-1);
-	   	}
-	    yyin = myfile;
-	}
+    if(argc > 1) {
+        FILE *myfile = fopen(filename, "r");
+        if (!myfile) {
+            printf("I can't open the file\n");
+            exit(-1);
+        }
+        yyin = myfile;
+    }
     do {
         if(yyparse() != 0) {
-        	printf("Number of warnings: %d\n", numwarn);
-			printf("Number of errors: %d\n", numerror);
-		//printf("exit\n");
-        	exit(-1);
+            printf("Number of warnings: %d\n", numwarn);
+            printf("Number of errors: %d\n", numerror);
+        //printf("exit\n");
+            exit(-1);
         }
     } while (!feof(yyin));
 

@@ -344,6 +344,9 @@ letdig [{digit}|{letter}]
 						//printf("%s\n", rectable[i]);
 						if (strcmp(yytext, rectable[i]) == 0) {
 							//printf("found \"%s\" in record types!\n", yytext);
+							yylval.recordToken.lineNumber = newline;
+							yylval.recordToken.tokenType = "RECTYPE";
+							yylval.recordToken.stringThatWasTyped = strdup(yytext);
 							return RECTYPE;
 						} 
 					}
