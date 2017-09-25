@@ -423,6 +423,44 @@ treeNode *makeFuncStatement( treeNode* typeSpecifier, char* id, treeNode* params
 	return n;
 }
 
+treeNode* makeParamList(treeNode* paramList, treeNode* paramTypeList) {
+	treeNode* t = paramList;
+	if (t != NULL)
+	{
+		while (t->sibling != NULL) {
+			t = t->sibling;
+		}
+		t->sibling = declaration;
+		return paramList;
+	} else {
+		return paramTypeList;
+	}
+}
+
+treeNode* makeParamTypeList(treeNode* typeSpecifier, treeNode* paramIdList) {
+	treeNode *t = paramIdList; 
+	while (t != NULL)
+	{
+		t->type = typedSpecifier->type;
+		t = t->sibling;
+	}
+	return paramIdList;
+}
+
+treeNode makeParamIdList(treeNode* paramIdList, treeNode* paramId) {
+	treeNode* t = paramIdList;
+	if (t != NULL)
+	{
+		while (t->sibling != NULL) {
+			t = t->sibling;
+		}
+		t->sibling = paramId;
+		return paramIdList;
+	} else {
+		return paramId;
+	}
+}
+
 treeNode *makeIntType() {
 	treeNode *n = newNode();
 	n->type = IntType;

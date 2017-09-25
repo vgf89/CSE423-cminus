@@ -181,27 +181,27 @@ program:
         ;
     
     params:
-        paramList
+        paramList   { $$ = $1; }   
         | 
-        ;
+        ;           { $$ = NULL; }
     
     paramList:
-        paramList SEMI paramTypeList
-        | paramTypeList
+        paramList SEMI paramTypeList { $$ = makeParamList($1, $2); }
+        | paramTypeList {$$ = makeParamList(NULL, $1); }
         ;
     
     paramTypeList:
-        typeSpecifier paramIdList
+        typeSpecifier paramIdList { $$ = makeParamTypeList($1, $2); }
         ;
 
     paramIdList:
-        paramIdList COMMA paramId
-        | paramId
+        paramIdList COMMA paramId   { $$ = makeParamIdList($1, $2); }
+        | paramId                   { $$ = makeParamIdList(NULL, $1); }
         ;
     
     paramId:
-        ID                      { $$ = makeId($1, 0) }
-        | ID BRACL BRACR;       { $$ = makeId($1, 1) }
+        ID                      { $$ = makeId($1, 0); }
+        | ID BRACL BRACR;       { $$ = makeId($1, 1); }
     
     statementList:
         statementList statement
