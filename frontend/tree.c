@@ -275,7 +275,45 @@ treeNode *makeScopedVarDeclaration(treeNode *scopedTypedSpecifier, treeNode *var
 	return varDeclList;
 }
 
+treeNode *addVarDeclarationInitialize(treeNode *varDeclList, treeNode *varDeclInitialize) {
+	treeNode* t = varDeclList;
+	if (t != NULL)
+	{
+		while (t->sibling != NULL) {
+			t = t->sibling;
+		}
+		t->sibling = varDeclInitialize;
+		return varDeclList;
+	} else {
+		return varDeclInitialize;
+	}
+}
 
+treeNode *makeVarDeclaration(char* id)
+{
+	treeNode* t = newNode();
+	t->val.id = id;
+	t->kind = Var;
+	return t;
+}
+
+treeNode *makeVarDeclarationId(char* id, int isArray, int arraylength)
+{
+	treeNode* t = newNode();
+	t->val.id = id;
+	t->kind = Var;
+	if (isArray) {
+		t->isArray = isArray;
+		t->val.intconst = arraylength;
+	}
+	return t;
+}
+
+treeNode *addSimpleExpressionToVarDeclarationID(treeNode *varDeclId, treeNode *simpleExpression)
+{
+	varDeclId->children[0] = simpleExpression;
+	return varDeclId;
+}
 
 
 
