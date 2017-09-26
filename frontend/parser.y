@@ -124,6 +124,9 @@ int numerror = 0;
 %type<node> breakStmt
 %type<node> mutable
 %type<node> expression
+%type<node> relExpression
+%type<node> unaryRelExpression
+%type<node> andExpression
 
 
 //Rules following
@@ -241,9 +244,9 @@ program:
         ;
 
     unmatched:
-        IF PARL simpleExpression PARR matched                   { $$ = makeUnmatchedStatement($1, $2, NULL); }
-        | IF PARL simpleExpression PARR unmatched               { $$ = makeUnmatchedStatement($1, NULL, $2); }
-        | IF PARL simpleExpression PARR matched ELSE unmatched  { $$ = makeUnmatchedStatement($1, $2, $3); }
+        IF PARL simpleExpression PARR matched                   { $$ = makeUnmatchedStatement($3, $5, NULL); }
+        | IF PARL simpleExpression PARR unmatched               { $$ = makeUnmatchedStatement($3, NULL, $5); }
+        | IF PARL simpleExpression PARR matched ELSE unmatched  { $$ = makeUnmatchedStatement($3, $5, $7); }
         ;
 
     otherStmt:
@@ -294,23 +297,23 @@ program:
         ;
     
     simpleExpression:
-        simpleExpression OR andExpression { $$ = NULL; }//   { $$ = makeOrExpression($1, 3); }
-        | andExpression { $$ = NULL; }
+        simpleExpression OR andExpression { $$ = makeSimpleExpression($1, $3); }
+        | andExpression { $$ = $1; }
         ;
     
     andExpression:
-        andExpression AND unaryRelExpression//   { $$ = makeAndExpression($1, 3); }
-        | unaryRelExpression
+        andExpression AND unaryRelExpression { $$ = makeAndExpression($1, $3); }
+        | unaryRelExpression { $$ = $1; }
         ;
     
     unaryRelExpression:
-        NOT unaryRelExpression//   { $$ = makeNotExpression($2); }
-        | relExpression
+        NOT unaryRelExpression { $$ = makeNotExpression($2); }
+        | relExpression { $$ = $1; }
         ;
     
     relExpression:
-        sumExpression relop sumExpression
-        | sumExpression
+        sumExpression relop sumExpression   { $$ = NULL; }
+        | sumExpression   { $$ = NULL; }
         ;
     
     relop:

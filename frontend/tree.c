@@ -323,43 +323,43 @@ treeNode *makeEquExpression(treeNode* mutable, treeNode* expression) {
 	n->opType = Eq;
 	return n;
 }
-treeNode *makeAddEExpression(treeNode* left, treeNode* right) {
+treeNode *makeAddEExpression(treeNode* mutable, treeNode* expression) {
 	treeNode *n = newNode();
-	n->val.addE.left = left;
-	n->val.addE.right = right;
+	n->children[0] = mutable;
+	n->children[1] = expression;
 	n->opType = Add;
 	return n;
 }
-treeNode *makeSubEExpression(treeNode* left, treeNode* right) {
+treeNode *makeSubEExpression(treeNode* mutable, treeNode* expression) {
 	treeNode *n = newNode();
-	n->val.subE.left = left;
-	n->val.subE.right = right;
+	n->children[0] = mutable;
+	n->children[1] = expression;
 	n->opType = Sub;
 	return n;
 }
-treeNode *makeMulEExpression(treeNode* left, treeNode* right) {
+treeNode *makeMulEExpression(treeNode* mutable, treeNode* expression) {
 	treeNode *n = newNode();
-	n->val.mulE.left = left;
-	n->val.mulE.right = right;
+	n->children[0] = mutable;
+	n->children[1] = expression;
 	n->opType = Mul;
 	return n;
 }
-treeNode *makeDivEExpression(treeNode* left, treeNode* right) {
+treeNode *makeDivEExpression(treeNode* mutable, treeNode* expression) {
 	treeNode *n = newNode();
-	n->val.divE.left = left;
-	n->val.divE.right = right;
+	n->children[0] = mutable;
+	n->children[1] = expression;
 	n->opType = Div;
 	return n;
 }
-treeNode *makeIncExpression(treeNode* left) {
+treeNode *makeIncExpression(treeNode* mutable) {
 	treeNode *n = newNode();
-	n->val.incE.left = left;
+	n->children[0] = mutable;
 	n->opType = Inc;
 	return n;
 }
-treeNode *makeDecExpression(treeNode* left) {
+treeNode *makeDecExpression(treeNode* mutable) {
 	treeNode *n = newNode();
-	n->val.decE.left = left;
+	n->children[0] = mutable;
 	n->opType = Dec;
 	return n;
 }
@@ -388,29 +388,29 @@ treeNode *makeCharConst(char c) {
 	return n;
 }
 
-treeNode *makeOrExpression(treeNode *left, treeNode *right) {
+treeNode *makeSimpleExpression(treeNode *simpleExpression, treeNode *andExpression) {
 	treeNode *n = newNode();
 	n->kind = Op;
 	n->opType = Or;
-	n->val.or.left = left;
-	n->val.or.right = right;
+	n->children[0] = simpleExpression;
+	n->children[1] = andExpression;
 	return n;
 }
 
-treeNode *makeAndExpression(treeNode *left, treeNode *right) {
+treeNode *makeAndExpression(treeNode *andExpression, treeNode *unaryRelExpression) {
 	treeNode *n = newNode();
 	n->kind = Op;
 	n->opType = And;
-	n->val.and.left = left;
-	n->val.and.right = right;
+	n->children[0] = andExpression;
+	n->children[1] = unaryRelExpression;
 	return n;
 }
 
-treeNode *makeNotExpression(treeNode *left) {
+treeNode *makeNotExpression(treeNode *unaryRelExpression) {
 	treeNode *n = newNode();
 	n->kind = Op;
 	n->opType = Not;
-	n->val.not.left = left;
+	n->children[0] = unaryRelExpression;
 	return n;
 }
 

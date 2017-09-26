@@ -25,20 +25,6 @@ typedef struct treeNode {
         int boolconst;
         int intconst;
         char charconst;
-        struct { struct treeNode *left, *right; } equE;
-        struct { struct treeNode *left, *right; } addE;
-        struct { struct treeNode *left, *right; } subE;
-        struct { struct treeNode *left, *right; } mulE;
-        struct { struct treeNode *left, *right; } divE;
-        struct { struct treeNode *left; } incE;
-        struct { struct treeNode *left; } decE;
-        struct { struct treeNode *left, *right; } and;
-        struct { struct treeNode *left, *right; } or;
-        struct { struct treeNode *left; } not;
-        struct { struct treeNode *left, *right; } compound;
-        struct { struct treeNode *expression; } returnStatement;
-        struct { struct treeNode *typeSpecifier, *parameterList, *statement; char* id;} Func;
-        //struct { struct treeNode *args; char* id; } // What is this supposed to be?
     } val;
 
     //ExpType expType;      //used when ExpK for type checking
@@ -86,6 +72,12 @@ treeNode *makeFuncStatement(treeNode* typeSpecifier, char* id, treeNode* params,
 treeNode *makeParamList(treeNode* paramList, treeNode* paramTypeList);
 treeNode *makeParamTypeList(treeNode* typeSpecifier, treeNode* paramIdList);
 treeNode *makeParamIdList(treeNode* paramIdList, treeNode* paramId);
+treeNode *makeParam(char* id, int isArray);
+
+treeNode *addStatementList(treeNode *statementList, treeNode *statement);
+treeNode *makeMatchedStatement( treeNode* simpleExpression, treeNode* matched);
+treeNode *makeUnmatchedStatement( treeNode* simpleExpression, treeNode* matched, treeNode* unmatched);
+treeNode *makeIterationStatement(treeNode* simpleExpression, treeNode* statement);
 
 treeNode *makeId(char* id, int isArray);
 treeNode *makeEquExpression(treeNode* left, treeNode* right);
@@ -96,9 +88,9 @@ treeNode *makeDivEExpression(treeNode* left, treeNode* right);
 treeNode *makeIncExpression(treeNode* left);
 treeNode *makeDecExpression(treeNode* left);
 
-treeNode *makeNotExpression(treeNode *left);
-treeNode *makeAndExpression(treeNode *left, treeNode *right);
-treeNode *makeOrExpression(treeNode *left, treeNode *right);
+treeNode *makeNotExpression(treeNode *unaryRelExpression);
+treeNode *makeAndExpression(treeNode *andExpression, treeNode *unaryRelExpression);
+treeNode *makeSimpleExpression(treeNode *simpleExpression, treeNode *andExpression);
 
 treeNode *makeintConst(int i);
 treeNode *makeboolConst(int b);
