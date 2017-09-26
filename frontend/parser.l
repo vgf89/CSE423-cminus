@@ -337,6 +337,9 @@ letdig [{digit}|{letter}]
 						rectable[reccount] = strdup(yytext);
 						reccount++;
 						recvar = 0;
+						yylval.idToken.lineNumber = newline;
+						yylval.idToken.tokenType = "ID";
+						yylval.idToken.IDvalue = strdup(yytext);
 						return ID;
 					}
 					for(i = 0; i < reccount; i++) {
