@@ -130,7 +130,7 @@ letdig [{digit}|{letter}]
 					yylval.keyWordToken.lineNumber = newline;
 					yylval.keyWordToken.tokenType = "RECORD";
 					yylval.keyWordToken.KWTvalue = strdup(yytext);
-					//recvar = 1; 
+					recvar = 1; 
 					return RECORD;
 				}
 "break"				{

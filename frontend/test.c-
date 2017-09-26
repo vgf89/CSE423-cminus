@@ -17,4 +17,5 @@ int function2(char test) {
     bool x, y, z;
     char v, w;
     int t, u;
+    Point b, c, d;
 }
