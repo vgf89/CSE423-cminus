@@ -19,3 +19,11 @@ int function2(char test) {
     int t, u;
     Point b, c, d;
 }
+
+test() {
+    bool x, y, z;
+    char v, w;
+    int t, u;
+    Point b, c, d;
+
+}

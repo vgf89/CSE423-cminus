@@ -44,8 +44,12 @@ void printSubTree(treeNode *curNode, int siblingNum, int childNum, int treeLevel
 	}
 
 	int i = 0;
-	while (curNode->children[i] != NULL) {
-		printSubTree(curNode->children[i], -1, i, treeLevel + 1);
+	// Always try to print first three children (since the first two or three could be void)
+	// Makes sure functions without params and matched/unmatched stuff always prints properly
+	// A less hacky way of doing this would be to add a first-child value to nodes, but that would be messier IMO
+	while (i < 3 || curNode->children[i] != NULL) {
+		if (curNode->children[i] != NULL)
+			printSubTree(curNode->children[i], -1, i, treeLevel + 1);
 		i++;
 	}
 	if (curNode->sibling != NULL) {
