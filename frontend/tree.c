@@ -31,7 +31,8 @@ void printTree(treeNode *parseTree)
 
 void printSubTree(treeNode *curNode, int siblingNum, int childNum, int treeLevel) 
 {
-	for (int i = 0; i < treeLevel; i++) {
+	int i = 0;
+	for (i = 0; i < treeLevel; i++) {
 		printf("!   ");
 	}
 
@@ -43,7 +44,7 @@ void printSubTree(treeNode *curNode, int siblingNum, int childNum, int treeLevel
 		printNode(curNode);
 	}
 
-	int i = 0;
+	i = 0;
 	// Always try to print first three children (since the first two or three could be void)
 	// Makes sure functions without params and matched/unmatched stuff always prints properly
 	// A less hacky way of doing this would be to add a first-child value to nodes, but that would be messier IMO
@@ -311,7 +312,8 @@ treeNode *addSimpleExpressionToVarDeclarationID(treeNode *varDeclId, treeNode *s
 	return varDeclId;
 }
 
-treeNode *makeId(char* id, int isArray) {
+treeNode *makeId(char* id, int isArray)
+{
 	treeNode *n = newNode();
 	n->kind = Id;
 	n->val.id = id;
@@ -319,7 +321,8 @@ treeNode *makeId(char* id, int isArray) {
 	return n;
 }
 
-treeNode *makeEquExpression(treeNode* mutable, treeNode* expression) {
+treeNode *makeEquExpression(treeNode* mutable, treeNode* expression)
+{
 	treeNode *n = newNode();
 	n->kind = Assign;
 	n->children[0] = mutable;
@@ -327,48 +330,55 @@ treeNode *makeEquExpression(treeNode* mutable, treeNode* expression) {
 	n->opType = Eq;
 	return n;
 }
-treeNode *makeAddEExpression(treeNode* mutable, treeNode* expression) {
+treeNode *makeAddEExpression(treeNode* mutable, treeNode* expression)
+{
 	treeNode *n = newNode();
 	n->children[0] = mutable;
 	n->children[1] = expression;
 	n->opType = Add;
 	return n;
 }
-treeNode *makeSubEExpression(treeNode* mutable, treeNode* expression) {
+treeNode *makeSubEExpression(treeNode* mutable, treeNode* expression)
+{
 	treeNode *n = newNode();
 	n->children[0] = mutable;
 	n->children[1] = expression;
 	n->opType = Sub;
 	return n;
 }
-treeNode *makeMulEExpression(treeNode* mutable, treeNode* expression) {
+treeNode *makeMulEExpression(treeNode* mutable, treeNode* expression)
+{
 	treeNode *n = newNode();
 	n->children[0] = mutable;
 	n->children[1] = expression;
 	n->opType = Mul;
 	return n;
 }
-treeNode *makeDivEExpression(treeNode* mutable, treeNode* expression) {
+treeNode *makeDivEExpression(treeNode* mutable, treeNode* expression)
+{
 	treeNode *n = newNode();
 	n->children[0] = mutable;
 	n->children[1] = expression;
 	n->opType = Div;
 	return n;
 }
-treeNode *makeIncExpression(treeNode* mutable) {
+treeNode *makeIncExpression(treeNode* mutable)
+{
 	treeNode *n = newNode();
 	n->children[0] = mutable;
 	n->opType = Inc;
 	return n;
 }
-treeNode *makeDecExpression(treeNode* mutable) {
+treeNode *makeDecExpression(treeNode* mutable)
+{
 	treeNode *n = newNode();
 	n->children[0] = mutable;
 	n->opType = Dec;
 	return n;
 }
 
-treeNode *makeBoolConst(int b) {
+treeNode *makeBoolConst(int b)
+{
 	treeNode *n = newNode();
 	n->type = BoolType;
 	n->kind = Const;
@@ -376,7 +386,8 @@ treeNode *makeBoolConst(int b) {
 	return n;
 }
 
-treeNode *makeIntConst(int i) {
+treeNode *makeIntConst(int i)
+{
 	treeNode *n = newNode();
 	n->type = IntType;
 	n->kind = Const;
@@ -384,7 +395,8 @@ treeNode *makeIntConst(int i) {
 	return n;
 }
 
-treeNode *makeCharConst(char c) {
+treeNode *makeCharConst(char c)
+{
 	treeNode *n = newNode();
 	n->type = CharType;
 	n->kind = Const;
@@ -392,7 +404,8 @@ treeNode *makeCharConst(char c) {
 	return n;
 }
 
-treeNode *makeSimpleExpression(treeNode *simpleExpression, treeNode *andExpression) {
+treeNode *makeSimpleExpression(treeNode *simpleExpression, treeNode *andExpression)
+{
 	treeNode *n = newNode();
 	n->kind = Op;
 	n->opType = Or;
@@ -401,7 +414,8 @@ treeNode *makeSimpleExpression(treeNode *simpleExpression, treeNode *andExpressi
 	return n;
 }
 
-treeNode *makeAndExpression(treeNode *andExpression, treeNode *unaryRelExpression) {
+treeNode *makeAndExpression(treeNode *andExpression, treeNode *unaryRelExpression)
+{
 	treeNode *n = newNode();
 	n->kind = Op;
 	n->opType = And;
@@ -410,7 +424,8 @@ treeNode *makeAndExpression(treeNode *andExpression, treeNode *unaryRelExpressio
 	return n;
 }
 
-treeNode *makeNotExpression(treeNode *unaryRelExpression) {
+treeNode *makeNotExpression(treeNode *unaryRelExpression)
+{
 	treeNode *n = newNode();
 	n->kind = Op;
 	n->opType = Not;
@@ -418,7 +433,8 @@ treeNode *makeNotExpression(treeNode *unaryRelExpression) {
 	return n;
 }
 
-treeNode *makeCompound(treeNode *localDeclarations, treeNode *statementList) {
+treeNode *makeCompound(treeNode *localDeclarations, treeNode *statementList)
+{
 	treeNode *n = newNode();
 	n->kind = Compound;
 	n->children[0] = localDeclarations;
@@ -426,7 +442,8 @@ treeNode *makeCompound(treeNode *localDeclarations, treeNode *statementList) {
 	return n;
 }
 
-treeNode *makeReturnStatement(treeNode *expression) {
+treeNode *makeReturnStatement(treeNode *expression)
+{
 	treeNode *n = newNode();
 	n->kind = Return;
 	n->children[0] = expression;
@@ -439,7 +456,8 @@ treeNode *makeBreakStatement( ) {
 	return n; 
 }
 
-treeNode *makeFuncStatement( treeNode* typeSpecifier, char* id, treeNode* params, treeNode* statement ) {
+treeNode *makeFuncStatement( treeNode* typeSpecifier, char* id, treeNode* params, treeNode* statement )
+{
 	treeNode *n = newNode();
 	if (typeSpecifier == NULL) {
 		n->type = VoidType;
@@ -453,7 +471,8 @@ treeNode *makeFuncStatement( treeNode* typeSpecifier, char* id, treeNode* params
 	return n;
 }
 
-treeNode* makeParamList(treeNode* paramList, treeNode* paramTypeList) {
+treeNode* makeParamList(treeNode* paramList, treeNode* paramTypeList) 
+{
 	treeNode* t = paramList;
 	if (t != NULL)
 	{
@@ -467,7 +486,8 @@ treeNode* makeParamList(treeNode* paramList, treeNode* paramTypeList) {
 	}
 }
 
-treeNode* makeParamTypeList(treeNode* typeSpecifier, treeNode* paramIdList) {
+treeNode* makeParamTypeList(treeNode* typeSpecifier, treeNode* paramIdList) 
+{
 	treeNode *t = paramIdList; 
 	while (t != NULL)
 	{
@@ -477,7 +497,8 @@ treeNode* makeParamTypeList(treeNode* typeSpecifier, treeNode* paramIdList) {
 	return paramIdList;
 }
 
-treeNode *makeParamIdList(treeNode* paramIdList, treeNode* paramId) {
+treeNode *makeParamIdList(treeNode* paramIdList, treeNode* paramId) 
+{
 	treeNode* t = paramIdList;
 	if (t != NULL)
 	{
@@ -491,7 +512,8 @@ treeNode *makeParamIdList(treeNode* paramIdList, treeNode* paramId) {
 	}
 }
 
-treeNode *makeParam(char* id, int isArray) {
+treeNode *makeParam(char* id, int isArray) 
+{
 	treeNode *n = newNode();
 	n->kind = Param;
 	n->val.id = id;
@@ -499,38 +521,44 @@ treeNode *makeParam(char* id, int isArray) {
 	return n;
 }
 
-treeNode *makeIntType() {
+treeNode *makeIntType()
+{
 	treeNode *n = newNode();
 	n->type = IntType;
 	return n;
 }
 
-treeNode *makeBoolType() {
+treeNode *makeBoolType()
+{
 	treeNode *n = newNode();
 	n->type = BoolType;
 	return n;
 } 
 
-treeNode *makeCharType() {
+treeNode *makeCharType()
+{
 	treeNode *n = newNode();
 	n->type = CharType;
 	return n;
 } 
 
-treeNode *makeRecordType() {
+treeNode *makeRecordType()
+{
 	treeNode *n = newNode();
 	n->type = RecordType;
 	return n;
 }
 
-treeNode *makeCall(treeNode *id, treeNode *args) {
+treeNode *makeCall(treeNode *id, treeNode *args)
+{
 	treeNode *n = newNode();
 	n->type = Call;
 	n->val.id = id->val.id;
 	return n;
 }
 
-treeNode *addStatementList(treeNode *statementList, treeNode *statement) {
+treeNode *addStatementList(treeNode *statementList, treeNode *statement)
+{
 	treeNode* t = statementList;
 	if (t != NULL)
 	{
@@ -544,7 +572,8 @@ treeNode *addStatementList(treeNode *statementList, treeNode *statement) {
 	}
 }
 
-treeNode *makeMatchedStatement( treeNode* simpleExpression, treeNode* matched) {
+treeNode *makeMatchedStatement( treeNode* simpleExpression, treeNode* matched)
+{
 	treeNode* n = newNode();
 	n->type = If;
 	n->children[0] = simpleExpression;
@@ -552,7 +581,8 @@ treeNode *makeMatchedStatement( treeNode* simpleExpression, treeNode* matched) {
 	return n;
 }
 
-treeNode *makeUnmatchedStatement( treeNode* simpleExpression, treeNode* matched, treeNode* unmatched) {
+treeNode *makeUnmatchedStatement( treeNode* simpleExpression, treeNode* matched, treeNode* unmatched)
+{
 	treeNode* n = newNode();
 	n->type = If;
 	if (matched == NULL && unmatched != NULL) {
@@ -571,7 +601,8 @@ treeNode *makeUnmatchedStatement( treeNode* simpleExpression, treeNode* matched,
 	return n;
 }
 
-treeNode *makeIterationStatement(treeNode* simpleExpression, treeNode* statement) {
+treeNode *makeIterationStatement(treeNode* simpleExpression, treeNode* statement) 
+{
 	treeNode* t = newNode();
 	t->type = While;
 	t->children[0] = simpleExpression;
@@ -631,7 +662,6 @@ treeNode *makeModSumOp() {
 	n->opType = Mod;
 	return n;
 }
-
 
 
 
