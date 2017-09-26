@@ -290,7 +290,7 @@ program:
         | mutable DIVE expression   { $$ = makeDivEExpression($1, $3); }
         | mutable INC               { $$ = makeIncExpression($1); }
         | mutable DEC               { $$ = makeDecExpression($1); }
-        | simpleExpression
+        | simpleExpression          { $$ = $1; }
         ;
     
     simpleExpression:

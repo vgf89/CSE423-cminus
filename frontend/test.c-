@@ -8,8 +8,13 @@ record Point {
 }
 
 wallace(int w, x; int y[], z; int aaay; bool explitive) {
+    int x;
+    char y;
+    bool z;
 }
 
 int function2(char test) {
-
+    bool x, y, z;
+    char v, w;
+    int t, u;
 }
