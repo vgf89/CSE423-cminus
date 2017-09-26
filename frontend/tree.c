@@ -314,10 +314,6 @@ treeNode *addSimpleExpressionToVarDeclarationID(treeNode *varDeclId, treeNode *s
 	return varDeclId;
 }
 
-
-
-
-
 treeNode *makeId(char* id, int isArray) {
 	treeNode *n = newNode();
 	n->kind = Id;
@@ -326,7 +322,7 @@ treeNode *makeId(char* id, int isArray) {
 	return n;
 }
 
-treeNode *makeEquExpression(treeNode* left, treeNode* right) {
+treeNode *makeEquExpression(treeNode* mutable, treeNode* expression) {
 	treeNode *n = newNode();
 	n->kind = Assign;
 	n->val.equE.left = left;
@@ -425,18 +421,18 @@ treeNode *makeNotExpression(treeNode *left) {
 	return n;
 }
 
-treeNode *makeCompound(treeNode *left, treeNode *right) {
+treeNode *makeCompound(treeNode *localDeclarations, treeNode *statementList) {
 	treeNode *n = newNode();
 	n->kind = Compound;
-	n->val.compound.left = left;
-	n->val.compound.right = right;
+	n->children[0] = localDeclarations;
+	n->children[1] = statementList;
 	return n;
 }
 
 treeNode *makeReturnStatement(treeNode *expression) {
 	treeNode *n = newNode();
 	n->kind = Return;
-	n->val.returnStatement.expression = expression;
+	n->children[0] = expression;
 	return n;
 }
 
@@ -535,6 +531,55 @@ treeNode *makeCall(treeNode *id, treeNode *args) {
 	n->type = Call;
 	n->val.id = id->val.id;
 	return n;
+}
+
+treeNode *addStatementList(treeNode *statementList, treeNode *statement) {
+	treeNode* t = statementList;
+	if (t != NULL)
+	{
+		while (t->sibling != NULL) {
+			t = t->sibling;
+		}
+		t->sibling = statement;
+		return statementList;
+	} else {
+		return statement;
+	}
+}
+
+treeNode *makeMatchedStatement( treeNode* simpleExpression, treeNode* matched) {
+	treeNode* t = newNode();
+	n->type = If;
+	n->children[0] = simpleExpression;
+	n->children[1] = matched;
+	return t;
+}
+
+treeNode *makeUnmatchedStatement( treeNode* simpleExpression, treeNode* matched, treeNode* unmatched) {
+	treeNode* t = newNode();
+	n->type = If;
+	if (matched == NULL && unmatched != NULL) {
+		n->children[0] = simpleExpression;
+		n->children[1] = unmatched;
+	}
+	if (matched != NULL && unmatched == NULL) {
+		n->children[0] = simpleExpression;
+		n->children[1] = matched;	
+	}
+	if (matched != NULL && unmatched != NULL) {
+		n->children[0] = simpleExpression;
+		n->children[1] = matched;
+		n->children[2] = unmatched;
+	}
+	return t;
+}
+
+treeNode *makeIterationStatement(treeNode* simpleExpression, treeNode* statement) {
+	treeNode* t = newNode();
+	t->type = While;
+	t->children[0] = simpleExpression;
+	t->children[1] = statement;
+	return t;
 }
 
 

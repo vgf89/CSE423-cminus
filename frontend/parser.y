@@ -216,69 +216,69 @@ program:
         ;
     
     statementList:
-        statementList statement { $$ = NULL; }
+        statementList statement { $$ = addStatementList($1, $2); }  
         |
         ;
     
     statement:
-        matched { $$ = NULL; }
-        | unmatched { $$ = NULL; }
+        matched { $$ = $1; }
+        | unmatched { $$ = $1; }
         ;
 
     matched:
-        IF PARL simpleExpression PARR matched ELSE matched
-        | otherStmt
+        IF PARL simpleExpression PARR matched ELSE matched      { $$ = makeMatchedStatement($3, $5); }
+        | otherStmt                                             { $$ = $1; }
         ;
 
-    unmatched: 
-        IF PARL simpleExpression PARR matched 
-        | IF PARL simpleExpression PARR unmatched
-        | IF PARL simpleExpression PARR matched ELSE unmatched
+    unmatched: i
+        IF PARL simpleExpression PARR matched                   { $$ = makeUnmatchedStatement($1, $2, NULL); }
+        | IF PARL simpleExpression PARR unmatched               { $$ = makeUnmatchedStatement($1, NULL, $2); }
+        | IF PARL simpleExpression PARR matched ELSE unmatched  { $$ = makeUnmatchedStatement($1, $2, $3); }
         ;
 
     otherStmt:
-        expressionStmt
-        | compoundStmt
-        | iterationStmt
-        | returnStmt
-        | breakStmt
-        | SEMI
+        expressionStmt  { $$ = $1; }
+        | compoundStmt  { $$ = $1; }
+        | iterationStmt { $$ = $1; }
+        | returnStmt    { $$ = $1; }
+        | breakStmt     { $$ = $1; }
+        | SEMI          { $$ = NULL; }
         ;
     
     compoundStmt:
-        CURLL localDeclarations statementList CURLR;   // { $$ = makeCompound($2, $4); }
+        CURLL localDeclarations statementList CURLR;    { $$ = makeCompound($2, $4); }
     
     localDeclarations:
-        localDeclarations scopedVarDeclaration { $$ = makeLocalDeclaration($1, $2); }
-        |   { $$ = NULL; }
-        ;
+        localDeclarations scopedVarDeclaration  { $$ = makeLocalDeclaration($1, $2); }
+        |   
+        ;                                       
     
     expressionStmt:
-        expression SEMI
+        expression SEMI  { $$ = $1; }
         |
         ;
     
     iterationStmt:
-        WHILE PARL simpleExpression PARR statement 
+        WHILE PARL simpleExpression PARR statement { $$ = makeIterationStatement($3, $5); }
         ;
 
     returnStmt:
-        RETURN SEMI                 //{ $$ = makeReturnStatement( NULL ); }
-        | RETURN expression SEMI    //{ $$ = makeReturnStatement($2); }
+        RETURN SEMI                 { $$ = makeReturnStatement( NULL ); }
+        | RETURN expression SEMI    { $$ = makeReturnStatement( $2 ); }
         ;
     
     breakStmt:
-        BREAK SEMI//  { $$ = makeBreakStatement(); }
+        BREAK SEMI  { $$ = makeBreakStatement(); }
         ;
 
     expression:
-        mutable EQUALS expression//   { $$ = makeEquExpression($1, $3); }
-        | mutable ADDE expression//   { $$ = makeAddEExpression($1, $3); }
-        | mutable SUBE expression//   { $$ = makeSubEExpression($1, $3); }
-        | mutable MULE expression//   { $$ = makeMulEExpression($1, $3); }
-        | mutable DIVE expression//   { $$ = makeDivEExpression($1, $3); }
-        | mutable INC//   { $$ = makeIncExpression($1); }
-        | mutable DEC//   { $$ = makeDecExpression($1); }
+        mutable EQUALS expression   { $$ = makeEquExpression($1, $3); }
+        | mutable ADDE expression   { $$ = makeAddEExpression($1, $3); }
+        | mutable SUBE expression   { $$ = makeSubEExpression($1, $3); }
+        | mutable MULE expression   { $$ = makeMulEExpression($1, $3); }
+        | mutable DIVE expression   { $$ = makeDivEExpression($1, $3); }
+        | mutable INC               { $$ = makeIncExpression($1); }
+        | mutable DEC               { $$ = makeDecExpression($1); }
         | simpleExpression
         ;
     
