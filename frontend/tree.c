@@ -31,7 +31,8 @@ void printTree(treeNode *parseTree)
 
 void printSubTree(treeNode *curNode, int siblingNum, int childNum, int treeLevel) 
 {
-	for (int i = 0; i < treeLevel; i++) {
+	int i = 0;
+	for (i = 0; i < treeLevel; i++) {
 		printf("!   ");
 	}
 
@@ -43,7 +44,7 @@ void printSubTree(treeNode *curNode, int siblingNum, int childNum, int treeLevel
 		printNode(curNode);
 	}
 
-	int i = 0;
+	i = 0;
 	// Always try to print first three children (since the first two or three could be void)
 	// Makes sure functions without params and matched/unmatched stuff always prints properly
 	// A less hacky way of doing this would be to add a first-child value to nodes, but that would be messier IMO
