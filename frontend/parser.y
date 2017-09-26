@@ -114,6 +114,16 @@ int numerror = 0;
 %type<node> params
 %type<node> statement
 %type<node> statementList
+%type<node> matched
+%type<node> unmatched
+%type<node> otherStmt
+%type<node> expressionStmt
+%type<node> compoundStmt
+%type<node> iterationStmt
+%type<node> returnStmt
+%type<node> breakStmt
+%type<node> mutable
+%type<node> expression
 
 
 //Rules following
@@ -217,7 +227,7 @@ program:
     
     statementList:
         statementList statement { $$ = addStatementList($1, $2); }  
-        |
+        |   { $$ = NULL; }
         ;
     
     statement:
@@ -230,7 +240,7 @@ program:
         | otherStmt                                             { $$ = $1; }
         ;
 
-    unmatched: i
+    unmatched:
         IF PARL simpleExpression PARR matched                   { $$ = makeUnmatchedStatement($1, $2, NULL); }
         | IF PARL simpleExpression PARR unmatched               { $$ = makeUnmatchedStatement($1, NULL, $2); }
         | IF PARL simpleExpression PARR matched ELSE unmatched  { $$ = makeUnmatchedStatement($1, $2, $3); }
@@ -246,16 +256,17 @@ program:
         ;
     
     compoundStmt:
-        CURLL localDeclarations statementList CURLR;    { $$ = makeCompound($2, $4); }
+        CURLL localDeclarations statementList CURLR    { $$ = makeCompound($2, $3); }
+        ;
     
     localDeclarations:
         localDeclarations scopedVarDeclaration  { $$ = makeLocalDeclaration($1, $2); }
-        |   
+        |   { $$ = NULL; }
         ;                                       
     
     expressionStmt:
         expression SEMI  { $$ = $1; }
-        |
+        |   { $$ = NULL; }
         ;
     
     iterationStmt:
@@ -350,9 +361,9 @@ program:
         ;
     
     mutable:
-        ID
-        | mutable BRACL expression BRACR
-        | mutable DOT ID
+        ID  { $$ = NULL; }
+        | mutable BRACL expression BRACR  { $$ = NULL; }
+        | mutable DOT ID  { $$ = NULL; }
         ;
     
     immutable:

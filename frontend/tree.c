@@ -14,19 +14,17 @@ void printTree(treeNode *parseTree)
 		int siblingNum = -1;
 		int childNum = -1;
 		int treeLevel = 0;
-		treeNode *root = parseTree;//->children[0];
 
 		//Special case for printing of root so we don't write "Child" before it
-		printNode(root);
-		
-		while(root->children[childNum + 1] != NULL) {
-			childNum++;
-			printSubTree(root->children[childNum], siblingNum, childNum, treeLevel + 1);
-		}
+		printNode(parseTree);
 
-		childNum = -1;
-		if(root->sibling != NULL) {
-			printSubTree(root->sibling, siblingNum + 1, childNum, treeLevel);
+		int i = 0;
+		while (parseTree->children[i] != NULL) {
+			printSubTree(parseTree->children[i], -1, i, treeLevel + 1);
+			i++;
+		}
+		if (parseTree->sibling != NULL) {
+			printSubTree(parseTree->sibling, 0, -1, treeLevel);
 		}
 	}
 }
@@ -37,28 +35,23 @@ void printSubTree(treeNode *curNode, int siblingNum, int childNum, int treeLevel
 		printf("!   ");
 	}
 
-	if(childNum > -1) {
+	if (siblingNum == -1) {
 		printf("Child: %d  ", childNum);
 		printNode(curNode);
-		siblingNum = -1;
-	}
-	else {
+	} else {
 		printf("Sibling: %d  ", siblingNum);
 		printNode(curNode);
 	}
 
-	childNum = -1;
-	while(curNode->children[childNum + 1] != NULL) {
-		//we only want to increase tree depth for the first child of a new depth
-		if(childNum == 0) {
-			treeLevel++;
-		}
-		childNum++;
-		printSubTree(curNode->children[childNum], siblingNum, childNum, treeLevel + 1);
+	int i = 0;
+	while (curNode->children[i] != NULL) {
+		printSubTree(curNode->children[i], -1, i, treeLevel + 1);
+		i++;
 	}
-	if(curNode->sibling != NULL) {
-		printSubTree(curNode->sibling, siblingNum + 1, childNum, treeLevel);
+	if (curNode->sibling != NULL) {
+		printSubTree(curNode->sibling, siblingNum + 1, -1, treeLevel);
 	}
+
 }
 
 /*
@@ -325,8 +318,8 @@ treeNode *makeId(char* id, int isArray) {
 treeNode *makeEquExpression(treeNode* mutable, treeNode* expression) {
 	treeNode *n = newNode();
 	n->kind = Assign;
-	n->val.equE.left = left;
-	n->val.equE.right = right;
+	n->children[0] = mutable;
+	n->children[1] = expression;
 	n->opType = Eq;
 	return n;
 }
@@ -548,15 +541,15 @@ treeNode *addStatementList(treeNode *statementList, treeNode *statement) {
 }
 
 treeNode *makeMatchedStatement( treeNode* simpleExpression, treeNode* matched) {
-	treeNode* t = newNode();
+	treeNode* n = newNode();
 	n->type = If;
 	n->children[0] = simpleExpression;
 	n->children[1] = matched;
-	return t;
+	return n;
 }
 
 treeNode *makeUnmatchedStatement( treeNode* simpleExpression, treeNode* matched, treeNode* unmatched) {
-	treeNode* t = newNode();
+	treeNode* n = newNode();
 	n->type = If;
 	if (matched == NULL && unmatched != NULL) {
 		n->children[0] = simpleExpression;
@@ -571,7 +564,7 @@ treeNode *makeUnmatchedStatement( treeNode* simpleExpression, treeNode* matched,
 		n->children[1] = matched;
 		n->children[2] = unmatched;
 	}
-	return t;
+	return n;
 }
 
 treeNode *makeIterationStatement(treeNode* simpleExpression, treeNode* statement) {
