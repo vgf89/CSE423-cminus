@@ -145,7 +145,7 @@ program:
         ;
 
     declaration:
-        varDeclaration { $$ = NULL; }
+        varDeclaration { $$ = $1; }
         | funDeclaration { $$ = $1; }
         | recDeclaration { $$ = $1; }
         ;
