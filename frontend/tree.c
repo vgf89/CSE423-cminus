@@ -205,14 +205,6 @@ void printReturn(int linenum)
 {
 	printf("Return [line: %d]\n", linenum);
 }
-/*
-        NCT numType;
-        CCT charType;
-        BCT boolType;
-        RECT rectType;
-        IDT idType;
-        KWT keywordType;
-*/
 
 treeNode *newNode() {
 	treeNode *node = (treeNode*) calloc (1, sizeof(treeNode));
@@ -430,6 +422,62 @@ treeNode *makeNotExpression(treeNode *unaryRelExpression)
 	n->kind = Op;
 	n->opType = Not;
 	n->children[0] = unaryRelExpression;
+	return n;
+}
+
+treeNode* makeRelExpression(treeNode *sumExpressionl, treeNode *relop, treeNode *sumExpressionr)
+{
+	treeNode *n = relop;
+	n->children[0] = sumExpressionl;
+	n->children[1] = sumExpressionr;
+	return n;
+}
+
+treeNode* makeLEQ()
+{
+	treeNode *n = newNode();
+	n->kind = Op;
+	n->opType = Leq;
+	return n;
+}
+
+treeNode* makeGEQ()
+{
+	treeNode *n = newNode();
+	n->kind = Op;
+	n->opType = Geq;
+	return n;
+}
+
+treeNode* makeLSS()
+{
+	treeNode *n = newNode();
+	n->kind = Op;
+	n->opType = Lss;
+	return n;
+}
+
+treeNode* makeGSS()
+{
+	treeNode *n = newNode();
+	n->kind = Op;
+	n->opType = Gss;
+	return n;
+}
+
+treeNode* makeEQ()
+{
+	treeNode *n = newNode();
+	n->kind = Op;
+	n->opType = Eq;
+	return n;
+}
+
+treeNode* makeNOTEQ()
+{
+	treeNode *n = newNode();
+	n->kind = Op;
+	n->opType = Noteq;
 	return n;
 }
 

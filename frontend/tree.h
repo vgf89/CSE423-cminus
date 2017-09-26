@@ -79,6 +79,14 @@ treeNode *makeMatchedStatement( treeNode* simpleExpression, treeNode* matched);
 treeNode *makeUnmatchedStatement( treeNode* simpleExpression, treeNode* matched, treeNode* unmatched);
 treeNode *makeIterationStatement(treeNode* simpleExpression, treeNode* statement);
 
+treeNode *makeRelExpression(treeNode *sumExpressionl, treeNode *relop, treeNode *sumExpressionr);
+treeNode *makeLEQ();
+treeNode* makeGEQ();
+treeNode* makeLSS();
+treeNode* makeGSS();
+treeNode* makeEQ();
+treeNode* makeNOTEQ();
+
 treeNode *makeId(char* id, int isArray);
 treeNode *makeEquExpression(treeNode* left, treeNode* right);
 treeNode *makeAddEExpression(treeNode* left, treeNode* right);
