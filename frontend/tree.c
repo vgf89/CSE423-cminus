@@ -875,6 +875,7 @@ treeNode *makeSUB()
 	treeNode* n = newNode();
 	n->kind = Op;
 	n->opType = Sub;
+	return n;
 }
 
 treeNode *makeMUL()
@@ -882,6 +883,7 @@ treeNode *makeMUL()
 	treeNode* n = newNode();
 	n->kind = Op;
 	n->opType = Mul;
+	return n;
 }
 
 treeNode *makeRAND()
@@ -889,6 +891,7 @@ treeNode *makeRAND()
 	treeNode* n = newNode();
 	n->kind = Op;
 	n->opType = Rand;
+	return n;
 }
 
 treeNode *makeNEG()
@@ -896,4 +899,5 @@ treeNode *makeNEG()
 	treeNode* n = newNode();
 	n->kind = Op;
 	n->opType = Neg;
+	return n;
 }
