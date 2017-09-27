@@ -92,14 +92,17 @@ void printNode(treeNode *parseTree)
 			printId(parseTree->val.id, parseTree->linenum);
 
 		else if (parseTree->kind == Op)
-			printOp(parseTree->val.op, parseTree->linenum);
+			printOp(parseTree, parseTree->linenum);
 
 		else if (parseTree->kind == Assign)
-			printAssign(parseTree->linenum);
+			printAssign(parseTree, parseTree->linenum);
 
 		else if (parseTree->kind == If)
 			printIf(parseTree->linenum);
 
+		else if (parseTree->kind == While)
+			printWhile(parseTree->linenum);
+		
 		else if (parseTree->kind == Break)
 			printBreak(parseTree->linenum);
 
@@ -203,7 +206,14 @@ void printConst(treeNode *parseTree, int type, int linenum)
 			printf("%c", parseTree->val.charconst);
 			break;
 		case BoolType:
-			printf("%d", parseTree->val.boolconst);
+			switch(parseTree->val.boolconst) {
+				case 1:
+					printf("true");
+					break;
+				case 0:
+					printf("false");
+					break;
+			}
 			break;
 		default:
 			break;
@@ -222,17 +232,94 @@ void printId(char *name, int linenum)
 /*
  * Prints operators
  */
-void printOp(char *op, int linenum)
+void printOp(treeNode *parseTree, int linenum)
 {
-	printf("Op: %s [line: %d]\n", op, linenum);
+	printf("Op: ");
+	switch (parseTree->opType) {
+		case Or:
+			printf("or");
+			break;
+		case And:
+			printf("and");
+			break;
+		case Not:
+			printf("not");
+			break;
+		case Noteq:
+			printf("!=");
+			break;
+		case EEq:
+			printf("==");
+			break;
+		case Leq:
+			printf("<=");
+			break;
+		case Geq:
+			printf(">=");
+			break;
+		case Lss:
+			printf("<");
+			break;
+		case Gss:
+			printf(">");
+			break;
+		case Add:
+			printf("+");
+			break;
+		case Sub:
+			printf("-");
+			break;
+		case Mul:
+			printf("*");
+			break;
+		case Div:
+			printf("/");
+			break;
+		case Mod:
+			printf("%%");
+			break;
+		case Bracl:
+			printf("[");
+			break;
+		default:
+			break;
+	}
+	printf(" [line: %d]\n", linenum);
+
 }
 
 /*
  * Prints assignments
  */
-void printAssign(int linenum)
+void printAssign(treeNode *parseTree, int linenum)
 {
-	printf("Assign: = [line: %d]\n", linenum);
+	printf("Assign: ");
+	switch (parseTree->opType) {
+		case Eq:
+			printf("=");
+			break;
+		case AddE:
+			printf("+=");
+			break;
+		case SubE:
+			printf("-=");
+			break;
+		case MulE:
+			printf("*=");
+			break;
+		case DivE:
+			printf("/=");
+			break;
+		case Inc:
+			printf("++");
+			break;
+		case Dec:
+			printf("--");
+			break;
+		default:
+			break;
+	}
+	printf(" [line: %d]\n", linenum);
 }
 
 /*
@@ -241,6 +328,14 @@ void printAssign(int linenum)
 void printIf(int linenum)
 {
 	printf("If [line: %d]\n", linenum);
+}
+
+/*
+ * Prints while statements
+ */
+void printWhile(int linenum)
+{
+	printf("While [line: %d]\n", linenum);
 }
 
 /*
@@ -429,7 +524,7 @@ treeNode *makeAddEExpression(treeNode* mutable, treeNode* expression, int linenu
 	n->kind = Assign;
 	n->children[0] = mutable;
 	n->children[1] = expression;
-	n->opType = Add;
+	n->opType = AddE;
 	return n;
 }
 treeNode *makeSubEExpression(treeNode* mutable, treeNode* expression, int linenum)
@@ -438,7 +533,7 @@ treeNode *makeSubEExpression(treeNode* mutable, treeNode* expression, int linenu
 	n->kind = Assign;
 	n->children[0] = mutable;
 	n->children[1] = expression;
-	n->opType = Sub;
+	n->opType = SubE;
 	return n;
 }
 treeNode *makeMulEExpression(treeNode* mutable, treeNode* expression, int linenum)
@@ -447,7 +542,7 @@ treeNode *makeMulEExpression(treeNode* mutable, treeNode* expression, int linenu
 	n->kind = Assign;
 	n->children[0] = mutable;
 	n->children[1] = expression;
-	n->opType = Mul;
+	n->opType = MulE;
 	return n;
 }
 treeNode *makeDivEExpression(treeNode* mutable, treeNode* expression, int linenum)
@@ -456,12 +551,13 @@ treeNode *makeDivEExpression(treeNode* mutable, treeNode* expression, int linenu
 	n->kind = Assign;
 	n->children[0] = mutable;
 	n->children[1] = expression;
-	n->opType = Div;
+	n->opType = DivE;
 	return n;
 }
 treeNode *makeIncExpression(treeNode* mutable, int linenum)
 {
 	treeNode *n = newNode(linenum);
+	n->kind = Assign;
 	n->children[0] = mutable;
 	n->opType = Inc;
 	return n;
@@ -469,6 +565,7 @@ treeNode *makeIncExpression(treeNode* mutable, int linenum)
 treeNode *makeDecExpression(treeNode* mutable, int linenum)
 {
 	treeNode *n = newNode(linenum);
+	n->kind = Assign;
 	n->children[0] = mutable;
 	n->opType = Dec;
 	return n;
@@ -574,7 +671,7 @@ treeNode* makeEQ(int linenum)
 {
 	treeNode *n = newNode(linenum);
 	n->kind = Op;
-	n->opType = Eq;
+	n->opType = EEq;
 	return n;
 }
 
@@ -774,11 +871,16 @@ treeNode *makeMutableID(char *id, int linenum)
 
 }
 
-treeNode *makeMutableBracketExpression(treeNode* mutable, treeNode* expression)
+treeNode *makeMutableBracketExpression(treeNode* mutable, treeNode* expression, int linenum)
 {
-	mutable->children[0] = expression;
-	mutable->isArray = 1;
-	return mutable; 
+	treeNode* n = newNode(linenum);
+	n->kind = Op;
+	n->opType = Bracl;
+
+	n->children[0] = mutable;
+	n->children[1] = expression;
+	//mutable->isArray = 1;
+	return n; 
 }
 
 treeNode *makeMutableDotId(treeNode* mutable, char *id, int linenum)
@@ -874,7 +976,7 @@ treeNode *makeArgList(treeNode* arglist, treeNode* expression)
 
 treeNode *makeUnaryExpression(treeNode* unaryop, treeNode* unaryExpression)
 {
-	unaryop->sibling = unaryExpression;
+	unaryop->children[0] = unaryExpression;
 	return unaryop;
 }
 
