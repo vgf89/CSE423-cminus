@@ -482,7 +482,6 @@ treeNode *makeVarDeclaration(treeNode* typeSpecifier, treeNode* varDeclList)
 treeNode *makeVarDeclarationId(char* id, int isArray, int arraylength, int linenum)
 {
 	treeNode* t = newNode(linenum);
-	//printf("makedeclarationid %s\n", id);
 	t->val.id = id;
 	t->kind = Var;
 	if (isArray) {
@@ -742,6 +741,9 @@ treeNode* makeEQ(int linenum)
 	return n;
 }
 
+/*
+ * makes a new operator node using NOTEQ for the tree 
+ */
 treeNode* makeNOTEQ(int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -750,6 +752,9 @@ treeNode* makeNOTEQ(int linenum)
 	return n;
 }
 
+/*
+ * makes a new compound statements for the tree 
+ */
 treeNode *makeCompound(treeNode *localDeclarations, treeNode *statementList, int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -759,6 +764,9 @@ treeNode *makeCompound(treeNode *localDeclarations, treeNode *statementList, int
 	return n;
 }
 
+/*
+ * makes a return statement node and adds it to tree
+ */
 treeNode *makeReturnStatement(treeNode *expression, int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -767,6 +775,9 @@ treeNode *makeReturnStatement(treeNode *expression, int linenum)
 	return n;
 }
 
+/*
+ * makes a break statement node and adds it to tree
+ */
 treeNode *makeBreakStatement(int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -774,6 +785,9 @@ treeNode *makeBreakStatement(int linenum)
 	return n; 
 }
 
+/*
+ * makes a func statement node and adds it to tree
+ */
 treeNode *makeFuncStatement( treeNode* typeSpecifier, char* id, treeNode* params, treeNode* statement , int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -789,6 +803,9 @@ treeNode *makeFuncStatement( treeNode* typeSpecifier, char* id, treeNode* params
 	return n;
 }
 
+/*
+ * adds parameters to paramlist sibling 
+ */
 treeNode* makeParamList(treeNode* paramList, treeNode* paramTypeList)
 {
 	treeNode* t = paramList;
@@ -804,6 +821,9 @@ treeNode* makeParamList(treeNode* paramList, treeNode* paramTypeList)
 	}
 }
 
+/*
+ * Sets type for paramTypeList
+ */
 treeNode* makeParamTypeList(treeNode* typeSpecifier, treeNode* paramIdList)
 {
 	treeNode *t = paramIdList; 
@@ -815,6 +835,9 @@ treeNode* makeParamTypeList(treeNode* typeSpecifier, treeNode* paramIdList)
 	return paramIdList;
 }
 
+/*
+ * Add paramId to end of paramId lsit
+ */
 treeNode *makeParamIdList(treeNode* paramIdList, treeNode* paramId)
 {
 	treeNode* t = paramIdList;
@@ -830,6 +853,9 @@ treeNode *makeParamIdList(treeNode* paramIdList, treeNode* paramId)
 	}
 }
 
+/*
+ * make param node
+ */
 treeNode *makeParam(char* id, int isArray, int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -839,6 +865,9 @@ treeNode *makeParam(char* id, int isArray, int linenum)
 	return n;
 }
 
+/*
+ * make int node
+ */
 treeNode *makeIntType(int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -846,6 +875,9 @@ treeNode *makeIntType(int linenum)
 	return n;
 }
 
+/*
+ * make bool type 
+ */
 treeNode *makeBoolType(int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -853,6 +885,9 @@ treeNode *makeBoolType(int linenum)
 	return n;
 } 
 
+/*
+ * make char type
+ */
 treeNode *makeCharType(int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -860,6 +895,9 @@ treeNode *makeCharType(int linenum)
 	return n;
 } 
 
+/*
+ * make record type
+ */
 treeNode *makeRecordType(int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -867,6 +905,9 @@ treeNode *makeRecordType(int linenum)
 	return n;
 }
 
+/*
+ * make call node
+ */
 treeNode *makeCall(char *id, treeNode *args, int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -876,6 +917,9 @@ treeNode *makeCall(char *id, treeNode *args, int linenum)
 	return n;
 }
 
+/*
+ * add statement to end of statement list
+ */
 treeNode *addStatementList(treeNode *statementList, treeNode *statement)
 {
 	treeNode* t = statementList;
@@ -891,7 +935,9 @@ treeNode *addStatementList(treeNode *statementList, treeNode *statement)
 	}
 }
 
-
+/*
+ * creates a matches statement such as "expr 'op' expr"
+ */
 treeNode *makeMatchedStatement(treeNode* simpleExpression, treeNode* matched1, treeNode* matched2, int linenum)
 {
 	treeNode* n = newNode(linenum);
@@ -902,6 +948,9 @@ treeNode *makeMatchedStatement(treeNode* simpleExpression, treeNode* matched1, t
 	return n;
 }
 
+/*
+ * handles unmatched statements. Also protects against dangling else
+ */
 treeNode *makeUnmatchedStatement( treeNode* simpleExpression, treeNode* matched, treeNode* unmatched, int linenum)
 {
 	treeNode* n = newNode(linenum);
@@ -925,6 +974,9 @@ treeNode *makeUnmatchedStatement( treeNode* simpleExpression, treeNode* matched,
 	return n;
 }
 
+/*
+ * makes and iteration statement node
+ */
 treeNode *makeIterationStatement(treeNode* simpleExpression, treeNode* statement, int linenum)
 {
 	treeNode* t = newNode(linenum);
@@ -934,6 +986,9 @@ treeNode *makeIterationStatement(treeNode* simpleExpression, treeNode* statement
 	return t;
 }
 
+/*
+ * creates a mutable ID node
+ */
 treeNode *makeMutableID(char *id, int linenum)
 {
 	treeNode* n = newNode(linenum);
