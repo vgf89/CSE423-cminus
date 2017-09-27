@@ -51,6 +51,7 @@ void printId(char *name, int linenum);
 void printOp(treeNode *parseTree, int linenum);
 void printAssign(treeNode *parseTree, int linenum);
 void printIf(int linenum);
+void printWhile(int linenum);
 void printBreak(int linenum);
 void printCall(char *name, int linenum);
 void printReturn(int linenum);
