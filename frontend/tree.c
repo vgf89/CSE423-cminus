@@ -265,6 +265,9 @@ void printOp(treeNode *parseTree, int linenum)
 		case Mod:
 			printf("%%");
 			break;
+		case Bracl:
+			printf("[");
+			break;
 		default:
 			break;
 	}
