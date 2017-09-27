@@ -658,8 +658,9 @@ treeNode *makeIterationStatement(treeNode* simpleExpression, treeNode* statement
 	return t;
 }
 
-treeNode *makeSumExpression(*treeNode sumExpression, *treeNode sumop, *treeNode term) {
-	treeNode* t = sumop
+treeNode *makeSumExpression(treeNode* sumExpression, treeNode* sumop, treeNode* term) 
+{
+	treeNode* t = sumop;
 	if (t != NULL) {
 		t->children[0] = sumExpression;
 		t->children[1] = term; 
@@ -669,20 +670,25 @@ treeNode *makeSumExpression(*treeNode sumExpression, *treeNode sumop, *treeNode 
 	return t;
 }
 
-treeNode *makeAddSumOp() {
+treeNode *makeAddOp() 
+{
 	treeNode* n = newNode();
+	n->kind = Op;
 	n->opType = Add;
 	return n;
 }
 
-treeNode *makeSubSumOp() {
+treeNode *makeSubOp()
+{
 	treeNode* n = newNode();
+	n->kind = Op;
 	n->opType = Sub;
 	return n;
 }
 
-treeNode *makeTerm(treeNode* term, treeNode* mulop, treeNode* unaryExpression) {
-	treeNode* t = mulop
+treeNode *makeTerm(treeNode* term, treeNode* mulop, treeNode* unaryExpression)
+{
+	treeNode* t = mulop;
 	if (t != NULL) {
 		t->children[0] = term;
 		t->children[1] = unaryExpression; 
@@ -692,27 +698,28 @@ treeNode *makeTerm(treeNode* term, treeNode* mulop, treeNode* unaryExpression) {
 	return t;	
 }
 
-treeNode *makeMulSumOp() {
+treeNode *makeMulOp()
+{
 	treeNode* n = newNode();
+	n->kind = Op;
 	n->opType = Mul;
 	return n;
 }
 
-treeNode *makeDivSumOp() {
+treeNode *makeDivOp()
+{
 	treeNode* n = newNode();
+	n->kind = Op;
 	n->opType = Div;
 	return n;
 }
 
 
-treeNode *makeModSumOp() {
+treeNode *makeModOp()
+{
 	treeNode* n = newNode();
+	n->kind = Op;
 	n->opType = Mod;
 	return n;
 }
-
-
-
-
-
 

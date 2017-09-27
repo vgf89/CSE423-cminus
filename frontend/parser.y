@@ -328,24 +328,24 @@ program:
         ;
     
     sumExpression:
-        sumExpression sumop term    { $$ = NULL; }
-        | term                      { $$ = NULL; }
+        sumExpression sumop term    { $$ = makeSumExpression($1, $2, $3); }
+        | term                      { $$ = $1; }
         ;
     
     sumop:
-        ADD
-        | SUB
+        ADD	{ $$ = makeAddOp(); }
+        | SUB	{ $$ = makeSubOp(); }
         ;
     
     term:
-        term mulop unaryExpression
-        | unaryExpression
+        term mulop unaryExpression	{ $$ = NULL; }  /*makeTerm($1, $2, $3); }*/
+        | unaryExpression		{ $$ = NULL; }  /*$1*/
         ;
     
     mulop:
-        MUL
-        | DIV
-        | MOD
+        MUL	{ $$ = makeMulOp(); }
+        | DIV	{ $$ = makeDivOp(); }
+        | MOD	{ $$ = makeModOp(); }
         ;
     
     unaryExpression:

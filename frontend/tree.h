@@ -81,11 +81,11 @@ treeNode *makeIterationStatement(treeNode* simpleExpression, treeNode* statement
 
 treeNode *makeRelExpression(treeNode *sumExpressionl, treeNode *relop, treeNode *sumExpressionr);
 treeNode *makeLEQ();
-treeNode* makeGEQ();
-treeNode* makeLSS();
-treeNode* makeGSS();
-treeNode* makeEQ();
-treeNode* makeNOTEQ();
+treeNode *makeGEQ();
+treeNode *makeLSS();
+treeNode *makeGSS();
+treeNode *makeEQ();
+treeNode *makeNOTEQ();
 
 treeNode *makeId(char* id, int isArray);
 treeNode *makeEquExpression(treeNode* left, treeNode* right);
@@ -99,6 +99,15 @@ treeNode *makeDecExpression(treeNode* left);
 treeNode *makeNotExpression(treeNode *unaryRelExpression);
 treeNode *makeAndExpression(treeNode *andExpression, treeNode *unaryRelExpression);
 treeNode *makeSimpleExpression(treeNode *simpleExpression, treeNode *andExpression);
+
+treeNode *makeSumExpression(treeNode *sumExpression, treeNode *sumop, treeNode *term);
+treeNode *makeAddOp();
+treeNode *makeSubOp();
+
+treeNode *makeTerm(treeNode *term, treeNode *mulop, treeNode *unaryExpression);
+treeNode *makeMulOp();
+treeNode *makeDivOp();
+treeNode *makeModOp();
 
 treeNode *makeintConst(int i);
 treeNode *makeboolConst(int b);
