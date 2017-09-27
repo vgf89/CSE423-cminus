@@ -203,7 +203,14 @@ void printConst(treeNode *parseTree, int type, int linenum)
 			printf("%c", parseTree->val.charconst);
 			break;
 		case BoolType:
-			printf("%d", parseTree->val.boolconst);
+			switch(parseTree->val.boolconst) {
+				case 1:
+					printf("true");
+					break;
+				case 0:
+					printf("false");
+					break;
+			}
 			break;
 		default:
 			break;
