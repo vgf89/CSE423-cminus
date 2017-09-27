@@ -203,7 +203,7 @@ void printConst(treeNode *parseTree, int type, int linenum)
 			printf("%d", parseTree->val.intconst);
 			break;
 		case CharType:
-			printf("%c", parseTree->val.charconst);
+			printf("'%c'", parseTree->val.charconst);
 			break;
 		case BoolType:
 			switch(parseTree->val.boolconst) {
@@ -280,6 +280,12 @@ void printOp(treeNode *parseTree, int linenum)
 			break;
 		case Bracl:
 			printf("[");
+			break;
+		case Rand:
+			printf("?");
+			break;
+		case Dot:
+			printf(".");
 			break;
 		default:
 			break;
@@ -803,7 +809,7 @@ treeNode *makeRecordType(int linenum)
 treeNode *makeCall(char *id, treeNode *args, int linenum)
 {
 	treeNode *n = newNode(linenum);
-	n->type = Call;
+	n->kind = Call;
 	n->val.id = id;
 	n->children[0] = args;
 	return n;
