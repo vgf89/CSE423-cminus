@@ -167,7 +167,7 @@ program:
         ;
     
     varDeclaration:
-        typeSpecifier varDeclList SEMI { }
+        typeSpecifier varDeclList SEMI { $$ = makeVarDeclaration($1, $2); }
         ;
     
     scopedVarDeclaration:

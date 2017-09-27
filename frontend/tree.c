@@ -363,12 +363,15 @@ treeNode *addVarDeclarationInitialize(treeNode *varDeclList, treeNode *varDeclIn
 /*
  * creates a new var decleration node
  */
-treeNode *makeVarDeclaration(char* id)
+treeNode *makeVarDeclaration(treeNode* typeSpecifier, treeNode* varDeclList)
 {
-	treeNode* t = newNode();
-	t->val.id = id;
-	t->kind = Var;
-	return t;
+	treeNode* t = varDeclList;
+	while (t != NULL)
+	{
+		t->type = typeSpecifier->type;
+		t = t->sibling;
+	}
+	return varDeclList;
 }
 
 /*
@@ -377,7 +380,7 @@ treeNode *makeVarDeclaration(char* id)
 treeNode *makeVarDeclarationId(char* id, int isArray, int arraylength)
 {
 	treeNode* t = newNode();
-	printf("makedeclarationid %s\n", id);
+	//printf("makedeclarationid %s\n", id);
 	t->val.id = id;
 	t->kind = Var;
 	if (isArray) {

@@ -64,7 +64,7 @@ treeNode *makeScopedVarDeclaration(treeNode *scopedTypedSpecifier, treeNode *var
 treeNode *addVarDeclarationInitialize(treeNode *varDeclList, treeNode *varDeclInitialize);
 
 treeNode *makeDeclaration(treeNode* declarationList, treeNode* declaration);
-treeNode *makeVarDeclaration(char* id);
+treeNode *makeVarDeclaration(treeNode* typeSpecifier, treeNode* varDeclList);
 treeNode *makeVarDeclarationId(char* id, int isArray, int arraylength);
 treeNode *addSimpleExpressionToVarDeclarationID(treeNode *varDeclId, treeNode *simpleExpression);
 
