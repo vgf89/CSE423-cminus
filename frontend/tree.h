@@ -13,7 +13,7 @@ typedef struct treeNode {
 
     //extra properties about the node depending on type of the node
 
-    enum {Var, Func, Rec, Param, Compound, Const, Id, Op, Assign, If, Break, Call, Return, While, Incomplete} kind;
+    enum {Var, Func, Rec, Param, Compound, Const, Id, Op, Assign, If, Break, Call, Return, While} kind;
 
     enum {IntType, VoidType, CharType, BoolType, RecordType} type;
 
