@@ -638,6 +638,9 @@ treeNode *makeCharConst(char c, int linenum)
 	return n;
 }
 
+/*
+ * makes a simple expression for the tree 
+ */
 treeNode *makeSimpleExpression(treeNode *simpleExpression, treeNode *andExpression, int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -648,6 +651,9 @@ treeNode *makeSimpleExpression(treeNode *simpleExpression, treeNode *andExpressi
 	return n;
 }
 
+/*
+ * makes a new operator node using AND for the tree 
+ */
 treeNode *makeAndExpression(treeNode *andExpression, treeNode *unaryRelExpression, int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -658,6 +664,9 @@ treeNode *makeAndExpression(treeNode *andExpression, treeNode *unaryRelExpressio
 	return n;
 }
 
+/*
+ * makes a new operator node using OR for the tree 
+ */
 treeNode *makeNotExpression(treeNode *unaryRelExpression, int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -667,6 +676,9 @@ treeNode *makeNotExpression(treeNode *unaryRelExpression, int linenum)
 	return n;
 }
 
+/*
+ * adds children to relop treenode 
+ */
 treeNode* makeRelExpression(treeNode *sumExpressionl, treeNode *relop, treeNode *sumExpressionr)
 {
 	treeNode *n = relop;
@@ -675,6 +687,9 @@ treeNode* makeRelExpression(treeNode *sumExpressionl, treeNode *relop, treeNode 
 	return n;
 }
 
+/*
+ * makes a new operator node using <= for the tree 
+ */
 treeNode* makeLEQ(int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -683,6 +698,9 @@ treeNode* makeLEQ(int linenum)
 	return n;
 }
 
+/*
+ * makes a new operator node using >= for the tree 
+ */
 treeNode* makeGEQ(int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -691,6 +709,9 @@ treeNode* makeGEQ(int linenum)
 	return n;
 }
 
+/*
+ * makes a new operator node using < for the tree 
+ */
 treeNode* makeLSS(int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -699,6 +720,9 @@ treeNode* makeLSS(int linenum)
 	return n;
 }
 
+/*
+ * makes a new operator node using > for the tree 
+ */
 treeNode* makeGSS(int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -707,6 +731,9 @@ treeNode* makeGSS(int linenum)
 	return n;
 }
 
+/*
+ * makes a new operator node using EQ for the tree 
+ */
 treeNode* makeEQ(int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -913,6 +940,9 @@ treeNode *makeMutableID(char *id, int linenum)
 
 }
 
+/*
+ * Makes a new array expression using the [ operator 
+ */
 treeNode *makeMutableBracketExpression(treeNode* mutable, treeNode* expression, int linenum)
 {
 	treeNode* n = newNode(linenum);
@@ -935,7 +965,9 @@ treeNode *makeMutableDotId(treeNode* mutable, char *id, int linenum)
 	return n;
 }
 
-
+/*
+ * makes a sum expression and sets the two children on the left and right side 
+ */
 treeNode *makeSumExpression(treeNode* sumExpression, treeNode* sumop, treeNode* term)
 {
 	treeNode* t = sumop;
@@ -948,6 +980,9 @@ treeNode *makeSumExpression(treeNode* sumExpression, treeNode* sumop, treeNode* 
 	return t;
 }
 
+/*
+ * makes a new operator node using addition for the tree 
+ */
 treeNode *makeAddOp(int linenum)
 {
 	treeNode* n = newNode(linenum);
@@ -956,6 +991,9 @@ treeNode *makeAddOp(int linenum)
 	return n;
 }
 
+/*
+ * makes a new operator node using subtraction for the tree 
+ */
 treeNode *makeSubOp(int linenum)
 {
 	treeNode* n = newNode(linenum);
@@ -964,6 +1002,9 @@ treeNode *makeSubOp(int linenum)
 	return n;
 }
 
+/*
+ * makes a mul operation and adds its children 
+ */
 treeNode *makeTerm(treeNode* term, treeNode* mulop, treeNode* unaryExpression)
 {
 	treeNode* t = mulop;
