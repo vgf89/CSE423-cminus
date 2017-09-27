@@ -245,6 +245,9 @@ void printOp(treeNode *parseTree, int linenum)
 		case Noteq:
 			printf("!=");
 			break;
+		case EEq:
+			printf("==");
+			break;
 		case Leq:
 			printf("<=");
 			break;
@@ -656,7 +659,7 @@ treeNode* makeEQ()
 {
 	treeNode *n = newNode();
 	n->kind = Op;
-	n->opType = Eq;
+	n->opType = EEq;
 	return n;
 }
 

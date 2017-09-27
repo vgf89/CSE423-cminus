@@ -17,7 +17,7 @@ typedef struct treeNode {
 
     enum {IntType, VoidType, CharType, BoolType, RecordType} type;
 
-    enum {Or, And, Not, Leq, Geq, Lss, Gss, Eq, AddE, SubE, MulE, DivE, Noteq, Add, Sub, Mul, Div, Mod, Rand, Neg, Inc, Dec, Dot, Bracl} opType;
+    enum {Or, And, Not, Leq, Geq, Lss, Gss, Eq, AddE, SubE, MulE, DivE, Noteq, Add, Sub, Mul, Div, Mod, Rand, Neg, Inc, Dec, Dot, Bracl, EEq} opType;
     
     union {                   //relevent data to type -> attr
         char* id;
