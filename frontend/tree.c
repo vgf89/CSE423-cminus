@@ -910,14 +910,17 @@ treeNode *makeUnmatchedStatement( treeNode* simpleExpression, treeNode* matched,
 		n->children[0] = simpleExpression;
 		n->children[1] = unmatched;
 	}
-	if (matched != NULL && unmatched == NULL) {
+	else if (matched != NULL && unmatched == NULL) {
 		n->children[0] = simpleExpression;
 		n->children[1] = matched;	
 	}
-	if (matched != NULL && unmatched != NULL) {
+	else if (matched != NULL && unmatched != NULL) {
 		n->children[0] = simpleExpression;
 		n->children[1] = matched;
 		n->children[2] = unmatched;
+	}
+	else if (matched == NULL && unmatched == NULL) {
+		n->children[0] = simpleExpression;
 	}
 	return n;
 }
