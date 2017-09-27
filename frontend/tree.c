@@ -610,5 +610,26 @@ treeNode *makeIterationStatement(treeNode* simpleExpression, treeNode* statement
 	return t;
 }
 
+treeNode *makeMutableID(char *id)
+{
+	treeNode* n = newNode();
+	n->kind = Id;
+	n->val.id = id;
+	return n;
+
+}
+
+treeNode *makeMutableBracketExpression(treeNode* mutable_t, treeNode* expression)
+{
+	mutable->children[0] = expression;
+	mutable->isArray = 1;
+	return mutable; 
+}
+
+treeNode *makeMutableDotId(treeNode* mutable_t, char *id)
+{
+	mutable->children[0]->val.id = id;
+	return mutable;
+}
 
 

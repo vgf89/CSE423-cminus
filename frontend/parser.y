@@ -364,9 +364,9 @@ program:
         ;
     
     mutable:
-        ID  { $$ = NULL; }
-        | mutable BRACL expression BRACR  { $$ = NULL; }
-        | mutable DOT ID  { $$ = NULL; }
+        ID  { $$ = makeMutableID($1.IDvalue); }
+        | mutable BRACL expression BRACR  { $$ = makeMutableBracketExpression($1, $3); }
+        | mutable DOT ID  { $$ = makeMutableDotExpression($1, $3.IDvalue); }
         ;
     
     immutable:
