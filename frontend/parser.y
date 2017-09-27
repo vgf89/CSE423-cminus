@@ -23,14 +23,9 @@ int numerror = 0;
 // The union will figure out the yystype void pointer stuff
 // as they come back in arbitraily typed tokens
 %union {
-    NCT numConstToken;
-    BCT boolConstToken;
-    CCT charConstToken;
-    RECT recordToken;
-    IDT idToken;
-    KWT keyWordToken;
-
+    SPT superToken;
 }
+
 %union {
     int num;
     char* string;
@@ -39,58 +34,58 @@ int numerror = 0;
 
 
 // Terminal symbols, based on crazy union stuff
-%token <numConstToken> NUMCONST
-%token <charConstToken> CHARCONST
-%token <boolConstToken> BOOLCONST
-%token <recordToken> RECTYPE
-%token <idToken> ID
+%token <superToken> NUMCONST
+%token <superToken> CHARCONST
+%token <superToken> BOOLCONST
+%token <superToken> RECTYPE
+%token <superToken> ID
 
 // KeyWord tokens
 // Includes Math operators
-%token <keyWordToken> IF
-%token <keyWordToken> ELSE
-%token <keyWordToken> BOOL
-%token <keyWordToken> CHAR
-%token <keyWordToken> INT
-%token <keyWordToken> NOT
-%token <keyWordToken> AND
-%token <keyWordToken> OR
+%token <superToken> IF
+%token <superToken> ELSE
+%token <superToken> BOOL
+%token <superToken> CHAR
+%token <superToken> INT
+%token <superToken> NOT
+%token <superToken> AND
+%token <superToken> OR
 //TRUE/FALSE?
-%token <keyWordToken> RETURN
-%token <keyWordToken> RECORD
-%token <keyWordToken> BREAK
-%token <keyWordToken> WHILE
-%token <keywordtoken> STATIC
-%token <keyWordToken> PARL
-%token <keyWordToken> PARR
-%token <keyWordToken> EQ
-%token <keyWordToken> NOTEQ
-%token <keyWordToken> EQUALS
-%token <keyWordToken> LSS
-%token <keyWordToken> GSS
-%token <keyWordToken> LEQ
-%token <keyWordToken> GEQ
-%token <keyWordToken> ADDE
-%token <keyWordToken> SUBE
-%token <keyWordToken> MULE
-%token <keyWordToken> DIVE
-%token <keyWordToken> DEC
-%token <keyWordToken> INC
-%token <keyWordToken> MUL
-%token <keyWordToken> DIV
-%token <keyWordToken> ADD
-%token <keyWordToken> SUB
-%token <keyWordToken> MOD
-%token <keyWordToken> RAND
-%token <keyWordToken> NEG
-%token <keyWordToken> BRACL
-%token <keyWordToken> BRACR
-%token <keyWordToken> SEMI
-%token <keyWordToken> COLON
-%token <keyWordToken> DOT
-%token <keyWordToken> CURLL
-%token <keyWordToken> CURLR
-%token <keyWordToken> COMMA
+%token <superToken> RETURN
+%token <superToken> RECORD
+%token <superToken> BREAK
+%token <superToken> WHILE
+%token <superToken> STATIC
+%token <superToken> PARL
+%token <superToken> PARR
+%token <superToken> EQ
+%token <superToken> NOTEQ
+%token <superToken> EQUALS
+%token <superToken> LSS
+%token <superToken> GSS
+%token <superToken> LEQ
+%token <superToken> GEQ
+%token <superToken> ADDE
+%token <superToken> SUBE
+%token <superToken> MULE
+%token <superToken> DIVE
+%token <superToken> DEC
+%token <superToken> INC
+%token <superToken> MUL
+%token <superToken> DIV
+%token <superToken> ADD
+%token <superToken> SUB
+%token <superToken> MOD
+%token <superToken> RAND
+%token <superToken> NEG
+%token <superToken> BRACL
+%token <superToken> BRACR
+%token <superToken> SEMI
+%token <superToken> COLON
+%token <superToken> DOT
+%token <superToken> CURLL
+%token <superToken> CURLR
+%token <superToken> COMMA
 
 //Types for grammar
 %type<node> declarationList
