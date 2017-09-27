@@ -136,7 +136,6 @@ int numerror = 0;
 %type<node> args
 %type<node> constant
 
-
 //Rules following
 %%
 program:
@@ -158,7 +157,7 @@ program:
     
     recDeclaration:
         RECORD ID CURLL localDeclarations CURLR
-            { $$ = makeRecordDeclaration($2.IDvalue, $4); }
+            { $$ = makeRecordDeclaration($2.IDvalue, $4, $1.lineNumber); }
         ;
     
     varDeclaration:
@@ -180,10 +179,10 @@ program:
         ;
     
     varDeclId:
-        ID  { $$ = makeVarDeclarationId($1.IDvalue, 0, 0); }
+        ID  { $$ = makeVarDeclarationId($1.IDvalue, 0, 0, $1.lineNumber); }
         | ID BRACL NUMCONST BRACR     {
             //printf("%s\n", $1.IDvalue);
-            $$ = makeVarDeclarationId($1.IDvalue, 1, $3.numericalValue); 
+            $$ = makeVarDeclarationId($1.IDvalue, 1, $3.numericalValue, $1.lineNumber); 
                                         $$->arrayLength = $3.numericalValue; }
         ;
     
@@ -207,8 +206,8 @@ program:
         ;
     
     funDeclaration:
-        typeSpecifier ID PARL params PARR statement { $$ = makeFuncStatement( $1, $2.IDvalue, $4, $6 ); }
-        | ID PARL params PARR statement             { $$ = makeFuncStatement( NULL, $1.IDvalue, $3, $5 ); }
+        typeSpecifier ID PARL params PARR statement { $$ = makeFuncStatement( $1, $2.IDvalue, $4, $6, $2.lineNumber); }
+        | ID PARL params PARR statement             { $$ = makeFuncStatement( NULL, $1.IDvalue, $3, $5, $1.lineNumber); }
         ;
     
     params:
@@ -231,8 +230,8 @@ program:
         ;
     
     paramId:
-        ID                      { $$ = makeParam($1.IDvalue, 0); }
-        | ID BRACL BRACR        { $$ = makeParam($1.IDvalue, 1); }
+        ID                      { $$ = makeParam($1.IDvalue, 0, $1.lineNumber); }
+        | ID BRACL BRACR        { $$ = makeParam($1.IDvalue, 1, $1.lineNumber); }
         ;
     
     statementList:
@@ -246,14 +245,14 @@ program:
         ;
 
     matched:
-        IF PARL simpleExpression PARR matched ELSE matched      { $$ = makeMatchedStatement($3, $5); }
+        IF PARL simpleExpression PARR matched ELSE matched      { $$ = makeMatchedStatement($3, $5, $1.lineNumber); }
         | otherStmt                                             { $$ = $1; }
         ;
 
     unmatched:
-        IF PARL simpleExpression PARR matched                   { $$ = makeUnmatchedStatement($3, $5, NULL); }
-        | IF PARL simpleExpression PARR unmatched               { $$ = makeUnmatchedStatement($3, NULL, $5); }
-        | IF PARL simpleExpression PARR matched ELSE unmatched  { $$ = makeUnmatchedStatement($3, $5, $7); }
+        IF PARL simpleExpression PARR matched                   { $$ = makeUnmatchedStatement($3, $5, NULL, $1.lineNumber); }
+        | IF PARL simpleExpression PARR unmatched               { $$ = makeUnmatchedStatement($3, NULL, $5, $1.lineNumber); }
+        | IF PARL simpleExpression PARR matched ELSE unmatched  { $$ = makeUnmatchedStatement($3, $5, $7, $1.lineNumber); }
         ;
 
     otherStmt:
@@ -266,7 +265,7 @@ program:
         ;
     
     compoundStmt:
-        CURLL localDeclarations statementList CURLR    { $$ = makeCompound($2, $3); }
+        CURLL localDeclarations statementList CURLR    { $$ = makeCompound($2, $3, $1.lineNumber); }
         ;
     
     localDeclarations:
@@ -280,12 +279,12 @@ program:
         ;
     
     iterationStmt:
-        WHILE PARL simpleExpression PARR statement { $$ = makeIterationStatement($3, $5); }
+        WHILE PARL simpleExpression PARR statement { $$ = makeIterationStatement($3, $5, $1.lineNumber); }
         ;
 
     returnStmt:
-        RETURN SEMI                 { $$ = makeReturnStatement( NULL ); }
-        | RETURN expression SEMI    { $$ = makeReturnStatement( $2 ); }
+        RETURN SEMI                 { $$ = makeReturnStatement(NULL, $1.lineNumber); }
+        | RETURN expression SEMI    { $$ = makeReturnStatement($2, $1.lineNumber); }
         ;
     
     breakStmt:
@@ -293,28 +292,28 @@ program:
         ;
 
     expression:
-        mutable EQUALS expression   { $$ = makeEquExpression($1, $3); }
-        | mutable ADDE expression   { $$ = makeAddEExpression($1, $3); }
-        | mutable SUBE expression   { $$ = makeSubEExpression($1, $3); }
-        | mutable MULE expression   { $$ = makeMulEExpression($1, $3); }
-        | mutable DIVE expression   { $$ = makeDivEExpression($1, $3); }
-        | mutable INC               { $$ = makeIncExpression($1); }
-        | mutable DEC               { $$ = makeDecExpression($1); }
+        mutable EQUALS expression   { $$ = makeEquExpression($1, $3, $2.lineNumber); }
+        | mutable ADDE expression   { $$ = makeAddEExpression($1, $3, $2.lineNumber); }
+        | mutable SUBE expression   { $$ = makeSubEExpression($1, $3, $2.lineNumber); }
+        | mutable MULE expression   { $$ = makeMulEExpression($1, $3, $2.lineNumber); }
+        | mutable DIVE expression   { $$ = makeDivEExpression($1, $3, $2.lineNumber); }
+        | mutable INC               { $$ = makeIncExpression($1, $2.lineNumber); }
+        | mutable DEC               { $$ = makeDecExpression($1, $2.lineNumber); }
         | simpleExpression          { $$ = $1; }
         ;
     
     simpleExpression:
-        simpleExpression OR andExpression { $$ = makeSimpleExpression($1, $3); }
+        simpleExpression OR andExpression { $$ = makeSimpleExpression($1, $3, $2.lineNumber); }
         | andExpression { $$ = $1; }
         ;
     
     andExpression:
-        andExpression AND unaryRelExpression { $$ = makeAndExpression($1, $3); }
+        andExpression AND unaryRelExpression { $$ = makeAndExpression($1, $3, $2.lineNumber); }
         | unaryRelExpression { $$ = $1; }
         ;
     
     unaryRelExpression:
-        NOT unaryRelExpression { $$ = makeNotExpression($2); }
+        NOT unaryRelExpression { $$ = makeNotExpression($2, $1.lineNumber); }
         | relExpression { $$ = $1; }
         ;
     
@@ -348,9 +347,9 @@ program:
         ;
     
     mulop:
-        MUL	{ $$ = makeMulOp(); }
-        | DIV	{ $$ = makeDivOp(); }
-        | MOD	{ $$ = makeModOp(); }
+        MUL	{ $$ = makeMulOp($1.lineNumber); }
+        | DIV	{ $$ = makeDivOp($1.lineNumber); }
+        | MOD	{ $$ = makeModOp($1.lineNumber); }
         ;
     
     unaryExpression:
@@ -359,10 +358,10 @@ program:
         ;
     
     unaryop:
-        SUB     { $$ = makeSUB(); }
-        | MUL   { $$ = makeMUL(); }
-        | RAND  { $$ = makeRAND(); }
-        | NEG   { $$ = makeNEG(); }
+        SUB     { $$ = makeSUB($1.lineNumber); }
+        | MUL   { $$ = makeMUL($1.lineNumber); }
+        | RAND  { $$ = makeRAND($1.lineNumber); }
+        | NEG   { $$ = makeNEG($1.lineNumber); }
         ;
     
     factor:
@@ -371,10 +370,10 @@ program:
         ;
     
     mutable:
-        ID  { $$ = makeMutableID($1.IDvalue); }
+        ID  { $$ = makeMutableID($1.IDvalue, $1.lineNumber); }
         | mutable BRACL expression BRACR  { 
             $$ = makeMutableBracketExpression($1, $3); }
-        | mutable DOT ID  { $$ = makeMutableDotId($1, $3.IDvalue); }
+        | mutable DOT ID  { $$ = makeMutableDotId($1, $3.IDvalue, $3.lineNumber); }
         ;
     
     immutable:
@@ -384,7 +383,7 @@ program:
         ;
 
     call:
-        ID PARL args PARR       { $$ = makeCall($1.IDvalue, $3); }
+        ID PARL args PARR       { $$ = makeCall($1.IDvalue, $3, $1.lineNumber); }
         ;
 
     args:
@@ -398,9 +397,9 @@ program:
         ;
     
     constant:
-        NUMCONST          { $$ = makeIntConst($1.numericalValue); }
-        | CHARCONST       { $$ = makeCharConst($1.letterData); }
-        | BOOLCONST       { $$ = makeBoolConst($1.numericalValue); }
+        NUMCONST          { $$ = makeIntConst($1.numericalValue, $1.lineNumber); }
+        | CHARCONST       { $$ = makeCharConst($1.letterData, $1.lineNumber); }
+        | BOOLCONST       { $$ = makeBoolConst($1.numericalValue, $1.lineNumber); }
         ;
 %%
 
