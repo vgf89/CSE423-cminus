@@ -273,7 +273,6 @@ void printReturn(int linenum)
 treeNode *newNode() 
 {
 	treeNode *node = (treeNode*) calloc (1, sizeof(treeNode));
-	node->kind = Incomplete;
 	return node;
 }
 
