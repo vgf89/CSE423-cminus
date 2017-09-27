@@ -524,6 +524,10 @@ treeNode *makeEquExpression(treeNode* mutable, treeNode* expression, int linenum
 	n->opType = Eq;
 	return n;
 }
+
+/*
+ * makes a new assignment expression node for += which will add to the tree
+ */
 treeNode *makeAddEExpression(treeNode* mutable, treeNode* expression, int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -533,6 +537,10 @@ treeNode *makeAddEExpression(treeNode* mutable, treeNode* expression, int linenu
 	n->opType = AddE;
 	return n;
 }
+
+/*
+ * makes a new assignment expression node for -= which will add to the tree
+ */
 treeNode *makeSubEExpression(treeNode* mutable, treeNode* expression, int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -542,6 +550,10 @@ treeNode *makeSubEExpression(treeNode* mutable, treeNode* expression, int linenu
 	n->opType = SubE;
 	return n;
 }
+
+/*
+ * makes a new assignment expression node for *= which will add to the tree
+ */
 treeNode *makeMulEExpression(treeNode* mutable, treeNode* expression, int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -551,6 +563,10 @@ treeNode *makeMulEExpression(treeNode* mutable, treeNode* expression, int linenu
 	n->opType = MulE;
 	return n;
 }
+
+/*
+ * makes a new assignment expression node for /= which will add to the tree
+ */
 treeNode *makeDivEExpression(treeNode* mutable, treeNode* expression, int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -560,6 +576,10 @@ treeNode *makeDivEExpression(treeNode* mutable, treeNode* expression, int linenu
 	n->opType = DivE;
 	return n;
 }
+
+/*
+ * makes a new assignment expression node for ++ which will add to the tree
+ */
 treeNode *makeIncExpression(treeNode* mutable, int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -568,6 +588,10 @@ treeNode *makeIncExpression(treeNode* mutable, int linenum)
 	n->opType = Inc;
 	return n;
 }
+
+/*
+ * makes a new assignment expression node for -- which will add to the tree
+ */
 treeNode *makeDecExpression(treeNode* mutable, int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -577,6 +601,9 @@ treeNode *makeDecExpression(treeNode* mutable, int linenum)
 	return n;
 }
 
+/*
+ * makes a new constant node for boolean
+ */
 treeNode *makeBoolConst(int b, int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -586,6 +613,9 @@ treeNode *makeBoolConst(int b, int linenum)
 	return n;
 }
 
+/*
+ * makes a new constant node for integers
+ */
 treeNode *makeIntConst(int i, int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -595,6 +625,9 @@ treeNode *makeIntConst(int i, int linenum)
 	return n;
 }
 
+/*
+ * makes a new constant node for characters
+ */
 treeNode *makeCharConst(char c, int linenum)
 {
 	treeNode *n = newNode(linenum);
@@ -940,6 +973,9 @@ treeNode *makeTerm(treeNode* term, treeNode* mulop, treeNode* unaryExpression)
 	return t;	
 }
 
+/*
+ * Makes a muliplication operator node on the tree 
+ */
 treeNode *makeMulOp(int linenum)
 {
 	treeNode* n = newNode(linenum);
@@ -948,6 +984,9 @@ treeNode *makeMulOp(int linenum)
 	return n;
 }
 
+/*
+ * Makes a divide operator node on the tree 
+ */
 treeNode *makeDivOp(int linenum)
 {
 	treeNode* n = newNode(linenum);
@@ -956,7 +995,9 @@ treeNode *makeDivOp(int linenum)
 	return n;
 }
 
-
+/*
+ * makes a modular operator node on the tree 
+ */
 treeNode *makeModOp(int linenum)
 {
 	treeNode* n = newNode(linenum);
@@ -965,6 +1006,9 @@ treeNode *makeModOp(int linenum)
 	return n;
 }
 
+/*
+ * makes an arg list and sets its siblings on the tree 
+ */
 treeNode *makeArgList(treeNode* arglist, treeNode* expression)
 {
 	treeNode* t = arglist; 
@@ -979,13 +1023,18 @@ treeNode *makeArgList(treeNode* arglist, treeNode* expression)
 	}
 }
 
-
+/*
+ * Makes an unary expression on the tree 
+ */
 treeNode *makeUnaryExpression(treeNode* unaryop, treeNode* unaryExpression)
 {
 	unaryop->children[0] = unaryExpression;
 	return unaryop;
 }
 
+/*
+ * Makes a subtraction operator node on the tree
+ */
 treeNode *makeSUB(int linenum)
 {
 	treeNode* n = newNode(linenum);
@@ -994,6 +1043,9 @@ treeNode *makeSUB(int linenum)
 	return n;
 }
 
+/*
+ * Makes a multiply operator node on the tree
+ */
 treeNode *makeMUL(int linenum)
 {
 	treeNode* n = newNode(linenum);
@@ -1002,6 +1054,9 @@ treeNode *makeMUL(int linenum)
 	return n;
 }
 
+/*
+ * Makes a ? operator node on the tree
+ */
 treeNode *makeRAND(int linenum)
 {
 	treeNode* n = newNode(linenum);
@@ -1010,6 +1065,9 @@ treeNode *makeRAND(int linenum)
 	return n;
 }
 
+/*
+ * Makes a negative operator node on the tree 
+ */
 treeNode *makeNEG(int linenum)
 {
 	treeNode* n = newNode(linenum);
