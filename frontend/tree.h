@@ -122,5 +122,9 @@ treeNode *makeBreakStatement( );
 treeNode *makeReturnStatement(treeNode *expression);
 treeNode *makeCompound(treeNode *left, treeNode *right);
 
+treeNode *makeMutableID(char *id);
+treeNode *makeMutableBracketExpression(treeNode* mutable_t, treeNode* expression);
+treeNode *makeMutableDotId(treeNode* mutable_t, char *id);
+
 
 
