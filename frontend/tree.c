@@ -686,7 +686,6 @@ treeNode *makeMutableDotId(treeNode* mutable, char *id)
 	return mutable_t;
 }
 
-<<<<<<< dec84110e2c3cef90c7223cd010aa9bbe85fb37d
 treeNode *makeSumExpression(*treeNode sumExpression, *treeNode sumop, *treeNode term) 
 {
 	treeNode* t = sumop;
