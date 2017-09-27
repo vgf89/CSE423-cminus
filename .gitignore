@@ -30,7 +30,7 @@
 
 # Executables
 *.exe
-*.out
+#*.out
 !scannerTest.out
 *.app
 *.i*86

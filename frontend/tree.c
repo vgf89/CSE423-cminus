@@ -698,7 +698,7 @@ treeNode *makeCall(char *id, treeNode *args)
 {
 	treeNode *n = newNode();
 	n->type = Call;
-	n->val.id = strdup(id);
+	n->val.id = id;
 	n->children[0] = args;
 	return n;
 }
@@ -769,16 +769,17 @@ treeNode *makeMutableBracketExpression(treeNode* mutable, treeNode* expression)
 {
 	mutable->children[0] = expression;
 	mutable->isArray = 1;
-	return mutable_t; 
+	return mutable; 
 }
 
 treeNode *makeMutableDotId(treeNode* mutable, char *id)
 {
 	mutable->children[0]->val.id = id;
-	return mutable_t;
+	return mutable;
 }
 
-treeNode *makeSumExpression(*treeNode sumExpression, *treeNode sumop, *treeNode term) 
+
+treeNode *makeSumExpression(treeNode* sumExpression, treeNode* sumop, treeNode* term) 
 {
 	treeNode* t = sumop;
 	if (t != NULL) {
@@ -850,8 +851,6 @@ treeNode *makeArgList(treeNode* arglist, treeNode* expression)
 		while (t->sibling != NULL) {
 			t = t->sibling;
 		}
-		t->sibling = arglist;
-		t = t->sibling;
 		t->sibling = expression;
 		return t;
 	} else {

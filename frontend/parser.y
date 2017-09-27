@@ -133,6 +133,13 @@ int numerror = 0;
 %type<node> unaryExpression
 %type<node> unaryop
 %type<node> factor
+%type<node> term
+%type<node> sumop
+%type<node> mulop
+%type<node> call
+%type<node> argList
+%type<node> args
+%type<node> constant
 
 
 //Rules following
@@ -388,7 +395,7 @@ program:
 
     args:
         argList { $$ = $1; }
-        |
+        | { $$ = NULL; }
         ;
     
     argList:

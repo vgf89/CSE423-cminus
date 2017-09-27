@@ -132,5 +132,9 @@ treeNode *makeMutableID(char *id);
 treeNode *makeMutableBracketExpression(treeNode* mutable_t, treeNode* expression);
 treeNode *makeMutableDotId(treeNode* mutable, char *id);
 
+treeNode *makeCall(char *id, treeNode *args);
+treeNode *makeArgList(treeNode* arglist, treeNode* expression);
 
-
+treeNode *makeBoolConst(int b);
+treeNode *makeIntConst(int i);
+treeNode *makeCharConst(char c);
