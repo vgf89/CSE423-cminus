@@ -937,7 +937,7 @@ treeNode *makeArgList(treeNode* arglist, treeNode* expression)
 
 treeNode *makeUnaryExpression(treeNode* unaryop, treeNode* unaryExpression)
 {
-	unaryop->sibling = unaryExpression;
+	unaryop->children[0] = unaryExpression;
 	return unaryop;
 }
 
