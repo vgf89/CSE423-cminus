@@ -3,6 +3,7 @@
 #include <string.h>
 #include "scanType.h"
 extern int yylex();
+extern int yyerror();
 
 #include "parser.tab.h"
 
