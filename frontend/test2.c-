@@ -1,4 +1,4 @@
-wallace(int wrong, trousers, sheep) {
-    if (not  (shave == close) or not close) shave = true;
-    else close = false;
+wallace() {
+    
+    if (x>5) if (y>6) z=4; else z=5;
 }
