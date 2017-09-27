@@ -408,6 +408,8 @@ int main (int argc, char** argv)
 {
     char *filename = argv[1];
     int c = 0;
+
+    //handling for debug and any future options
     while ((c = getopt(argc, argv, "d")) != -1) { 
         switch (c) {
         case 'd':
@@ -429,6 +431,8 @@ int main (int argc, char** argv)
                 return -1;
         }
     }
+
+    //open file
     if(argc > 1) {
         FILE *myfile = fopen(filename, "r");
         if (!myfile) {
@@ -446,6 +450,7 @@ int main (int argc, char** argv)
         }
     } while (!feof(yyin));
 
+    //print tree
     printTree(root);
 
     printf("Number of warnings: %d\n", numwarn);
