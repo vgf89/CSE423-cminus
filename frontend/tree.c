@@ -854,7 +854,7 @@ treeNode *makeUnmatchedStatement( treeNode* simpleExpression, treeNode* matched,
 treeNode *makeIterationStatement(treeNode* simpleExpression, treeNode* statement) 
 {
 	treeNode* t = newNode();
-	t->type = While;
+	t->kind = While;
 	t->children[0] = simpleExpression;
 	t->children[1] = statement;
 	return t;
