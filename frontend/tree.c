@@ -857,9 +857,14 @@ treeNode *makeMutableID(char *id)
 
 treeNode *makeMutableBracketExpression(treeNode* mutable, treeNode* expression)
 {
-	mutable->children[0] = expression;
-	mutable->isArray = 1;
-	return mutable; 
+	treeNode* n = newNode();
+	n->kind = Op;
+	n->opType = Bracl;
+
+	n->children[0] = mutable;
+	n->children[1] = expression;
+	//mutable->isArray = 1;
+	return n; 
 }
 
 treeNode *makeMutableDotId(treeNode* mutable, char *id)
