@@ -171,11 +171,7 @@ program:
         ;
     
     scopedVarDeclaration:
-        scopedTypeSpecifier varDeclList SEMI {
-            treeNode *t = newNode();
-            t->type = IntType;
-            $$ = makeScopedVarDeclaration($1, $2);
-        }
+        scopedTypeSpecifier varDeclList SEMI { $$ = makeScopedVarDeclaration($1, $2); }
         ;
     
     varDeclList:
