@@ -398,6 +398,8 @@ treeNode *makeRecordDeclaration(char* id, treeNode* localDeclarations, int linen
 treeNode *makeDeclaration(treeNode* declarationList, treeNode* declaration)
 {
 	treeNode* t = declarationList;
+
+	// Traverse sibling list to add declaration onto the end
 	if (t != NULL)
 	{
 		while (t->sibling != NULL) {
@@ -416,6 +418,7 @@ treeNode *makeDeclaration(treeNode* declarationList, treeNode* declaration)
 treeNode *makeLocalDeclaration(treeNode* localDeclarations, treeNode* scopedVarDeclaration)
 {
 	treeNode* t = localDeclarations;
+	// Traverse sibling list to add scopedVarDeclaration onto the end
 	if (t != NULL)
 	{
 		while (t->sibling != NULL) {
@@ -450,6 +453,7 @@ treeNode *makeScopedVarDeclaration(treeNode *scopedTypedSpecifier, treeNode *var
 treeNode *addVarDeclarationInitialize(treeNode *varDeclList, treeNode *varDeclInitialize)
 {
 	treeNode* t = varDeclList;
+	// Traverse sibling list to add varDeclInitialize onto the end
 	if (t != NULL)
 	{
 		while (t->sibling != NULL) {
@@ -468,6 +472,7 @@ treeNode *addVarDeclarationInitialize(treeNode *varDeclList, treeNode *varDeclIn
 treeNode *makeVarDeclaration(treeNode* typeSpecifier, treeNode* varDeclList)
 {
 	treeNode* t = varDeclList;
+	//Iterate over each sibling in varDeclList and set its type to typeSpecifier
 	while (t != NULL)
 	{
 		t->type = typeSpecifier->type;
@@ -809,6 +814,7 @@ treeNode *makeFuncStatement( treeNode* typeSpecifier, char* id, treeNode* params
 treeNode* makeParamList(treeNode* paramList, treeNode* paramTypeList)
 {
 	treeNode* t = paramList;
+	// Traverse over sibling list, add paramTypeList to end
 	if (t != NULL)
 	{
 		while (t->sibling != NULL) {
@@ -827,6 +833,7 @@ treeNode* makeParamList(treeNode* paramList, treeNode* paramTypeList)
 treeNode* makeParamTypeList(treeNode* typeSpecifier, treeNode* paramIdList)
 {
 	treeNode *t = paramIdList; 
+	// Set all siblings to typeSpecifier's type
 	while (t != NULL)
 	{
 		t->type = typeSpecifier->type;
@@ -841,6 +848,7 @@ treeNode* makeParamTypeList(treeNode* typeSpecifier, treeNode* paramIdList)
 treeNode *makeParamIdList(treeNode* paramIdList, treeNode* paramId)
 {
 	treeNode* t = paramIdList;
+	// Traverse over sibling list, add paramId to end
 	if (t != NULL)
 	{
 		while (t->sibling != NULL) {
@@ -923,6 +931,7 @@ treeNode *makeCall(char *id, treeNode *args, int linenum)
 treeNode *addStatementList(treeNode *statementList, treeNode *statement)
 {
 	treeNode* t = statementList;
+	// Traverse over statement sibling list, add statement to end
 	if (t != NULL)
 	{
 		while (t->sibling != NULL) {
@@ -955,7 +964,12 @@ treeNode *makeUnmatchedStatement( treeNode* simpleExpression, treeNode* matched,
 {
 	treeNode* n = newNode(linenum);
 	n->kind = If;
-	if (matched == NULL && unmatched != NULL) {
+
+	// Handle unmatched statement cases
+	if (matched == NULL && unmatched == NULL) {
+		n->children[0] = simpleExpression;
+	}
+	else if (matched == NULL && unmatched != NULL) {
 		n->children[0] = simpleExpression;
 		n->children[1] = unmatched;
 	}
@@ -967,9 +981,6 @@ treeNode *makeUnmatchedStatement( treeNode* simpleExpression, treeNode* matched,
 		n->children[0] = simpleExpression;
 		n->children[1] = matched;
 		n->children[2] = unmatched;
-	}
-	else if (matched == NULL && unmatched == NULL) {
-		n->children[0] = simpleExpression;
 	}
 	return n;
 }
@@ -1105,7 +1116,8 @@ treeNode *makeModOp(int linenum)
  */
 treeNode *makeArgList(treeNode* arglist, treeNode* expression)
 {
-	treeNode* t = arglist; 
+	treeNode* t = arglist;
+	// Add expression to end of expression sibling list
 	if (t != NULL) {
 		while (t->sibling != NULL) {
 			t = t->sibling;
