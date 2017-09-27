@@ -672,13 +672,13 @@ treeNode *makeMutableBracketExpression(treeNode* mutable_t, treeNode* expression
 {
 	mutable->children[0] = expression;
 	mutable->isArray = 1;
-	return mutable; 
+	return mutable_t; 
 }
 
 treeNode *makeMutableDotId(treeNode* mutable_t, char *id)
 {
 	mutable->children[0]->val.id = id;
-	return mutable;
+	return mutable_t;
 }
 
 treeNode *makeSumExpression(*treeNode sumExpression, *treeNode sumop, *treeNode term) {
