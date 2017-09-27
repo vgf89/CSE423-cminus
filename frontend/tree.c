@@ -597,11 +597,12 @@ treeNode *makeRecordType()
 	return n;
 }
 
-treeNode *makeCall(treeNode *id, treeNode *args)
+treeNode *makeCall(char *id, treeNode *args) 
 {
 	treeNode *n = newNode();
 	n->type = Call;
 	n->val.id = id->val.id;
+	n->children[0] = args;
 	return n;
 }
 
@@ -710,6 +711,23 @@ treeNode *makeModSumOp() {
 	n->opType = Mod;
 	return n;
 }
+
+treeNode *makeArgList(treeNode* arglist, treeNode* expression) {
+	treeNode* t = arglist; 
+	if (t != NULL) {
+		while (t->sibling != NULL) {
+			t = t->sibling;
+		}
+		t->sibling = arglist;
+		t = t->sibling;
+		t->sibling = expression;
+		return t;
+	} else {
+		return expression;
+	}
+}
+
+
 
 
 
