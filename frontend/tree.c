@@ -304,6 +304,12 @@ void printAssign(treeNode *parseTree, int linenum)
 		case DivE:
 			printf("/=");
 			break;
+		case Inc:
+			printf("++");
+			break;
+		case Dec:
+			printf("--");
+			break;
 		default:
 			break;
 	}
@@ -536,6 +542,7 @@ treeNode *makeDivEExpression(treeNode* mutable, treeNode* expression)
 treeNode *makeIncExpression(treeNode* mutable)
 {
 	treeNode *n = newNode();
+	n->kind = Assign;
 	n->children[0] = mutable;
 	n->opType = Inc;
 	return n;
@@ -543,6 +550,7 @@ treeNode *makeIncExpression(treeNode* mutable)
 treeNode *makeDecExpression(treeNode* mutable)
 {
 	treeNode *n = newNode();
+	n->kind = Assign;
 	n->children[0] = mutable;
 	n->opType = Dec;
 	return n;
