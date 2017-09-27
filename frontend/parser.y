@@ -371,8 +371,8 @@ program:
         ;
     
     factor:
-        immutable
-        | mutable
+        immutable   { $$ = $1; }
+        | mutable   { $$ = $1; }
         ;
     
     mutable:
