@@ -323,12 +323,12 @@ program:
         ;
     
     relop:
-        LEQ     { $$ = makeLEQ(); }
-        | GEQ   { $$ = makeGEQ(); }
-        | LSS   { $$ = makeLSS(); }
-        | GSS   { $$ = makeGSS(); }
-        | EQ    { $$ = makeEQ(); }
-        | NOTEQ { $$ = makeNOTEQ(); }
+        LEQ     { $$ = makeLEQ($1.lineNumber); }
+        | GEQ   { $$ = makeGEQ($1.lineNumber); }
+        | LSS   { $$ = makeLSS($1.lineNumber); }
+        | GSS   { $$ = makeGSS($1.lineNumber); }
+        | EQ    { $$ = makeEQ($1.lineNumber); }
+        | NOTEQ { $$ = makeNOTEQ($1.lineNumber); }
         ;
     
     sumExpression:
@@ -337,8 +337,8 @@ program:
         ;
     
     sumop:
-        ADD	{ $$ = makeAddOp(); }
-        | SUB	{ $$ = makeSubOp(); }
+        ADD	{ $$ = makeAddOp($1.lineNumber); }
+        | SUB	{ $$ = makeSubOp($1.lineNumber); }
         ;
     
     term:
@@ -372,7 +372,7 @@ program:
     mutable:
         ID  { $$ = makeMutableID($1.IDvalue, $1.lineNumber); }
         | mutable BRACL expression BRACR  { 
-            $$ = makeMutableBracketExpression($1, $3); }
+            $$ = makeMutableBracketExpression($1, $3, $2.lineNumber); }
         | mutable DOT ID  { $$ = makeMutableDotId($1, $3.IDvalue, $3.lineNumber); }
         ;
     
