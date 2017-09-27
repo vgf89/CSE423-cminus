@@ -369,7 +369,7 @@ program:
     mutable:
         ID  { $$ = makeMutableID($1.IDvalue); }
         | mutable BRACL expression BRACR  { $$ = makeMutableBracketExpression($1, $3); }
-        | mutable DOT ID  { $$ = makeMutableDotExpression($1, $3.IDvalue); }
+        | mutable DOT ID  { $$ = makeMutableDotId($1, $3.IDvalue); }
         ;
     
     immutable:
