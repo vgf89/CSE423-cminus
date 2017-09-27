@@ -749,4 +749,10 @@ treeNode *makeArgList(treeNode* arglist, treeNode* expression) {
 	}
 }
 
+treeNode *makeImmutable(treeNode *child) {
+	treeNode *n = newNode();
+	n->children[0] = child;
+	return n;
+}
+
 
