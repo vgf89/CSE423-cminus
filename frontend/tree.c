@@ -827,7 +827,7 @@ treeNode *addStatementList(treeNode *statementList, treeNode *statement)
 treeNode *makeMatchedStatement( treeNode* simpleExpression, treeNode* matched, int linenum)
 {
 	treeNode* n = newNode(linenum);
-	n->type = If;
+	n->kind = If;
 	n->children[0] = simpleExpression;
 	n->children[1] = matched;
 	return n;
@@ -836,7 +836,7 @@ treeNode *makeMatchedStatement( treeNode* simpleExpression, treeNode* matched, i
 treeNode *makeUnmatchedStatement( treeNode* simpleExpression, treeNode* matched, treeNode* unmatched, int linenum)
 {
 	treeNode* n = newNode(linenum);
-	n->type = If;
+	n->kind = If;
 	if (matched == NULL && unmatched != NULL) {
 		n->children[0] = simpleExpression;
 		n->children[1] = unmatched;
@@ -856,7 +856,7 @@ treeNode *makeUnmatchedStatement( treeNode* simpleExpression, treeNode* matched,
 treeNode *makeIterationStatement(treeNode* simpleExpression, treeNode* statement, int linenum)
 {
 	treeNode* t = newNode(linenum);
-	t->type = While;
+	t->kind = While;
 	t->children[0] = simpleExpression;
 	t->children[1] = statement;
 	return t;
