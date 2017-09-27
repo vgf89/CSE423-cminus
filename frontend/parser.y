@@ -179,7 +179,8 @@ program:
     
     varDeclId:
         ID  { $$ = makeVarDeclarationId($1.IDvalue, 0, 0); }
-        | ID BRACL NUMCONST BRACR  { $$ = makeVarDeclarationId($1.IDvalue, 1, $3.numericalValue); }
+        | ID BRACL NUMCONST BRACR     { $$ = makeVarDeclarationId($1.IDvalue, 1, $3.numericalValue); 
+                                        $$->arrayLength = $3.numericalValue; }
         ;
     
     scopedTypeSpecifier:
@@ -366,7 +367,7 @@ program:
         ;
     
     mutable:
-        ID  { $$ = NULL; }
+        ID  { $$ = $1.IDvalue; }
         | mutable BRACL expression BRACR  { $$ = NULL; }
         | mutable DOT ID  { $$ = NULL; }
         ;
@@ -378,23 +379,23 @@ program:
         ;
 
     call:
-        ID PARL args PARR
+        ID PARL args PARR       { $$ = makeCall($1.IDvalue, $3); }
         ;
 
     args:
-        argList
+        argList { $$ = $1; }
         |
         ;
     
     argList:
-        argList COMMA expression
-        | expression
+        argList COMMA expression    { $$ = makeArgList($1, $3); }
+        | expression                { $$ = makeArgList(NULL, $1); }
         ;
     
     constant:
-        NUMCONST//        { $$ = makeIntConst($1.numericalValue); }
-        | CHARCONST//     { $$ = makeCharConst($1.letterData); }
-        | BOOLCONST//     { $$ = makeBoolConst($1.numericalValue); }
+        NUMCONST          { $$ = makeIntConst($1.numericalValue); }
+        | CHARCONST       { $$ = makeCharConst($1.letterData); }
+        | BOOLCONST       { $$ = makeBoolConst($1.numericalValue); }
         ;
 %%
 
