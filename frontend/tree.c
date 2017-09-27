@@ -3,6 +3,9 @@
 #include <stdlib.h>
 
 
+/*
+ *  prints entire tree or "Tree is empty" if it's empty
+ */
 void printTree(treeNode *parseTree) 
 {
 	//If sentinal node has no children the program is empty, else it has one child which is the true root.
@@ -29,6 +32,9 @@ void printTree(treeNode *parseTree)
 	}
 }
 
+/*
+ *  Prints all sub-trees below primary node
+ */
 void printSubTree(treeNode *curNode, int siblingNum, int childNum, int treeLevel) 
 {
 	int i = 0;
@@ -60,7 +66,7 @@ void printSubTree(treeNode *curNode, int siblingNum, int childNum, int treeLevel
 }
 
 /*
- * 
+ * Decides which kind of node needs to be printed
  */
 void printNode(treeNode *parseTree)
 {
@@ -104,6 +110,9 @@ void printNode(treeNode *parseTree)
 			printReturn(parseTree->linenum);
 }
 
+/*
+ * Utility function for printing types when necessary
+ */
 void printType(int type)
 {
 	switch(type){
@@ -126,6 +135,10 @@ void printType(int type)
 			return;
 	}
 }
+
+/*
+ * Prints variabe declerations
+ */
 void printVar(treeNode *parseTree, char *name, int type, int linenum)
 {
 	printf("Var %s ", name);
@@ -136,17 +149,29 @@ void printVar(treeNode *parseTree, char *name, int type, int linenum)
 	printType(type);
 	printf(" [line: %d]\n", linenum);
 }
+
+/*
+ * Prints record declerations
+ */
 void printRec(treeNode *parseTree, char *name, int linenum)
 {
 	printf("Record %s ", name);
 	printf(" [line: %d]\n", linenum);
 }
+
+/*
+ * Prints function declerations
+ */
 void printFunc(char *name, int type, int linenum)
 {
 	printf("Func %s returns type ", name);
 	printType(type);
 	printf(" [line: %d]\n", linenum);
 }
+
+/*
+ * Prints parameter declerations
+ */
 void printParam(treeNode *parseTree, char *name, int type, int linenum)
 {
 	printf("Param %s ", name);
@@ -155,10 +180,18 @@ void printParam(treeNode *parseTree, char *name, int type, int linenum)
 	printType(type);
 	printf(" [line: %d]\n", linenum);
 }
+
+/*
+ * Prints when compound statement is found
+ */
 void printCompound(int linenum)
 {
 	printf("Compound [line: %d]\n", linenum);
 }
+
+/*
+ * Prints constants
+ */
 void printConst(treeNode *parseTree, int type, int linenum)
 {
 	printf("Const: ");
@@ -177,35 +210,66 @@ void printConst(treeNode *parseTree, int type, int linenum)
 	}
 	printf(" [line: %d]\n", linenum);
 }
+
+/*
+ * Prints ids
+ */
 void printId(char *name, int linenum)
 {
 	printf("Id: %s [line: %d]\n", name, linenum);
 }
+
+/*
+ * Prints operators
+ */
 void printOp(char *op, int linenum)
 {
 	printf("Op: %s [line: %d]\n", op, linenum);
 }
+
+/*
+ * Prints assignments
+ */
 void printAssign(int linenum)
 {
 	printf("Assign: = [line: %d]\n", linenum);
 }
+
+/*
+ * Prints if statements
+ */
 void printIf(int linenum)
 {
 	printf("If [line: %d]\n", linenum);
 }
+
+/*
+ * Prints break statements
+ */
 void printBreak(int linenum)
 {
 	printf("Break [line: %d]\n", linenum);
 }
+
+/*
+ * Prints function call statements
+ */
 void printCall(char *name, int linenum)
 {
 	printf("Call: %s [line: %d]\n", name, linenum);
 }
+
+/*
+ * Prints return statements
+ */
 void printReturn(int linenum)
 {
 	printf("Return [line: %d]\n", linenum);
 }
 
+/*
+ * allocates memories for new tree nodes
+ */
 treeNode *newNode() 
 {
 	treeNode *node = (treeNode*) calloc (1, sizeof(treeNode));
@@ -214,8 +278,9 @@ treeNode *newNode()
 }
 
 
-
-
+/*
+ * makes a new node for record decleration
+ */
 treeNode *makeRecordDeclaration(char* id, treeNode* localDeclarations) 
 {
 	//printf("In makeRecordDeclaration\n");
@@ -226,6 +291,9 @@ treeNode *makeRecordDeclaration(char* id, treeNode* localDeclarations)
 	return n;
 }
 
+/*
+ * sets sibling pointers of decleration list nodes
+ */
 treeNode *makeDeclaration(treeNode* declarationList, treeNode* declaration) 
 {
 	treeNode* t = declarationList;
@@ -241,6 +309,9 @@ treeNode *makeDeclaration(treeNode* declarationList, treeNode* declaration)
 	}
 }
 
+/*
+ * sets sibling pointers of local decleration list nodes
+ */
 treeNode *makeLocalDeclaration(treeNode* localDeclarations, treeNode* scopedVarDeclaration) {
 	treeNode* t = localDeclarations;
 	if (t != NULL)
@@ -256,6 +327,9 @@ treeNode *makeLocalDeclaration(treeNode* localDeclarations, treeNode* scopedVarD
 	
 }
 
+/*
+ * sets sibling pointers of scoped decleration list nodes
+ */
 treeNode *makeScopedVarDeclaration(treeNode *scopedTypedSpecifier, treeNode *varDeclList) 
 {
 	//Iterate over each sibling in varDeclList and set its type to scopedTypeSpecifier
@@ -268,6 +342,9 @@ treeNode *makeScopedVarDeclaration(treeNode *scopedTypedSpecifier, treeNode *var
 	return varDeclList;
 }
 
+/*
+ * sets sibling pointers of var decleration nodes
+ */
 treeNode *addVarDeclarationInitialize(treeNode *varDeclList, treeNode *varDeclInitialize) 
 {
 	treeNode* t = varDeclList;
@@ -283,6 +360,9 @@ treeNode *addVarDeclarationInitialize(treeNode *varDeclList, treeNode *varDeclIn
 	}
 }
 
+/*
+ * creates a new var decleration node
+ */
 treeNode *makeVarDeclaration(char* id)
 {
 	treeNode* t = newNode();
@@ -291,6 +371,9 @@ treeNode *makeVarDeclaration(char* id)
 	return t;
 }
 
+/*
+ * creates a new var decleration ID node
+ */
 treeNode *makeVarDeclarationId(char* id, int isArray, int arraylength)
 {
 	treeNode* t = newNode();
@@ -303,12 +386,18 @@ treeNode *makeVarDeclarationId(char* id, int isArray, int arraylength)
 	return t;
 }
 
+/*
+ * creates a new var decleration node
+ */
 treeNode *addSimpleExpressionToVarDeclarationID(treeNode *varDeclId, treeNode *simpleExpression)
 {
 	varDeclId->children[0] = simpleExpression;
 	return varDeclId;
 }
 
+/*
+ * Utility function for making id nodes
+ */
 treeNode *makeId(char* id, int isArray)
 {
 	treeNode *n = newNode();
@@ -318,6 +407,9 @@ treeNode *makeId(char* id, int isArray)
 	return n;
 }
 
+/*
+ * creates a new assignment expression node
+ */
 treeNode *makeEquExpression(treeNode* mutable, treeNode* expression)
 {
 	treeNode *n = newNode();
