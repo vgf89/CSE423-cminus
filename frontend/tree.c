@@ -971,12 +971,8 @@ treeNode *makeMutableDotId(treeNode* mutable, char *id, int linenum)
 treeNode *makeSumExpression(treeNode* sumExpression, treeNode* sumop, treeNode* term)
 {
 	treeNode* t = sumop;
-	if (t != NULL) {
-		t->children[0] = sumExpression;
-		t->children[1] = term; 
-	} else {
-		t = term;
-	}
+	t->children[0] = sumExpression;
+	t->children[1] = term;
 	return t;
 }
 
@@ -1008,12 +1004,8 @@ treeNode *makeSubOp(int linenum)
 treeNode *makeTerm(treeNode* term, treeNode* mulop, treeNode* unaryExpression)
 {
 	treeNode* t = mulop;
-	if (t != NULL) {
-		t->children[0] = term;
-		t->children[1] = unaryExpression; 
-	} else {
-		t = unaryExpression;
-	}
+	t->children[0] = term;
+	t->children[1] = unaryExpression; 
 	return t;	
 }
 
@@ -1061,7 +1053,7 @@ treeNode *makeArgList(treeNode* arglist, treeNode* expression)
 			t = t->sibling;
 		}
 		t->sibling = expression;
-		return t;
+		return arglist;
 	} else {
 		return expression;
 	}
