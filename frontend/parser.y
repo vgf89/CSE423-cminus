@@ -288,7 +288,7 @@ program:
         ;
     
     breakStmt:
-        BREAK SEMI  { $$ = makeBreakStatement(); }
+        BREAK SEMI  { $$ = makeBreakStatement($1.lineNumber); }
         ;
 
     expression:
