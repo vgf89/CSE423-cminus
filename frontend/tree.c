@@ -871,7 +871,7 @@ treeNode *makeMatchedStatement(treeNode* simpleExpression, treeNode* matched1, t
 	n->kind = If;
 	n->children[0] = simpleExpression;
 	n->children[1] = matched1;
-	n->children[2] = matched1;
+	n->children[2] = matched2;
 	return n;
 }
 
