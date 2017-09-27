@@ -22,8 +22,9 @@ void printTree(treeNode *parseTree)
 		printNode(parseTree);
 
 		int i = 0;
-		while (parseTree->children[i] != NULL) {
-			printSubTree(parseTree->children[i], -1, i, treeLevel + 1);
+		while (i < 3 || parseTree->children[i] != NULL) {
+			if (parseTree->children[i] != NULL)
+				printSubTree(parseTree->children[i], -1, i, treeLevel + 1);
 			i++;
 		}
 		if (parseTree->sibling != NULL) {
