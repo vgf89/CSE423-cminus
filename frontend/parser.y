@@ -245,7 +245,8 @@ program:
         ;
 
     matched:
-        IF PARL simpleExpression PARR matched ELSE matched      { $$ = makeMatchedStatement($3, $5, $1.lineNumber); }
+
+        IF PARL simpleExpression PARR matched ELSE matched      { $$ = makeMatchedStatement($3, $5, $7, $1.lineNumber); }
         | otherStmt                                             { $$ = $1; }
         ;
 

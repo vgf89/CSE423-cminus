@@ -73,7 +73,7 @@ treeNode *makeParamIdList(treeNode* paramIdList, treeNode* paramId);
 treeNode *makeParam(char* id, int isArray, int linenum);
 
 treeNode *addStatementList(treeNode *statementList, treeNode *statement);
-treeNode *makeMatchedStatement( treeNode* simpleExpression, treeNode* matched, int linenum);
+treeNode *makeMatchedStatement(treeNode* simpleExpression, treeNode* matched1, treeNode* matched2, int linenum);
 treeNode *makeUnmatchedStatement( treeNode* simpleExpression, treeNode* matched, treeNode* unmatched, int linenum);
 treeNode *makeIterationStatement(treeNode* simpleExpression, treeNode* statement, int linenum);
 

@@ -863,12 +863,14 @@ treeNode *addStatementList(treeNode *statementList, treeNode *statement)
 	}
 }
 
-treeNode *makeMatchedStatement( treeNode* simpleExpression, treeNode* matched, int linenum)
+
+treeNode *makeMatchedStatement(treeNode* simpleExpression, treeNode* matched1, treeNode* matched2, int linenum)
 {
 	treeNode* n = newNode(linenum);
 	n->kind = If;
 	n->children[0] = simpleExpression;
-	n->children[1] = matched;
+	n->children[1] = matched1;
+	n->children[2] = matched1;
 	return n;
 }
 

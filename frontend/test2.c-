@@ -1,0 +1,4 @@
+wallace(int wrong, trousers, sheep) {
+    if (not  (shave == close) or not close) shave = true;
+    else close = false;
+}
