@@ -606,7 +606,7 @@ treeNode *makeCall(char *id, treeNode *args)
 {
 	treeNode *n = newNode();
 	n->type = Call;
-	n->val.id = id->val.id;
+	n->val.id = strdup(id);
 	n->children[0] = args;
 	return n;
 }
@@ -673,22 +673,23 @@ treeNode *makeMutableID(char *id)
 
 }
 
-treeNode *makeMutableBracketExpression(treeNode* mutable_t, treeNode* expression)
+treeNode *makeMutableBracketExpression(treeNode* mutable, treeNode* expression)
 {
 	mutable->children[0] = expression;
 	mutable->isArray = 1;
 	return mutable_t; 
 }
 
-treeNode *makeMutableDotId(treeNode* mutable_t, char *id)
+treeNode *makeMutableDotId(treeNode* mutable, char *id)
 {
 	mutable->children[0]->val.id = id;
 	return mutable_t;
 }
 
+<<<<<<< dec84110e2c3cef90c7223cd010aa9bbe85fb37d
 treeNode *makeSumExpression(*treeNode sumExpression, *treeNode sumop, *treeNode term) 
 {
-	treeNode* t = sumop
+	treeNode* t = sumop;
 	if (t != NULL) {
 		t->children[0] = sumExpression;
 		t->children[1] = term; 
@@ -768,3 +769,36 @@ treeNode *makeArgList(treeNode* arglist, treeNode* expression)
 }
 
 
+treeNode *makeUnaryExpression(treeNode* unaryop, treeNode* unaryExpression)
+{
+	unaryop->sibling = unaryExpression;
+	return unaryop;
+}
+
+treeNode *makeSUB()
+{
+	treeNode* n = newNode();
+	n->kind = Op;
+	n->opType = Sub;
+}
+
+treeNode *makeMUL()
+{
+	treeNode* n = newNode();
+	n->kind = Op;
+	n->opType = Mul;
+}
+
+treeNode *makeRAND()
+{
+	treeNode* n = newNode();
+	n->kind = Op;
+	n->opType = Rand;
+}
+
+treeNode *makeNEG()
+{
+	treeNode* n = newNode();
+	n->kind = Op;
+	n->opType = Neg;
+}

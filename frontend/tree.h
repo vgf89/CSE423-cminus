@@ -87,6 +87,12 @@ treeNode *makeGSS();
 treeNode *makeEQ();
 treeNode *makeNOTEQ();
 
+treeNode *makeUnaryExpression(treeNode* unaryop, treeNode* unaryExpression);
+treeNode *makeSUB();
+treeNode *makeMUL();
+treeNode *makeRAND();
+treeNode *makeNEG();
+
 treeNode *makeId(char* id, int isArray);
 treeNode *makeEquExpression(treeNode* left, treeNode* right);
 treeNode *makeAddEExpression(treeNode* left, treeNode* right);
@@ -124,7 +130,7 @@ treeNode *makeCompound(treeNode *left, treeNode *right);
 
 treeNode *makeMutableID(char *id);
 treeNode *makeMutableBracketExpression(treeNode* mutable_t, treeNode* expression);
-treeNode *makeMutableDotId(treeNode* mutable_t, char *id);
+treeNode *makeMutableDotId(treeNode* mutable, char *id);
 
 
 
