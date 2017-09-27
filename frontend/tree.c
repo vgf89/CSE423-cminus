@@ -425,6 +425,7 @@ treeNode *makeEquExpression(treeNode* mutable, treeNode* expression)
 treeNode *makeAddEExpression(treeNode* mutable, treeNode* expression)
 {
 	treeNode *n = newNode();
+	n->kind = Assign;
 	n->children[0] = mutable;
 	n->children[1] = expression;
 	n->opType = Add;
@@ -433,6 +434,7 @@ treeNode *makeAddEExpression(treeNode* mutable, treeNode* expression)
 treeNode *makeSubEExpression(treeNode* mutable, treeNode* expression)
 {
 	treeNode *n = newNode();
+	n->kind = Assign;
 	n->children[0] = mutable;
 	n->children[1] = expression;
 	n->opType = Sub;
@@ -441,6 +443,7 @@ treeNode *makeSubEExpression(treeNode* mutable, treeNode* expression)
 treeNode *makeMulEExpression(treeNode* mutable, treeNode* expression)
 {
 	treeNode *n = newNode();
+	n->kind = Assign;
 	n->children[0] = mutable;
 	n->children[1] = expression;
 	n->opType = Mul;
@@ -449,6 +452,7 @@ treeNode *makeMulEExpression(treeNode* mutable, treeNode* expression)
 treeNode *makeDivEExpression(treeNode* mutable, treeNode* expression)
 {
 	treeNode *n = newNode();
+	n->kind = Assign;
 	n->children[0] = mutable;
 	n->children[1] = expression;
 	n->opType = Div;
