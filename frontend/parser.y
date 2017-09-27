@@ -187,7 +187,7 @@ program:
     varDeclId:
         ID  { $$ = makeVarDeclarationId($1.IDvalue, 0, 0); }
         | ID BRACL NUMCONST BRACR     {
-            printf("%s\n", $1.IDvalue);
+            //printf("%s\n", $1.IDvalue);
             $$ = makeVarDeclarationId($1.IDvalue, 1, $3.numericalValue); 
                                         $$->arrayLength = $3.numericalValue; }
         ;
