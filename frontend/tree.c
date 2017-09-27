@@ -206,7 +206,8 @@ void printReturn(int linenum)
 	printf("Return [line: %d]\n", linenum);
 }
 
-treeNode *newNode() {
+treeNode *newNode() 
+{
 	treeNode *node = (treeNode*) calloc (1, sizeof(treeNode));
 	node->kind = Incomplete;
 	return node;
@@ -215,7 +216,8 @@ treeNode *newNode() {
 
 
 
-treeNode *makeRecordDeclaration(char* id, treeNode* localDeclarations) {
+treeNode *makeRecordDeclaration(char* id, treeNode* localDeclarations) 
+{
 	//printf("In makeRecordDeclaration\n");
 	treeNode *n = newNode();
 	n->kind = Rec;
@@ -224,7 +226,8 @@ treeNode *makeRecordDeclaration(char* id, treeNode* localDeclarations) {
 	return n;
 }
 
-treeNode *makeDeclaration(treeNode* declarationList, treeNode* declaration) {
+treeNode *makeDeclaration(treeNode* declarationList, treeNode* declaration) 
+{
 	treeNode* t = declarationList;
 	if (t != NULL)
 	{
@@ -253,7 +256,8 @@ treeNode *makeLocalDeclaration(treeNode* localDeclarations, treeNode* scopedVarD
 	
 }
 
-treeNode *makeScopedVarDeclaration(treeNode *scopedTypedSpecifier, treeNode *varDeclList) {
+treeNode *makeScopedVarDeclaration(treeNode *scopedTypedSpecifier, treeNode *varDeclList) 
+{
 	//Iterate over each sibling in varDeclList and set its type to scopedTypeSpecifier
 	treeNode *t = varDeclList;
 	while (t != NULL)
@@ -264,7 +268,8 @@ treeNode *makeScopedVarDeclaration(treeNode *scopedTypedSpecifier, treeNode *var
 	return varDeclList;
 }
 
-treeNode *addVarDeclarationInitialize(treeNode *varDeclList, treeNode *varDeclInitialize) {
+treeNode *addVarDeclarationInitialize(treeNode *varDeclList, treeNode *varDeclInitialize) 
+{
 	treeNode* t = varDeclList;
 	if (t != NULL)
 	{
@@ -601,7 +606,7 @@ treeNode *makeCall(char *id, treeNode *args)
 {
 	treeNode *n = newNode();
 	n->type = Call;
-	n->val.id = id->val.id;
+	n->val.id = strdup(id);
 	n->children[0] = args;
 	return n;
 }
@@ -668,21 +673,23 @@ treeNode *makeMutableID(char *id)
 
 }
 
-treeNode *makeMutableBracketExpression(treeNode* mutable_t, treeNode* expression)
+treeNode *makeMutableBracketExpression(treeNode* mutable, treeNode* expression)
 {
 	mutable->children[0] = expression;
 	mutable->isArray = 1;
 	return mutable_t; 
 }
 
-treeNode *makeMutableDotId(treeNode* mutable_t, char *id)
+treeNode *makeMutableDotId(treeNode* mutable, char *id)
 {
 	mutable->children[0]->val.id = id;
 	return mutable_t;
 }
 
-treeNode *makeSumExpression(*treeNode sumExpression, *treeNode sumop, *treeNode term) {
-	treeNode* t = sumop
+<<<<<<< dec84110e2c3cef90c7223cd010aa9bbe85fb37d
+treeNode *makeSumExpression(*treeNode sumExpression, *treeNode sumop, *treeNode term) 
+{
+	treeNode* t = sumop;
 	if (t != NULL) {
 		t->children[0] = sumExpression;
 		t->children[1] = term; 
@@ -692,20 +699,25 @@ treeNode *makeSumExpression(*treeNode sumExpression, *treeNode sumop, *treeNode 
 	return t;
 }
 
-treeNode *makeAddSumOp() {
+treeNode *makeAddOp() 
+{
 	treeNode* n = newNode();
+	n->kind = Op;
 	n->opType = Add;
 	return n;
 }
 
-treeNode *makeSubSumOp() {
+treeNode *makeSubOp()
+{
 	treeNode* n = newNode();
+	n->kind = Op;
 	n->opType = Sub;
 	return n;
 }
 
-treeNode *makeTerm(treeNode* term, treeNode* mulop, treeNode* unaryExpression) {
-	treeNode* t = mulop
+treeNode *makeTerm(treeNode* term, treeNode* mulop, treeNode* unaryExpression)
+{
+	treeNode* t = mulop;
 	if (t != NULL) {
 		t->children[0] = term;
 		t->children[1] = unaryExpression; 
@@ -715,26 +727,33 @@ treeNode *makeTerm(treeNode* term, treeNode* mulop, treeNode* unaryExpression) {
 	return t;	
 }
 
-treeNode *makeMulSumOp() {
+treeNode *makeMulOp()
+{
 	treeNode* n = newNode();
+	n->kind = Op;
 	n->opType = Mul;
 	return n;
 }
 
-treeNode *makeDivSumOp() {
+treeNode *makeDivOp()
+{
 	treeNode* n = newNode();
+	n->kind = Op;
 	n->opType = Div;
 	return n;
 }
 
 
-treeNode *makeModSumOp() {
+treeNode *makeModOp()
+{
 	treeNode* n = newNode();
+	n->kind = Op;
 	n->opType = Mod;
 	return n;
 }
 
-treeNode *makeArgList(treeNode* arglist, treeNode* expression) {
+treeNode *makeArgList(treeNode* arglist, treeNode* expression) 
+{
 	treeNode* t = arglist; 
 	if (t != NULL) {
 		while (t->sibling != NULL) {
@@ -756,3 +775,36 @@ treeNode *makeImmutable(treeNode *child) {
 }
 
 
+treeNode *makeUnaryExpression(treeNode* unaryop, treeNode* unaryExpression)
+{
+	unaryop->sibling = unaryExpression;
+	return unaryop;
+}
+
+treeNode *makeSUB()
+{
+	treeNode* n = newNode();
+	n->kind = Op;
+	n->opType = Sub;
+}
+
+treeNode *makeMUL()
+{
+	treeNode* n = newNode();
+	n->kind = Op;
+	n->opType = Mul;
+}
+
+treeNode *makeRAND()
+{
+	treeNode* n = newNode();
+	n->kind = Op;
+	n->opType = Rand;
+}
+
+treeNode *makeNEG()
+{
+	treeNode* n = newNode();
+	n->kind = Op;
+	n->opType = Neg;
+}

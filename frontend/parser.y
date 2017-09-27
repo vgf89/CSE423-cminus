@@ -123,12 +123,16 @@ int numerror = 0;
 %type<node> returnStmt
 %type<node> breakStmt
 %type<node> mutable
+%type<node> immutable
 %type<node> expression
 %type<node> relExpression
 %type<node> unaryRelExpression
 %type<node> andExpression
 %type<node> sumExpression
 %type<node> relop
+%type<node> unaryExpression
+%type<node> unaryop
+%type<node> factor
 
 
 //Rules following
@@ -145,7 +149,7 @@ program:
         ;
 
     declaration:
-        varDeclaration { $$ = NULL; }
+        varDeclaration { $$ = $1; }
         | funDeclaration { $$ = $1; }
         | recDeclaration { $$ = $1; }
         ;
@@ -329,36 +333,36 @@ program:
         ;
     
     sumExpression:
-        sumExpression sumop term    { $$ = NULL; }
-        | term                      { $$ = NULL; }
+        sumExpression sumop term    { $$ = makeSumExpression($1, $2, $3); }
+        | term                      { $$ = $1; }
         ;
     
     sumop:
-        ADD
-        | SUB
+        ADD	{ $$ = makeAddOp(); }
+        | SUB	{ $$ = makeSubOp(); }
         ;
     
     term:
-        term mulop unaryExpression
-        | unaryExpression
+        term mulop unaryExpression	{ $$ = NULL; }  /*makeTerm($1, $2, $3); }*/
+        | unaryExpression		{ $$ = NULL; }  /*$1*/
         ;
     
     mulop:
-        MUL
-        | DIV
-        | MOD
+        MUL	{ $$ = makeMulOp(); }
+        | DIV	{ $$ = makeDivOp(); }
+        | MOD	{ $$ = makeModOp(); }
         ;
     
     unaryExpression:
-        unaryop unaryExpression
-        | factor
+        unaryop unaryExpression { $$ = makeUnaryExpression($1, $2); }
+        | factor { $$ = $1; }
         ;
     
     unaryop:
-        SUB
-        | MUL
-        | RAND
-        | NEG
+        SUB     { $$ = makeSUB(); }
+        | MUL   { $$ = makeMUL(); }
+        | RAND  { $$ = makeRAND(); }
+        | NEG   { $$ = makeNEG(); }
         ;
     
     factor:
@@ -373,9 +377,9 @@ program:
         ;
     
     immutable:
-        PARL expression PARR
-        | call
-        | constant
+        PARL expression PARR  { $$ = NULL; }
+        | call  { $$ = NULL; }
+        | constant  { $$ = NULL; }
         ;
 
     call:
