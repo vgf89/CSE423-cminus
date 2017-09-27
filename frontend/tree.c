@@ -100,6 +100,9 @@ void printNode(treeNode *parseTree)
 		else if (parseTree->kind == If)
 			printIf(parseTree->linenum);
 
+		else if (parseTree->kind == While)
+			printWhile(parseTree->linenum);
+		
 		else if (parseTree->kind == Break)
 			printBreak(parseTree->linenum);
 
@@ -322,6 +325,14 @@ void printAssign(treeNode *parseTree, int linenum)
 void printIf(int linenum)
 {
 	printf("If [line: %d]\n", linenum);
+}
+
+/*
+ * Prints while statements
+ */
+void printWhile(int linenum)
+{
+	printf("While [line: %d]\n", linenum);
 }
 
 /*
@@ -811,7 +822,7 @@ treeNode *addStatementList(treeNode *statementList, treeNode *statement)
 treeNode *makeMatchedStatement( treeNode* simpleExpression, treeNode* matched)
 {
 	treeNode* n = newNode();
-	n->type = If;
+	n->kind = If;
 	n->children[0] = simpleExpression;
 	n->children[1] = matched;
 	return n;
@@ -820,7 +831,7 @@ treeNode *makeMatchedStatement( treeNode* simpleExpression, treeNode* matched)
 treeNode *makeUnmatchedStatement( treeNode* simpleExpression, treeNode* matched, treeNode* unmatched)
 {
 	treeNode* n = newNode();
-	n->type = If;
+	n->kind = If;
 	if (matched == NULL && unmatched != NULL) {
 		n->children[0] = simpleExpression;
 		n->children[1] = unmatched;
