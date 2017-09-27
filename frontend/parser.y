@@ -190,7 +190,9 @@ program:
     
     varDeclId:
         ID  { $$ = makeVarDeclarationId($1.IDvalue, 0, 0); }
-        | ID BRACL NUMCONST BRACR     { $$ = makeVarDeclarationId($1.IDvalue, 1, $3.numericalValue); 
+        | ID BRACL NUMCONST BRACR     {
+            printf("%s\n", $1.IDvalue);
+            $$ = makeVarDeclarationId($1.IDvalue, 1, $3.numericalValue); 
                                         $$->arrayLength = $3.numericalValue; }
         ;
     
@@ -350,8 +352,8 @@ program:
         ;
     
     term:
-        term mulop unaryExpression	{ $$ = NULL; }  /*makeTerm($1, $2, $3); }*/
-        | unaryExpression		{ $$ = NULL; }  /*$1*/
+        term mulop unaryExpression	{ $$ = makeTerm($1, $2, $3); }
+        | unaryExpression		{ $$ = $1; }
         ;
     
     mulop:
@@ -379,14 +381,15 @@ program:
     
     mutable:
         ID  { $$ = makeMutableID($1.IDvalue); }
-        | mutable BRACL expression BRACR  { $$ = makeMutableBracketExpression($1, $3); }
+        | mutable BRACL expression BRACR  { 
+            $$ = makeMutableBracketExpression($1, $3); }
         | mutable DOT ID  { $$ = makeMutableDotId($1, $3.IDvalue); }
         ;
     
     immutable:
-        PARL expression PARR    { $$ = makeImmutable($1); }
-        | call                  { $$ = makeImmutable($1); }
-        | constant              { $$ = makeImmutable($1); }
+        PARL expression PARR  { $$ = $2; }
+        | call  { $$ = $1; }
+        | constant  { $$ = $1; }
         ;
 
     call:
@@ -400,7 +403,7 @@ program:
     
     argList:
         argList COMMA expression    { $$ = makeArgList($1, $3); }
-        | expression                { $$ = makeArgList(NULL, $1); }
+        | expression                { $$ = $1; }
         ;
     
     constant:

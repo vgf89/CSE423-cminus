@@ -377,11 +377,12 @@ treeNode *makeVarDeclaration(char* id)
 treeNode *makeVarDeclarationId(char* id, int isArray, int arraylength)
 {
 	treeNode* t = newNode();
+	printf("makedeclarationid %s\n", id);
 	t->val.id = id;
 	t->kind = Var;
 	if (isArray) {
 		t->isArray = isArray;
-		t->val.intconst = arraylength;
+		t->arrayLength = arraylength;
 	}
 	return t;
 }
@@ -774,8 +775,12 @@ treeNode *makeMutableBracketExpression(treeNode* mutable, treeNode* expression)
 
 treeNode *makeMutableDotId(treeNode* mutable, char *id)
 {
-	mutable->children[0]->val.id = id;
-	return mutable;
+	treeNode* n = newNode();
+	n->kind = Op;
+	n->opType = Dot;
+	n->children[0] = mutable;
+	n->children[1] = makeId(id, 0);
+	return n;
 }
 
 
@@ -856,12 +861,6 @@ treeNode *makeArgList(treeNode* arglist, treeNode* expression)
 	} else {
 		return expression;
 	}
-}
-
-treeNode *makeImmutable(treeNode *child) {
-	treeNode *n = newNode();
-	n->children[0] = child;
-	return n;
 }
 
 

@@ -27,3 +27,7 @@ test() {
     Point b, c, d;
 
 }
+
+arrayTest(){
+    char sheep[1];
+}
