@@ -127,6 +127,8 @@ int numerror = 0;
 %type<node> relExpression
 %type<node> unaryRelExpression
 %type<node> andExpression
+%type<node> sumExpression
+%type<node> relop
 
 
 //Rules following
@@ -312,22 +314,22 @@ program:
         ;
     
     relExpression:
-        sumExpression relop sumExpression   { $$ = NULL; }
-        | sumExpression   { $$ = NULL; }
+        sumExpression relop sumExpression   { $$ = makeRelExpression ($1, $2, $3); }
+        | sumExpression   { $$ = $1; }
         ;
     
     relop:
-        LEQ
-        | GEQ
-        | LSS
-        | GSS
-        | EQ
-        | NOTEQ
+        LEQ     { $$ = makeLEQ(); }
+        | GEQ   { $$ = makeGEQ(); }
+        | LSS   { $$ = makeLSS(); }
+        | GSS   { $$ = makeGSS(); }
+        | EQ    { $$ = makeEQ(); }
+        | NOTEQ { $$ = makeNOTEQ(); }
         ;
     
     sumExpression:
-        sumExpression sumop term
-        | term
+        sumExpression sumop term    { $$ = NULL; }
+        | term                      { $$ = NULL; }
         ;
     
     sumop:

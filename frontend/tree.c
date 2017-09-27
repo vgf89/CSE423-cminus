@@ -205,14 +205,6 @@ void printReturn(int linenum)
 {
 	printf("Return [line: %d]\n", linenum);
 }
-/*
-        NCT numType;
-        CCT charType;
-        BCT boolType;
-        RECT rectType;
-        IDT idType;
-        KWT keywordType;
-*/
 
 treeNode *newNode() {
 	treeNode *node = (treeNode*) calloc (1, sizeof(treeNode));
@@ -433,6 +425,62 @@ treeNode *makeNotExpression(treeNode *unaryRelExpression)
 	return n;
 }
 
+treeNode* makeRelExpression(treeNode *sumExpressionl, treeNode *relop, treeNode *sumExpressionr)
+{
+	treeNode *n = relop;
+	n->children[0] = sumExpressionl;
+	n->children[1] = sumExpressionr;
+	return n;
+}
+
+treeNode* makeLEQ()
+{
+	treeNode *n = newNode();
+	n->kind = Op;
+	n->opType = Leq;
+	return n;
+}
+
+treeNode* makeGEQ()
+{
+	treeNode *n = newNode();
+	n->kind = Op;
+	n->opType = Geq;
+	return n;
+}
+
+treeNode* makeLSS()
+{
+	treeNode *n = newNode();
+	n->kind = Op;
+	n->opType = Lss;
+	return n;
+}
+
+treeNode* makeGSS()
+{
+	treeNode *n = newNode();
+	n->kind = Op;
+	n->opType = Gss;
+	return n;
+}
+
+treeNode* makeEQ()
+{
+	treeNode *n = newNode();
+	n->kind = Op;
+	n->opType = Eq;
+	return n;
+}
+
+treeNode* makeNOTEQ()
+{
+	treeNode *n = newNode();
+	n->kind = Op;
+	n->opType = Noteq;
+	return n;
+}
+
 treeNode *makeCompound(treeNode *localDeclarations, treeNode *statementList)
 {
 	treeNode *n = newNode();
@@ -549,11 +597,12 @@ treeNode *makeRecordType()
 	return n;
 }
 
-treeNode *makeCall(treeNode *id, treeNode *args)
+treeNode *makeCall(char *id, treeNode *args) 
 {
 	treeNode *n = newNode();
 	n->type = Call;
 	n->val.id = id->val.id;
+	n->children[0] = args;
 	return n;
 }
 
@@ -630,6 +679,74 @@ treeNode *makeMutableDotId(treeNode* mutable_t, char *id)
 {
 	mutable->children[0]->val.id = id;
 	return mutable;
+}
+
+treeNode *makeSumExpression(*treeNode sumExpression, *treeNode sumop, *treeNode term) {
+	treeNode* t = sumop
+	if (t != NULL) {
+		t->children[0] = sumExpression;
+		t->children[1] = term; 
+	} else {
+		t = term;
+	}
+	return t;
+}
+
+treeNode *makeAddSumOp() {
+	treeNode* n = newNode();
+	n->opType = Add;
+	return n;
+}
+
+treeNode *makeSubSumOp() {
+	treeNode* n = newNode();
+	n->opType = Sub;
+	return n;
+}
+
+treeNode *makeTerm(treeNode* term, treeNode* mulop, treeNode* unaryExpression) {
+	treeNode* t = mulop
+	if (t != NULL) {
+		t->children[0] = term;
+		t->children[1] = unaryExpression; 
+	} else {
+		t = unaryExpression;
+	}
+	return t;	
+}
+
+treeNode *makeMulSumOp() {
+	treeNode* n = newNode();
+	n->opType = Mul;
+	return n;
+}
+
+treeNode *makeDivSumOp() {
+	treeNode* n = newNode();
+	n->opType = Div;
+	return n;
+}
+
+
+treeNode *makeModSumOp() {
+	treeNode* n = newNode();
+	n->opType = Mod;
+	return n;
+}
+
+treeNode *makeArgList(treeNode* arglist, treeNode* expression) {
+	treeNode* t = arglist; 
+	if (t != NULL) {
+		while (t->sibling != NULL) {
+			t = t->sibling;
+		}
+		t->sibling = arglist;
+		t = t->sibling;
+		t->sibling = expression;
+		return t;
+	} else {
+		return expression;
+	}
 }
 
 
