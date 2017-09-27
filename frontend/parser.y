@@ -377,9 +377,9 @@ program:
         ;
     
     immutable:
-        PARL expression PARR  { $$ = NULL; }
-        | call  { $$ = NULL; }
-        | constant  { $$ = NULL; }
+        PARL expression PARR    { $$ = makeImmutable($1); }
+        | call                  { $$ = makeImmutable($1); }
+        | constant              { $$ = makeImmutable($1); }
         ;
 
     call:
