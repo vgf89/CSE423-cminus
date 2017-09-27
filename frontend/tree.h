@@ -17,7 +17,7 @@ typedef struct treeNode {
 
     enum {IntType, VoidType, CharType, BoolType, RecordType} type;
 
-    enum {Or, And, Not, Leq, Geq, Lss, Gss, Eq, Noteq, Add, Sub, Mul, Div, Mod, Rand, Neg, Inc, Dec, Dot} opType;
+    enum {Or, And, Not, Leq, Geq, Lss, Gss, Eq, AddE, SubE, MulE, DivE, Noteq, Add, Sub, Mul, Div, Mod, Rand, Neg, Inc, Dec, Dot} opType;
     
     union {                   //relevent data to type -> attr
         char* id;
@@ -48,8 +48,8 @@ void printParam(treeNode *parseTree, char *name, int type, int linenum);
 void printCompound(int linenum);
 void printConst(treeNode *parseTree, int type, int linenum);
 void printId(char *name, int linenum);
-void printOp(char *op, int linenum);
-void printAssign(int linenum);
+void printOp(treeNode *parseTree, int linenum);
+void printAssign(treeNode *parseTree, int linenum);
 void printIf(int linenum);
 void printBreak(int linenum);
 void printCall(char *name, int linenum);
