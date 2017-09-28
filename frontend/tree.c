@@ -1,3 +1,7 @@
+/**
+ * CSE423 Fall 2017
+ * Group: _Za_Worldo_
+ */
 #include "tree.h"
 #include "scanType.h"
 #include <stdlib.h>

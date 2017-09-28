@@ -1,3 +1,7 @@
+/**
+ * CSE423 Fall 2017
+ * Group: _Za_Worldo_
+ */
 #include <stdio.h>
 #define MAXCHILDREN 2048
 

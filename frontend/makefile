@@ -1,3 +1,8 @@
+#
+# CSE423 Fall 2017
+# Group: _Za_Worldo_
+#
+
 BIN = parser
 OUTPUT = c-
 CC = gcc
