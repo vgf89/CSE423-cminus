@@ -7,8 +7,7 @@ FILES=testDataA2/*.c-
 for f in $FILES
 do
     compare=${f/.c-/.out}
-    echo $f
-    echo $compare
+    echo ${f/.c-/}
     DIFF="$(diff <(cat $compare) <(./c- -p "$f"))"
 
     if [ "$DIFF" != "" ]
@@ -28,8 +27,7 @@ for f in $FILES
 do
     # default
     compare=${f/.c-/.out}
-    echo $f
-    echo $compare
+    echo ${f/.c-/}
     DIFF="$(diff <(cat $compare) <(./c- "$f"))"
 
     if [ "$DIFF" != "" ]
@@ -43,8 +41,7 @@ do
 
     # -P
     compare=${f/.c-/.Pout}
-    echo $f
-    echo $compare
+    echo ${f/.c-/}
     DIFF="$(diff <(cat $compare) <(./c- -P "$f"))"
 
     if [ "$DIFF" != "" ]
