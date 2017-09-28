@@ -6,4 +6,6 @@ compiler: gcc
 git:
   depth: 3
 script:
-  cd frontend && make
+  cd frontend
+  make
+  ./tests.sh
