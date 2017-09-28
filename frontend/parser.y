@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "scanType.h"
-#include "tree.h"
+#include "printtree.h"
 
 // Stuff from flex that bison needs
 extern int yylex();
@@ -412,6 +412,8 @@ int main (int argc, char** argv)
 {
     char *filename = argv[1];
     int c = 0;
+    int printSyntaxTree = 0;
+    int printAnnotatedSyntaxTree = 0;
 
     //handling for debug and any future options
     while ((c = getopt(argc, argv, "d")) != -1) { 
@@ -456,6 +458,17 @@ int main (int argc, char** argv)
 
     //print tree
     printTree(root);
+
+    if (numerror == 0) {
+	if (printSyntaxTree)
+	    //print tree as in Assignment 2
+	    printTree(root);
+	//semantic analysis
+	scopeAndType(root);
+	if (printAnnotatedSyntaxTree)
+	    //print tree with types
+	    printTree(root); //add types
+    }
 
     printf("Number of warnings: %d\n", numwarn);
     printf("Number of errors: %d\n", numerror);

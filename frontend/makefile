@@ -8,8 +8,8 @@ OUTPUT = c-
 CC = gcc
 CFLAGS = -g
 
-SRCS = $(BIN).l $(BIN).y tree.h scanType.h
-OBJS = lex.yy.o $(BIN).tab.o tree.o
+SRCS = $(BIN).l $(BIN).y printtree.h annotated.h scanType.h treenode.h
+OBJS = lex.yy.o $(BIN).tab.o printtree.o annotated.o
 LIBS = -lfl
 
 
@@ -22,8 +22,11 @@ $(BIN).tab.h $(BIN).tab.c: $(BIN).y
 lex.yy.c: $(BIN).l $(BIN).tab.h
 	flex $(BIN).l
 
-tree.c: tree.h scanType.h
-	$(CC) $(CFLAGS) -c tree.h -o tree.o
+printtree.c: printtree.h scanType.h treenode.h
+	$(CC) $(CFLAGS) -c printtree.h -o printtree.o
+
+annotated.c: annotated.h treenode.h printtree.h
+	$(CC) $(CFLAGS) -c annotated.h -o annotated.o
 
 all:
 	make
