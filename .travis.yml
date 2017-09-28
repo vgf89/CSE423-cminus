@@ -1,5 +1,7 @@
 language: c
-install: make get-deps bison flex
+before_install:
+  sudo apt-get instll flex bison
+install: true
 compiler: gcc
 git:
   depth: 3
