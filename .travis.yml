@@ -1,6 +1,6 @@
 language: c
 before_install:
-  sudo apt-get instll flex bison
+  sudo apt-get install flex bison
 install: true
 compiler: gcc
 git:
