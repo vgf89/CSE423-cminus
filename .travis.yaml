@@ -1,0 +1,7 @@
+language: c
+install: make get-deps bison flex
+compiler: gcc
+git:
+  depth: 3
+script:
+  cd frontend && make
