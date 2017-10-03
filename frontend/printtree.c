@@ -1,4 +1,8 @@
-#include "tree.h"
+/**
+ * CSE423 Fall 2017
+ * Group: _Za_Worldo_
+ */
+#include "printtree.h"
 #include "scanType.h"
 #include <stdlib.h>
 

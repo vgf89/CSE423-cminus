@@ -1,9 +1,13 @@
+/**
+ * CSE423 Fall 2017
+ * Group: _Za_Worldo_
+ */
 %{
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include "scanType.h"
-#include "tree.h"
+#include "printtree.h"
 
 // Stuff from flex that bison needs
 extern int yylex();
