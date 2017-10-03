@@ -493,7 +493,6 @@ int main (int argc, char** argv)
 void parseFile(char *filename)
 {
     //open file
-    printf("filename = %s\n", filename);
     if(filename != NULL) {
         FILE *myfile = fopen(filename, "r");
         if (!myfile) {
