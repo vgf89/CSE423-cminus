@@ -34,6 +34,8 @@ typedef struct treeNode {
     int isStatic;        //is staticly allocated 
 } treeNode;
 
+void parseFile(char *filename);
+
 void printType(int type);
 void printTree(treeNode *parseTree);
 void printSubTree(treeNode *parseTree, int siblingNum, int childNum, int treeLevel);
