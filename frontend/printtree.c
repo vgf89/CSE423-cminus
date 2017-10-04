@@ -11,7 +11,7 @@
 /*
  *  prints entire tree or "Tree is empty" if it's empty
  */
-void printTree(treeNode *parseTree)
+void printTree(treeNode *parseTree, printFormat p)
 {
 	//If sentinal node has no children the program is empty, else it has one child which is the true root.
 	if(parseTree == NULL) {
@@ -41,7 +41,7 @@ void printTree(treeNode *parseTree)
 /*
  *  Prints all sub-trees below primary node
  */
-void printSubTree(treeNode *curNode, int siblingNum, int childNum, int treeLevel)
+void printSubTree(treeNode *curNode, int siblingNum, int childNum, int treeLevel, printFormat p)
 {
 	int i = 0;
 	for (i = 0; i < treeLevel; i++) {
