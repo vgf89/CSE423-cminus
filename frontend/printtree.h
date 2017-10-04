@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include "treenode.h"
 
+ typedef enum {SIMPLE, DETAILED} printFormat;
+
 void parseFile(char *filename);
 
 void printType(int type);
