@@ -410,10 +410,10 @@ program:
 
 int main (int argc, char** argv)
 {
-    char *filename = argv[1];
+    char *filename = NULL;
+    int i = 0;
     int c = 0;
-    int printSyntaxTree = 0;
-    int printAnnotatedSyntaxTree = 0;
+    int canPrint = 0;
 
     //handling for debug and any future options
     while ((c = getopt(argc, argv, "d")) != -1) { 
