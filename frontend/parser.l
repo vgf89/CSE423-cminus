@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "scanType.h"
-extern int yylex();
+extern "C" int yylex();
 extern int yyerror(const char *s);
 
 #include "parser.tab.h"
