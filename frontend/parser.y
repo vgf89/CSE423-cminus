@@ -416,30 +416,85 @@ int main (int argc, char** argv)
     int canPrint = 0;
 
     //handling for debug and any future options
-    while ((c = getopt(argc, argv, "d")) != -1) { 
-        switch (c) {
-        case 'd':
-                if(optarg != NULL)
-                    filename = optarg;
+    while(c != -1) {
+        c = getopt(argc, argv, "dpP");
 
-                yydebug = 1;
-                break;  
-        case '\?':
-                printf("c-: Invalid option \n");
-                return -1;
-                break;
-        case ':':
-                printf("c-: Requires a filename argument\n");
-                return -1;
-                break;
-        default:   
-                printf("incorrect input\n");
-                return -1;
+        //catches case where file name is first and args are after
+        if(i == 0 && c == -1) {
+            if(argv[optind] != NULL)
+                filename = argv[optind];
+            i++;
+            optind++;
+
+            //reset c if we have more arguments
+            if(argc > 1)
+                c = 0;
         }
+        else {
+            switch (c) {
+                case 'd':
+                        yydebug = 1;
+                        if(optarg != NULL)
+                            filename = optarg;
+                        break;
+
+                case 'p':
+                        canPrint = 1;
+                        if(optarg != NULL)
+                            filename = optarg;
+                        break;
+
+                case 'P':
+                        canPrint = 2;
+                        if(optarg != NULL)
+                            filename = optarg;            
+                        break;
+
+                case '\?':
+                        printf("c-: Invalid option \n");
+                        return -1;
+                        break;
+                case ':':
+                        printf("c-: %s option requires argument\n", optarg);
+                        return -1;
+                        break;
+                default:
+                        break;
+            }  
+        }
+
+    }
+    if(filename == NULL)
+        printf("invalid file name\n");
+    else
+        parseFile(filename);
+
+    if(canPrint == 1) {
+        if(numerror == 0) {
+            //print AST
+            printTree(root);
+        }
+        else
+            printf("Can't print tree with errors\n");
     }
 
+    if(canPrint == 2) {
+        if(numerror == 0) {
+            //print AST with types
+            printf("Type print placeholde\n");
+        }
+        else
+            printf("Can't print tree with errors\n");
+    }
+
+    printf("Number of warnings: %d\n", numwarn);
+    printf("Number of errors: %d\n", numerror);
+}
+
+void parseFile(char *filename)
+{
     //open file
-    if(argc > 1) {
+    if(filename != NULL) {
         FILE *myfile = fopen(filename, "r");
         if (!myfile) {
             printf("I can't open the file\n");
@@ -451,27 +506,9 @@ int main (int argc, char** argv)
         if(yyparse() != 0) {
             printf("Number of warnings: %d\n", numwarn);
             printf("Number of errors: %d\n", numerror);
-        //printf("exit\n");
             exit(-1);
         }
     } while (!feof(yyin));
-
-    //print tree
-    printTree(root);
-
-    if (numerror == 0) {
-	if (printSyntaxTree)
-	    //print tree as in Assignment 2
-	    printTree(root);
-	//semantic analysis
-	//scopeAndType(root);
-	if (printAnnotatedSyntaxTree)
-	    //print tree with types
-	    printTree(root); //add types
-    }
-
-    printf("Number of warnings: %d\n", numwarn);
-    printf("Number of errors: %d\n", numerror);
 }
 
 void yyerror(const char *s)
