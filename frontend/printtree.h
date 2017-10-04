@@ -51,18 +51,18 @@ treeNode *makeUnmatchedStatement( treeNode* simpleExpression, treeNode* matched,
 treeNode *makeIterationStatement(treeNode* simpleExpression, treeNode* statement, int linenum);
 
 treeNode *makeRelExpression(treeNode *sumExpressionl, treeNode *relop, treeNode *sumExpressionr);
-treeNode *makeLEQ();
-treeNode *makeGEQ();
-treeNode *makeLSS();
-treeNode *makeGSS();
-treeNode *makeEQ();
-treeNode *makeNOTEQ();
+treeNode *makeLEQ(int linenum);
+treeNode *makeGEQ(int linenum);
+treeNode *makeLSS(int linenum);
+treeNode *makeGSS(int linenum);
+treeNode *makeEQ(int linenum);
+treeNode *makeNOTEQ(int linenum);
 
 treeNode *makeUnaryExpression(treeNode* unaryop, treeNode* unaryExpression);
-treeNode *makeSUB();
-treeNode *makeMUL();
-treeNode *makeRAND();
-treeNode *makeNEG();
+treeNode *makeSUB(int linenum);
+treeNode *makeMUL(int linenum);
+treeNode *makeRAND(int linenum);
+treeNode *makeNEG(int linenum);
 
 treeNode *makeId(char* id, int isArray, int linenum);
 treeNode *makeEquExpression(treeNode* left, treeNode* right, int linenum);
@@ -78,26 +78,26 @@ treeNode *makeAndExpression(treeNode *andExpression, treeNode *unaryRelExpressio
 treeNode *makeSimpleExpression(treeNode *simpleExpression, treeNode *andExpression, int linenum);
 
 treeNode *makeSumExpression(treeNode *sumExpression, treeNode *sumop, treeNode *term);
-treeNode *makeAddOp();
-treeNode *makeSubOp();
+treeNode *makeAddOp(int linenum);
+treeNode *makeSubOp(int linenum);
 
 treeNode *makeTerm(treeNode *term, treeNode *mulop, treeNode *unaryExpression);
-treeNode *makeMulOp();
-treeNode *makeDivOp();
-treeNode *makeModOp();
+treeNode *makeMulOp(int linenum);
+treeNode *makeDivOp(int linenum);
+treeNode *makeModOp(int linenum);
 
-treeNode *makeRecordType(); 
-treeNode *makeIntType();
-treeNode *makeCharType();
-treeNode *makeBoolType();
+treeNode *makeRecordType(int linenum); 
+treeNode *makeIntType(int linenum);
+treeNode *makeCharType(int linenum);
+treeNode *makeBoolType(int linenum);
 
-treeNode *makeBreakStatement( );
+treeNode *makeBreakStatement(int linenum);
 treeNode *makeReturnStatement(treeNode *expression, int linenum);
 treeNode *makeCompound(treeNode *left, treeNode *right, int linenum);
 
 treeNode *makeMutableID(char *id, int linenum);
 treeNode *makeMutableBracketExpression(treeNode* mutable_t, treeNode* expression, int linenum);
-treeNode *makeMutableDotId(treeNode* mutable, char *id, int linenum);
+treeNode *makeMutableDotId(treeNode* Mutable, char *id, int linenum);
 
 treeNode *makeCall(char *id, treeNode *args, int linenum);
 treeNode *makeArgList(treeNode* arglist, treeNode* expression);

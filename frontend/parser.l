@@ -8,7 +8,7 @@
 #include <string.h>
 #include "scanType.h"
 extern int yylex();
-extern int yyerror();
+extern int yyerror(const char *s);
 
 #include "parser.tab.h"
 
