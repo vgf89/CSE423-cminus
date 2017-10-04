@@ -497,6 +497,7 @@ treeNode *makeVarDeclarationId(char* id, int isArray, int arraylength, int linen
 	treeNode* t = newNode(linenum);
 	t->val.id = id;
 	t->kind = treeNode::Var;
+	//TODO t->type = 
 	if (isArray) {
 		t->isArray = isArray;
 		t->arrayLength = arraylength;
@@ -522,6 +523,7 @@ treeNode *makeId(char* id, int isArray, int linenum)
 	n->kind = treeNode::Id;
 	n->val.id = id;
 	n->isArray = isArray;
+	//TODO type?
 	return n;
 }
 
@@ -534,9 +536,12 @@ treeNode *makeEquExpression(treeNode* Mutable, treeNode* expression, int linenum
 	n->kind = treeNode::Assign;
 	n->children[0] = Mutable;
 	n->children[1] = expression;
-	//TODO IDK about this
-	//n->children[0]->type = expression->type;
 	n->opType = treeNode::Eq;
+	if (Mutable->type == expression->type) {
+		n->type = Mutable->type;
+	} else {
+		n->type = treeNode::UndefinedType;
+	}
 	return n;
 }
 
@@ -668,6 +673,7 @@ treeNode *makeSimpleExpression(treeNode *simpleExpression, treeNode *andExpressi
 	n->opType = treeNode::Or;
 	n->children[0] = simpleExpression;
 	n->children[1] = andExpression;
+	n->type = treeNode::BoolType;
 	return n;
 }
 
@@ -694,6 +700,7 @@ treeNode *makeNotExpression(treeNode *unaryRelExpression, int linenum)
 	n->kind = treeNode::Op;
 	n->opType = treeNode::Not;
 	n->children[0] = unaryRelExpression;
+	n->type = treeNode::BoolType;
 	return n;
 }
 
@@ -705,6 +712,7 @@ treeNode* makeRelExpression(treeNode *sumExpressionl, treeNode *relop, treeNode 
 	treeNode *n = relop;
 	n->children[0] = sumExpressionl;
 	n->children[1] = sumExpressionr;
+	//TODO type?
 	return n;
 }
 
@@ -948,6 +956,7 @@ treeNode *makeCall(char *id, treeNode *args, int linenum)
 	n->kind = treeNode::Call;
 	n->val.id = id;
 	n->children[0] = args;
+	//TODO need return type from call
 	return n;
 }
 
@@ -968,6 +977,7 @@ treeNode *addStatementList(treeNode *statementList, treeNode *statement)
 	} else {
 		return statement;
 	}
+	//TODO type?
 }
 
 /*
@@ -1034,6 +1044,7 @@ treeNode *makeMutableID(char *id, int linenum)
 	treeNode* n = newNode(linenum);
 	n->kind = treeNode::Id;
 	n->val.id = id;
+	//TODO type?
 	return n;
 
 }
@@ -1050,6 +1061,7 @@ treeNode *makeMutableBracketExpression(treeNode* Mutable, treeNode* expression, 
 	n->children[0] = Mutable;
 	n->children[1] = expression;
 	//Mutable->isArray = 1;
+	//TODO type?
 	return n; 
 }
 
@@ -1060,6 +1072,7 @@ treeNode *makeMutableDotId(treeNode* Mutable, char *id, int linenum)
 	n->opType = treeNode::Dot;
 	n->children[0] = Mutable;
 	n->children[1] = makeId(id, 0, linenum);
+	//TODO type?
 	return n;
 }
 
@@ -1071,6 +1084,7 @@ treeNode *makeSumExpression(treeNode* sumExpression, treeNode* sumop, treeNode* 
 	treeNode* t = sumop;
 	t->children[0] = sumExpression;
 	t->children[1] = term;
+	t->type = treeNode::IntType;
 	return t;
 }
 
@@ -1105,7 +1119,8 @@ treeNode *makeTerm(treeNode* term, treeNode* mulop, treeNode* unaryExpression)
 {
 	treeNode* t = mulop;
 	t->children[0] = term;
-	t->children[1] = unaryExpression; 
+	t->children[1] = unaryExpression;
+	//TODO type?
 	return t;	
 }
 
