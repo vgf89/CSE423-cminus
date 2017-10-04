@@ -140,7 +140,7 @@ void printType(int type)
 		case treeNode::RecordType:
 			printf("record");
 			return;
-		case UndefinedType:
+		case treeNode::UndefinedType:
 			printf("undefined");
 		default:
 			return;
@@ -396,7 +396,7 @@ treeNode *makeRecordDeclaration(char* id, treeNode* localDeclarations, int linen
 	n->kind = treeNode::Rec;
 	n->val.id = id;
 	n->children[0] = localDeclarations;
-	n->type = RecordType;
+	n->type = treeNode::RecordType;
 	return n;
 }
 
@@ -1022,7 +1022,7 @@ treeNode *makeIterationStatement(treeNode* simpleExpression, treeNode* statement
 	t->kind = treeNode::While;
 	t->children[0] = simpleExpression;
 	t->children[1] = statement;
-	t->type = VoidType;
+	t->type = treeNode::VoidType;
 	return t;
 }
 
