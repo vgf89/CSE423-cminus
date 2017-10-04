@@ -10,7 +10,7 @@
 #include "printtree.h"
 
 // Stuff from flex that bison needs
-extern int yylex();
+extern "C" int yylex();
 extern char* yytext;
 extern int newline;
 extern int yyparse();
