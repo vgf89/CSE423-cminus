@@ -80,7 +80,7 @@ void printNode(treeNode *parseTree, printFormat p)
 			printVar(parseTree, parseTree->val.id, parseTree->type, parseTree->linenum, p);
 		
 		else if (parseTree->kind == treeNode::Rec)
-			printRec(parseTree, parseTree->val.id, parseTree->linenum, p);
+			printRec(parseTree, parseTree->val.id, parseTree->type, parseTree->linenum, p);
 
 		else if (parseTree->kind == treeNode::Func)
 			printFunc(parseTree->val.id, parseTree->type, parseTree->linenum, p);
@@ -89,60 +89,66 @@ void printNode(treeNode *parseTree, printFormat p)
 			printParam(parseTree, parseTree->val.id, parseTree->type, parseTree->linenum, p);
 
 		else if (parseTree->kind == treeNode::Compound)
-			printCompound(parseTree->linenum, p);
+			printCompound(parseTree->type, parseTree->linenum, p);
 
 		else if (parseTree->kind == treeNode::Const)
 			printConst(parseTree, parseTree->type, parseTree->linenum, p);
 
 		else if (parseTree->kind == treeNode::Id)
-			printId(parseTree->val.id, parseTree->linenum, p);
+			printId(parseTree->val.id, parseTree->type, parseTree->linenum, p);
 
 		else if (parseTree->kind == treeNode::Op)
-			printOp(parseTree, parseTree->linenum, p);
+			printOp(parseTree, parseTree->type, parseTree->linenum, p);
 
 		else if (parseTree->kind == treeNode::Assign)
-			printAssign(parseTree, parseTree->linenum, p);
+			printAssign(parseTree, parseTree->type, parseTree->linenum, p);
 
 		else if (parseTree->kind == treeNode::If)
-			printIf(parseTree->linenum, p);
+			printIf(parseTree->type, parseTree->linenum, p);
 
 		else if (parseTree->kind == treeNode::While)
-			printWhile(parseTree->linenum, p);
+			printWhile(parseTree->type, parseTree->linenum, p);
 		
 		else if (parseTree->kind == treeNode::Break)
-			printBreak(parseTree->linenum, p);
+			printBreak(parseTree->type, parseTree->linenum, p);
 
 		else if (parseTree->kind == treeNode::Call)
-			printCall(parseTree->val.id, parseTree->linenum, p);
+			printCall(parseTree->val.id, parseTree->type, parseTree->linenum, p);
 
 		else if (parseTree->kind == treeNode::Return)
-			printReturn(parseTree->linenum, p);
+			printReturn(parseTree->type, parseTree->linenum, p);
 }
 
 /*
  * Utility function for printing types when necessary
  */
-void printType(int type)
+char* getType(int type)
 {
+	char *finalString = NULL;
+
 	switch(type){
 		case treeNode::IntType:
-			printf("int");
-			return;
+			finalString = "type int";
+			break;
 		case treeNode::VoidType:
-			printf("void");
-			return;
+			finalString = "type void";
+			break;
 		case treeNode::CharType:
-			printf("char");
-			return;
+			finalString = "type char";
+			break;
 		case treeNode::treeNode::BoolType:
-			printf("bool");
-			return;
+			finalString = "type bool";
+			break;
 		case treeNode::RecordType:
-			printf("record");
-			return;
+			finalString = "type record";
+			break;
+		case treeNode::Undefined:
+			finalString = "undefined type";
+			break;
 		default:
-			return;
+			return finalString;
 	}
+	return finalString;
 }
 
 /*
@@ -154,18 +160,26 @@ void printVar(treeNode *parseTree, char *name, int type, int linenum, printForma
 	if (parseTree->isArray) {
 		printf("is array ");
 	}
-	printf("of type ");
-	printType(type);
-	printf(" [line: %d]\n", linenum);
+	printf("of %s", getType(type));
+
+	if(p == DETAILED)
+		printf(" [%s] [line: %d]\n", getType(type), linenum);
+	else if(p == SIMPLE)
+		printf(" [line: %d]\n", linenum);
+
 }
 
 /*
  * Prints record declerations
  */
-void printRec(treeNode *parseTree, char *name, int linenum, printFormat p)
+void printRec(treeNode *parseTree, char *name, int type, int linenum, printFormat p)
 {
 	printf("Record %s ", name);
-	printf(" [line: %d]\n", linenum);
+
+	if(p == DETAILED)
+		printf(" [%s] [line: %d]\n", getType(type), linenum);
+	else if(p == SIMPLE)
+		printf(" [line: %d]\n", linenum);
 }
 
 /*
@@ -173,9 +187,12 @@ void printRec(treeNode *parseTree, char *name, int linenum, printFormat p)
  */
 void printFunc(char *name, int type, int linenum, printFormat p)
 {
-	printf("Func %s returns type ", name);
-	printType(type);
-	printf(" [line: %d]\n", linenum);
+	printf("Func %s returns %s", name, getType(type));
+
+	if(p == DETAILED)
+		printf(" [%s] [line: %d]\n", getType(type), linenum);
+	else if(p == SIMPLE)
+		printf(" [line: %d]\n", linenum);
 }
 
 /*
@@ -185,17 +202,23 @@ void printParam(treeNode *parseTree, char *name, int type, int linenum, printFor
 {
 	printf("Param %s ", name);
 	if (parseTree->isArray) printf("is array ");
-	printf("of type ");
-	printType(type);
-	printf(" [line: %d]\n", linenum);
+	printf("of %s", getType(type));
+
+	if(p == DETAILED)
+		printf(" [%s] [line: %d]\n", getType(type), linenum);
+	else if(p == SIMPLE)
+		printf(" [line: %d]\n", linenum);
 }
 
 /*
  * Prints when compound statement is found
  */
-void printCompound(int linenum, printFormat p)
+void printCompound(int type, int linenum, printFormat p)
 {
-	printf("Compound [line: %d]\n", linenum);
+	if(p == DETAILED)
+		printf("Compound [%s] [line: %d]\n", getType(type), linenum);
+	else if(p == SIMPLE)
+		printf("Compound [line: %d]\n", linenum);
 }
 
 /*
@@ -224,21 +247,27 @@ void printConst(treeNode *parseTree, int type, int linenum, printFormat p)
 		default:
 			break;
 	}
-	printf(" [line: %d]\n", linenum);
+	if(p == DETAILED)
+		printf(" [%s] [line: %d]\n", getType(type), linenum);
+	else if(p == SIMPLE)
+		printf(" [line: %d]\n", linenum);
 }
 
 /*
  * Prints ids
  */
-void printId(char *name, int linenum, printFormat p)
+void printId(char *name, int type, int linenum, printFormat p)
 {
-	printf("Id: %s [line: %d]\n", name, linenum);
+	if(p == DETAILED)
+		printf("Id: %s [%s] [line: %d]\n", name, getType(type), linenum);
+	else if(p == SIMPLE)
+		printf("Id: %s [line: %d]\n", name, linenum);
 }
 
 /*
  * Prints operators
  */
-void printOp(treeNode *parseTree, int linenum, printFormat p)
+void printOp(treeNode *parseTree, int type, int linenum, printFormat p)
 {
 	printf("Op: ");
 	switch (parseTree->opType) {
@@ -296,14 +325,17 @@ void printOp(treeNode *parseTree, int linenum, printFormat p)
 		default:
 			break;
 	}
-	printf(" [line: %d]\n", linenum);
+	if(p == DETAILED)
+		printf(" [%s] [line: %d]\n", getType(type), linenum);
+	else if(p == SIMPLE)
+		printf(" [line: %d]\n", linenum);
 
 }
 
 /*
  * Prints assignments
  */
-void printAssign(treeNode *parseTree, int linenum, printFormat p)
+void printAssign(treeNode *parseTree, int type, int linenum, printFormat p)
 {
 	printf("Assign: ");
 	switch (parseTree->opType) {
@@ -331,47 +363,65 @@ void printAssign(treeNode *parseTree, int linenum, printFormat p)
 		default:
 			break;
 	}
-	printf(" [line: %d]\n", linenum);
+	if(p == DETAILED)
+		printf(" [%s] [line: %d]\n", getType(type), linenum);
+	else if(p == SIMPLE)
+		printf(" [line: %d]\n", linenum);
 }
 
 /*
  * Prints if statements
  */
-void printIf(int linenum, printFormat p)
+void printIf(int type, int linenum, printFormat p)
 {
-	printf("If [line: %d]\n", linenum);
+	if(p == DETAILED)
+		printf("If [%s] [line: %d]\n", getType(type), linenum);
+	else if(p == SIMPLE)
+		printf("If [line: %d]\n", linenum);
 }
 
 /*
  * Prints while statements
  */
-void printWhile(int linenum, printFormat p)
+void printWhile(int type, int linenum, printFormat p)
 {
-	printf("While [line: %d]\n", linenum);
+	if(p == DETAILED)
+		printf("While [%s] [line: %d]\n", getType(type), linenum);
+	else if(p == SIMPLE)
+		printf("While [line: %d]\n", linenum);
 }
 
 /*
  * Prints break statements
  */
-void printBreak(int linenum, printFormat p)
+void printBreak(int type, int linenum, printFormat p)
 {
-	printf("Break [line: %d]\n", linenum);
+	if(p == DETAILED)
+		printf("Break [%s] [line: %d]\n", getType(type), linenum);
+	else if(p == SIMPLE)
+		printf("Break [line: %d]\n", linenum);
 }
 
 /*
  * Prints function call statements
  */
-void printCall(char *name, int linenum, printFormat p)
+void printCall(char *name, int type, int linenum, printFormat p)
 {
-	printf("Call: %s [line: %d]\n", name, linenum);
+	if(p == DETAILED)
+		printf("Call: %s [%s] [line: %d]\n", name, getType(type), linenum);
+	else if(p == SIMPLE)
+		printf("Call: %s [line: %d]\n", name, linenum);
 }
 
 /*
  * Prints return statements
  */
-void printReturn(int linenum, printFormat p)
+void printReturn(int type, int linenum, printFormat p)
 {
-	printf("Return [line: %d]\n", linenum);
+	if(p == DETAILED)
+		printf("Return [%s] [line: %d]\n", getType(type), linenum);
+	else if(p == SIMPLE)
+		printf("Return [line: %d]\n", linenum);
 }
 
 /*
