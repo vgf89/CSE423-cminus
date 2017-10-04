@@ -411,7 +411,8 @@ program:
 int main (int argc, char** argv)
 {
     char *filename = NULL;
-    int i, c = 0;
+    int i = 0;
+    int c = 0;
     int canPrint = 0;
 
     //handling for debug and any future options
