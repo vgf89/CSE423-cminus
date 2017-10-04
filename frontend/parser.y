@@ -464,27 +464,23 @@ int main (int argc, char** argv)
         }
 
     }
+
+    printFormat p;
     if(filename == NULL)
         printf("invalid file name\n");
     else
         parseFile(filename);
 
     if(canPrint == 1) {
-        if(numerror == 0) {
-            //print AST
-            printTree(root);
-        }
-        else
-            printf("Can't print tree with errors\n");
+        p = SIMPLE;
+        //print AST
+        printTree(root, p);
     }
 
     if(canPrint == 2) {
-        if(numerror == 0) {
-            //print AST with types
-            printf("Type print placeholde\n");
-        }
-        else
-            printf("Can't print tree with errors\n");
+        //print AST with types
+        p = DETAILED;
+        printTree(root, p);
     }
 
     printf("Number of warnings: %d\n", numwarn);

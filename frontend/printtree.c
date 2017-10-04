@@ -24,16 +24,16 @@ void printTree(treeNode *parseTree, printFormat p)
 		int treeLevel = 0;
 
 		//Special case for printing of root so we don't write "Child" before it
-		printNode(parseTree);
+		printNode(parseTree, p);
 
 		int i = 0;
 		while (i < 3 || parseTree->children[i] != NULL) {
 			if (parseTree->children[i] != NULL)
-				printSubTree(parseTree->children[i], -1, i, treeLevel + 1);
+				printSubTree(parseTree->children[i], -1, i, treeLevel + 1, p);
 			i++;
 		}
 		if (parseTree->sibling != NULL) {
-			printSubTree(parseTree->sibling, 0, -1, treeLevel);
+			printSubTree(parseTree->sibling, 0, -1, treeLevel, p);
 		}
 	}
 }
@@ -50,10 +50,10 @@ void printSubTree(treeNode *curNode, int siblingNum, int childNum, int treeLevel
 
 	if (siblingNum == -1) {
 		printf("Child: %d  ", childNum);
-		printNode(curNode);
+		printNode(curNode, p);
 	} else {
 		printf("Sibling: %d  ", siblingNum);
-		printNode(curNode);
+		printNode(curNode, p);
 	}
 
 	i = 0;
@@ -62,11 +62,11 @@ void printSubTree(treeNode *curNode, int siblingNum, int childNum, int treeLevel
 	// A less hacky way of doing this would be to add a first-child value to nodes, but that would be messier IMO
 	while (i < 3 || curNode->children[i] != NULL) {
 		if (curNode->children[i] != NULL)
-			printSubTree(curNode->children[i], -1, i, treeLevel + 1);
+			printSubTree(curNode->children[i], -1, i, treeLevel + 1, p);
 		i++;
 	}
 	if (curNode->sibling != NULL) {
-		printSubTree(curNode->sibling, siblingNum + 1, -1, treeLevel);
+		printSubTree(curNode->sibling, siblingNum + 1, -1, treeLevel, p);
 	}
 
 }
@@ -74,49 +74,49 @@ void printSubTree(treeNode *curNode, int siblingNum, int childNum, int treeLevel
 /*
  * Decides which kind of node needs to be printed
  */
-void printNode(treeNode *parseTree)
+void printNode(treeNode *parseTree, printFormat p)
 {
 		if(parseTree->kind == treeNode::Var)
-			printVar(parseTree, parseTree->val.id, parseTree->type, parseTree->linenum);
+			printVar(parseTree, parseTree->val.id, parseTree->type, parseTree->linenum, p);
 		
 		else if (parseTree->kind == treeNode::Rec)
-			printRec(parseTree, parseTree->val.id, parseTree->linenum);
+			printRec(parseTree, parseTree->val.id, parseTree->linenum, p);
 
 		else if (parseTree->kind == treeNode::Func)
-			printFunc(parseTree->val.id, parseTree->type, parseTree->linenum);
+			printFunc(parseTree->val.id, parseTree->type, parseTree->linenum, p);
 
 		else if (parseTree->kind == treeNode::Param)
-			printParam(parseTree, parseTree->val.id, parseTree->type, parseTree->linenum);
+			printParam(parseTree, parseTree->val.id, parseTree->type, parseTree->linenum, p);
 
 		else if (parseTree->kind == treeNode::Compound)
-			printCompound(parseTree->linenum);
+			printCompound(parseTree->linenum, p);
 
 		else if (parseTree->kind == treeNode::Const)
-			printConst(parseTree, parseTree->type, parseTree->linenum);
+			printConst(parseTree, parseTree->type, parseTree->linenum, p);
 
 		else if (parseTree->kind == treeNode::Id)
-			printId(parseTree->val.id, parseTree->linenum);
+			printId(parseTree->val.id, parseTree->linenum, p);
 
 		else if (parseTree->kind == treeNode::Op)
-			printOp(parseTree, parseTree->linenum);
+			printOp(parseTree, parseTree->linenum, p);
 
 		else if (parseTree->kind == treeNode::Assign)
-			printAssign(parseTree, parseTree->linenum);
+			printAssign(parseTree, parseTree->linenum, p);
 
 		else if (parseTree->kind == treeNode::If)
-			printIf(parseTree->linenum);
+			printIf(parseTree->linenum, p);
 
 		else if (parseTree->kind == treeNode::While)
-			printWhile(parseTree->linenum);
+			printWhile(parseTree->linenum, p);
 		
 		else if (parseTree->kind == treeNode::Break)
-			printBreak(parseTree->linenum);
+			printBreak(parseTree->linenum, p);
 
 		else if (parseTree->kind == treeNode::Call)
-			printCall(parseTree->val.id, parseTree->linenum);
+			printCall(parseTree->val.id, parseTree->linenum, p);
 
 		else if (parseTree->kind == treeNode::Return)
-			printReturn(parseTree->linenum);
+			printReturn(parseTree->linenum, p);
 }
 
 /*
@@ -150,7 +150,7 @@ void printType(int type)
 /*
  * Prints variabe declerations
  */
-void printVar(treeNode *parseTree, char *name, int type, int linenum)
+void printVar(treeNode *parseTree, char *name, int type, int linenum, printFormat p)
 {
 	printf("Var %s ", name);
 	if (parseTree->isArray) {
@@ -164,7 +164,7 @@ void printVar(treeNode *parseTree, char *name, int type, int linenum)
 /*
  * Prints record declerations
  */
-void printRec(treeNode *parseTree, char *name, int linenum)
+void printRec(treeNode *parseTree, char *name, int linenum, printFormat p)
 {
 	printf("Record %s ", name);
 	printf(" [line: %d]\n", linenum);
@@ -173,7 +173,7 @@ void printRec(treeNode *parseTree, char *name, int linenum)
 /*
  * Prints function declerations
  */
-void printFunc(char *name, int type, int linenum)
+void printFunc(char *name, int type, int linenum, printFormat p)
 {
 	printf("Func %s returns type ", name);
 	printType(type);
@@ -183,7 +183,7 @@ void printFunc(char *name, int type, int linenum)
 /*
  * Prints parameter declerations
  */
-void printParam(treeNode *parseTree, char *name, int type, int linenum)
+void printParam(treeNode *parseTree, char *name, int type, int linenum, printFormat p)
 {
 	printf("Param %s ", name);
 	if (parseTree->isArray) printf("is array ");
@@ -195,7 +195,7 @@ void printParam(treeNode *parseTree, char *name, int type, int linenum)
 /*
  * Prints when compound statement is found
  */
-void printCompound(int linenum)
+void printCompound(int linenum, printFormat p)
 {
 	printf("Compound [line: %d]\n", linenum);
 }
@@ -203,7 +203,7 @@ void printCompound(int linenum)
 /*
  * Prints constants
  */
-void printConst(treeNode *parseTree, int type, int linenum)
+void printConst(treeNode *parseTree, int type, int linenum, printFormat p)
 {
 	printf("Const: ");
 	switch(type) {
@@ -232,7 +232,7 @@ void printConst(treeNode *parseTree, int type, int linenum)
 /*
  * Prints ids
  */
-void printId(char *name, int linenum)
+void printId(char *name, int linenum, printFormat p)
 {
 	printf("Id: %s [line: %d]\n", name, linenum);
 }
@@ -240,7 +240,7 @@ void printId(char *name, int linenum)
 /*
  * Prints operators
  */
-void printOp(treeNode *parseTree, int linenum)
+void printOp(treeNode *parseTree, int linenum, printFormat p)
 {
 	printf("Op: ");
 	switch (parseTree->opType) {
@@ -305,7 +305,7 @@ void printOp(treeNode *parseTree, int linenum)
 /*
  * Prints assignments
  */
-void printAssign(treeNode *parseTree, int linenum)
+void printAssign(treeNode *parseTree, int linenum, printFormat p)
 {
 	printf("Assign: ");
 	switch (parseTree->opType) {
@@ -339,7 +339,7 @@ void printAssign(treeNode *parseTree, int linenum)
 /*
  * Prints if statements
  */
-void printIf(int linenum)
+void printIf(int linenum, printFormat p)
 {
 	printf("If [line: %d]\n", linenum);
 }
@@ -347,7 +347,7 @@ void printIf(int linenum)
 /*
  * Prints while statements
  */
-void printWhile(int linenum)
+void printWhile(int linenum, printFormat p)
 {
 	printf("While [line: %d]\n", linenum);
 }
@@ -355,7 +355,7 @@ void printWhile(int linenum)
 /*
  * Prints break statements
  */
-void printBreak(int linenum)
+void printBreak(int linenum, printFormat p)
 {
 	printf("Break [line: %d]\n", linenum);
 }
@@ -363,7 +363,7 @@ void printBreak(int linenum)
 /*
  * Prints function call statements
  */
-void printCall(char *name, int linenum)
+void printCall(char *name, int linenum, printFormat p)
 {
 	printf("Call: %s [line: %d]\n", name, linenum);
 }
@@ -371,7 +371,7 @@ void printCall(char *name, int linenum)
 /*
  * Prints return statements
  */
-void printReturn(int linenum)
+void printReturn(int linenum, printFormat p)
 {
 	printf("Return [line: %d]\n", linenum);
 }

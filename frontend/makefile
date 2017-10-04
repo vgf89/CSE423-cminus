@@ -5,7 +5,7 @@
 
 BIN = parser
 OUTPUT = c-
-CC = gcc
+CC = g++
 CFLAGS = -g
 
 SRCS = $(BIN).l $(BIN).y printtree.h annotated.h scanType.h treenode.h
