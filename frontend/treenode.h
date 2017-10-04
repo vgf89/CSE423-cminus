@@ -15,7 +15,7 @@ typedef struct treeNode {
     enum {Var, Func, Rec, Param, Compound, Const, Id, Op, Assign, If, Break, Call, Return, While} kind;
 
     //all data types
-    enum {IntType, VoidType, CharType, BoolType, RecordType, Undefined} type;
+    enum {IntType, VoidType, CharType, BoolType, RecordType, UndefinedType} type;
 
     //all operator types
     enum {Or, And, Not, Leq, Geq, Lss, Gss, Eq, AddE, SubE, MulE, DivE, Noteq, Add, Sub, Mul, Div, Mod, Rand, Neg, Inc, Dec, Dot, Bracl, EEq} opType;

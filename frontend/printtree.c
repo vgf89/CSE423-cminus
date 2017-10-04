@@ -139,6 +139,8 @@ void printType(int type)
 		case RecordType:
 			printf("record");
 			return;
+		case UndefinedType:
+			printf("undefined");
 		default:
 			return;
 	}
@@ -393,6 +395,7 @@ treeNode *makeRecordDeclaration(char* id, treeNode* localDeclarations, int linen
 	n->kind = Rec;
 	n->val.id = id;
 	n->children[0] = localDeclarations;
+	n->type = RecordType;
 	return n;
 }
 
@@ -530,6 +533,8 @@ treeNode *makeEquExpression(treeNode* mutable, treeNode* expression, int linenum
 	n->kind = Assign;
 	n->children[0] = mutable;
 	n->children[1] = expression;
+	//TODO IDK about this
+	n->children[0]->type = expression->type;
 	n->opType = Eq;
 	return n;
 }
@@ -544,6 +549,7 @@ treeNode *makeAddEExpression(treeNode* mutable, treeNode* expression, int linenu
 	n->children[0] = mutable;
 	n->children[1] = expression;
 	n->opType = AddE;
+	n->type = IntType;
 	return n;
 }
 
@@ -557,6 +563,7 @@ treeNode *makeSubEExpression(treeNode* mutable, treeNode* expression, int linenu
 	n->children[0] = mutable;
 	n->children[1] = expression;
 	n->opType = SubE;
+	n->type = IntType;
 	return n;
 }
 
@@ -570,6 +577,7 @@ treeNode *makeMulEExpression(treeNode* mutable, treeNode* expression, int linenu
 	n->children[0] = mutable;
 	n->children[1] = expression;
 	n->opType = MulE;
+	n->type = IntType;
 	return n;
 }
 
@@ -583,6 +591,7 @@ treeNode *makeDivEExpression(treeNode* mutable, treeNode* expression, int linenu
 	n->children[0] = mutable;
 	n->children[1] = expression;
 	n->opType = DivE;
+	n->type = IntType;
 	return n;
 }
 
@@ -595,6 +604,7 @@ treeNode *makeIncExpression(treeNode* mutable, int linenum)
 	n->kind = Assign;
 	n->children[0] = mutable;
 	n->opType = Inc;
+	n->type = IntType;
 	return n;
 }
 
@@ -607,6 +617,7 @@ treeNode *makeDecExpression(treeNode* mutable, int linenum)
 	n->kind = Assign;
 	n->children[0] = mutable;
 	n->opType = Dec;
+	n->type = IntType;
 	return n;
 }
 
@@ -667,6 +678,7 @@ treeNode *makeAndExpression(treeNode *andExpression, treeNode *unaryRelExpressio
 	treeNode *n = newNode(linenum);
 	n->kind = Op;
 	n->opType = And;
+	n->type = BoolType;
 	n->children[0] = andExpression;
 	n->children[1] = unaryRelExpression;
 	return n;
@@ -703,6 +715,7 @@ treeNode* makeLEQ(int linenum)
 	treeNode *n = newNode(linenum);
 	n->kind = Op;
 	n->opType = Leq;
+	n->type = BoolType;
 	return n;
 }
 
@@ -714,6 +727,7 @@ treeNode* makeGEQ(int linenum)
 	treeNode *n = newNode(linenum);
 	n->kind = Op;
 	n->opType = Geq;
+	n->type = BoolType;
 	return n;
 }
 
@@ -725,6 +739,7 @@ treeNode* makeLSS(int linenum)
 	treeNode *n = newNode(linenum);
 	n->kind = Op;
 	n->opType = Lss;
+	n->type = BoolType;
 	return n;
 }
 
@@ -736,6 +751,7 @@ treeNode* makeGSS(int linenum)
 	treeNode *n = newNode(linenum);
 	n->kind = Op;
 	n->opType = Gss;
+	n->type = BoolType;
 	return n;
 }
 
@@ -747,6 +763,7 @@ treeNode* makeEQ(int linenum)
 	treeNode *n = newNode(linenum);
 	n->kind = Op;
 	n->opType = EEq;
+	n->type = BoolType;
 	return n;
 }
 
@@ -758,6 +775,7 @@ treeNode* makeNOTEQ(int linenum)
 	treeNode *n = newNode(linenum);
 	n->kind = Op;
 	n->opType = Noteq;
+	n->type = BoolType;
 	return n;
 }
 
@@ -768,6 +786,7 @@ treeNode *makeCompound(treeNode *localDeclarations, treeNode *statementList, int
 {
 	treeNode *n = newNode(linenum);
 	n->kind = Compound;
+	n->type = VoidType;
 	n->children[0] = localDeclarations;
 	n->children[1] = statementList;
 	return n;
@@ -780,6 +799,7 @@ treeNode *makeReturnStatement(treeNode *expression, int linenum)
 {
 	treeNode *n = newNode(linenum);
 	n->kind = Return;
+	n->type = VoidType;
 	n->children[0] = expression;
 	return n;
 }
@@ -791,6 +811,7 @@ treeNode *makeBreakStatement(int linenum)
 {
 	treeNode *n = newNode(linenum);
 	n->kind = Break;
+	n->type = VoidType;
 	return n; 
 }
 
@@ -955,6 +976,7 @@ treeNode *makeMatchedStatement(treeNode* simpleExpression, treeNode* matched1, t
 {
 	treeNode* n = newNode(linenum);
 	n->kind = If;
+	n->type = VoidType;
 	n->children[0] = simpleExpression;
 	n->children[1] = matched1;
 	n->children[2] = matched2;
@@ -968,7 +990,7 @@ treeNode *makeUnmatchedStatement( treeNode* simpleExpression, treeNode* matched,
 {
 	treeNode* n = newNode(linenum);
 	n->kind = If;
-
+	n->type = VoidType;
 	// Handle unmatched statement cases
 	if (matched == NULL && unmatched == NULL) {
 		n->children[0] = simpleExpression;
@@ -998,6 +1020,7 @@ treeNode *makeIterationStatement(treeNode* simpleExpression, treeNode* statement
 	t->kind = While;
 	t->children[0] = simpleExpression;
 	t->children[1] = statement;
+	t->type = VoidType;
 	return t;
 }
 
@@ -1057,6 +1080,7 @@ treeNode *makeAddOp(int linenum)
 	treeNode* n = newNode(linenum);
 	n->kind = Op;
 	n->opType = Add;
+	n->type = IntType;
 	return n;
 }
 
@@ -1068,6 +1092,7 @@ treeNode *makeSubOp(int linenum)
 	treeNode* n = newNode(linenum);
 	n->kind = Op;
 	n->opType = Sub;
+	n->type = IntType;
 	return n;
 }
 
@@ -1090,6 +1115,7 @@ treeNode *makeMulOp(int linenum)
 	treeNode* n = newNode(linenum);
 	n->kind = Op;
 	n->opType = Mul;
+	n->type = IntType;
 	return n;
 }
 
@@ -1101,6 +1127,7 @@ treeNode *makeDivOp(int linenum)
 	treeNode* n = newNode(linenum);
 	n->kind = Op;
 	n->opType = Div;
+	n->type = IntType;
 	return n;
 }
 
@@ -1112,6 +1139,7 @@ treeNode *makeModOp(int linenum)
 	treeNode* n = newNode(linenum);
 	n->kind = Op;
 	n->opType = Mod;
+	n->type = IntType;
 	return n;
 }
 
@@ -1150,6 +1178,7 @@ treeNode *makeSUB(int linenum)
 	treeNode* n = newNode(linenum);
 	n->kind = Op;
 	n->opType = Sub;
+	n->type = IntType;
 	return n;
 }
 
@@ -1161,6 +1190,7 @@ treeNode *makeMUL(int linenum)
 	treeNode* n = newNode(linenum);
 	n->kind = Op;
 	n->opType = Mul;
+	n->type = IntType;
 	return n;
 }
 
@@ -1172,6 +1202,7 @@ treeNode *makeRAND(int linenum)
 	treeNode* n = newNode(linenum);
 	n->kind = Op;
 	n->opType = Rand;
+	n->type = IntType;
 	return n;
 }
 
@@ -1183,5 +1214,6 @@ treeNode *makeNEG(int linenum)
 	treeNode* n = newNode(linenum);
 	n->kind = Op;
 	n->opType = Neg;
+	n->type = IntType;
 	return n;
 }
