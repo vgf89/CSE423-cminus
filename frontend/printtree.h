@@ -10,23 +10,23 @@
 void parseFile(char *filename);
 
 void printType(int type);
-void printTree(treeNode *parseTree);
-void printSubTree(treeNode *parseTree, int siblingNum, int childNum, int treeLevel);
-void printNode(treeNode *parseTree);
-void printRec(treeNode *parseTree, char *name, int linenum);
-void printVar(treeNode *parseTree, char *name, int type, int linenum);
-void printFunc(char *name, int type, int linenum);
-void printParam(treeNode *parseTree, char *name, int type, int linenum);
-void printCompound(int linenum);
-void printConst(treeNode *parseTree, int type, int linenum);
-void printId(char *name, int linenum);
-void printOp(treeNode *parseTree, int linenum);
-void printAssign(treeNode *parseTree, int linenum);
-void printIf(int linenum);
-void printWhile(int linenum);
-void printBreak(int linenum);
-void printCall(char *name, int linenum);
-void printReturn(int linenum);
+void printTree(treeNode *parseTree, printFormat p);
+void printSubTree(treeNode *parseTree, int siblingNum, int childNum, int treeLevel, printFormat p);
+void printNode(treeNode *parseTree, printFormat p);
+void printRec(treeNode *parseTree, char *name, int linenum, printFormat p);
+void printVar(treeNode *parseTree, char *name, int type, int linenum, printFormat p);
+void printFunc(char *name, int type, int linenum, printFormat p);
+void printParam(treeNode *parseTree, char *name, int type, int linenum, printFormat p);
+void printCompound(int linenum, printFormat p);
+void printConst(treeNode *parseTree, int type, int linenum, printFormat p);
+void printId(char *name, int linenum, printFormat p);
+void printOp(treeNode *parseTree, int linenum, printFormat p);
+void printAssign(treeNode *parseTree, int linenum, printFormat p);
+void printIf(int linenum, printFormat p);
+void printWhile(int linenum, printFormat p);
+void printBreak(int linenum, printFormat p);
+void printCall(char *name, int linenum, printFormat p);
+void printReturn(int linenum, printFormat p);
 
 
 treeNode *newNode(int linenum);
