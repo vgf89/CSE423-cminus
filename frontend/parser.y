@@ -121,7 +121,7 @@ int numerror = 0;
 %type<node> iterationStmt
 %type<node> returnStmt
 %type<node> breakStmt
-%type<node> mutable
+%type<node> Mutable
 %type<node> immutable
 %type<node> expression
 %type<node> relExpression
@@ -200,13 +200,13 @@ program:
 
     typeSpecifier:
         returnTypeSpecifier { $$ = $1; }
-        | RECTYPE       { $$ = makeRecordType(); }
+        | RECTYPE       { $$ = makeRecordType($1.lineNumber); }
         ;
     
     returnTypeSpecifier:
-        INT             { $$ = makeIntType(); }
-        | BOOL          { $$ = makeBoolType(); }
-        | CHAR          { $$ = makeCharType(); }
+        INT             { $$ = makeIntType($1.lineNumber); }
+        | BOOL          { $$ = makeBoolType($1.lineNumber); }
+        | CHAR          { $$ = makeCharType($1.lineNumber); }
         ;
     
     funDeclaration:
@@ -297,13 +297,13 @@ program:
         ;
 
     expression:
-        mutable EQUALS expression   { $$ = makeEquExpression($1, $3, $2.lineNumber); }
-        | mutable ADDE expression   { $$ = makeAddEExpression($1, $3, $2.lineNumber); }
-        | mutable SUBE expression   { $$ = makeSubEExpression($1, $3, $2.lineNumber); }
-        | mutable MULE expression   { $$ = makeMulEExpression($1, $3, $2.lineNumber); }
-        | mutable DIVE expression   { $$ = makeDivEExpression($1, $3, $2.lineNumber); }
-        | mutable INC               { $$ = makeIncExpression($1, $2.lineNumber); }
-        | mutable DEC               { $$ = makeDecExpression($1, $2.lineNumber); }
+        Mutable EQUALS expression   { $$ = makeEquExpression($1, $3, $2.lineNumber); }
+        | Mutable ADDE expression   { $$ = makeAddEExpression($1, $3, $2.lineNumber); }
+        | Mutable SUBE expression   { $$ = makeSubEExpression($1, $3, $2.lineNumber); }
+        | Mutable MULE expression   { $$ = makeMulEExpression($1, $3, $2.lineNumber); }
+        | Mutable DIVE expression   { $$ = makeDivEExpression($1, $3, $2.lineNumber); }
+        | Mutable INC               { $$ = makeIncExpression($1, $2.lineNumber); }
+        | Mutable DEC               { $$ = makeDecExpression($1, $2.lineNumber); }
         | simpleExpression          { $$ = $1; }
         ;
     
@@ -371,14 +371,14 @@ program:
     
     factor:
         immutable   { $$ = $1; }
-        | mutable   { $$ = $1; }
+        | Mutable   { $$ = $1; }
         ;
     
-    mutable:
+    Mutable:
         ID  { $$ = makeMutableID($1.IDvalue, $1.lineNumber); }
-        | mutable BRACL expression BRACR  { 
+        | Mutable BRACL expression BRACR  { 
             $$ = makeMutableBracketExpression($1, $3, $2.lineNumber); }
-        | mutable DOT ID  { $$ = makeMutableDotId($1, $3.IDvalue, $3.lineNumber); }
+        | Mutable DOT ID  { $$ = makeMutableDotId($1, $3.IDvalue, $3.lineNumber); }
         ;
     
     immutable:
@@ -416,85 +416,30 @@ int main (int argc, char** argv)
     int canPrint = 0;
 
     //handling for debug and any future options
-    while(c != -1) {
-        c = getopt(argc, argv, "dpP");
+    while ((c = getopt(argc, argv, "d")) != -1) { 
+        switch (c) {
+        case 'd':
+                if(optarg != NULL)
+                    filename = optarg;
 
-        //catches case where file name is first and args are after
-        if(i == 0 && c == -1) {
-            if(argv[optind] != NULL)
-                filename = argv[optind];
-            i++;
-            optind++;
-
-            //reset c if we have more arguments
-            if(argc > 1)
-                c = 0;
+                yydebug = 1;
+                break;  
+        case '\?':
+                printf("c-: Invalid option \n");
+                return -1;
+                break;
+        case ':':
+                printf("c-: Requires a filename argument\n");
+                return -1;
+                break;
+        default:   
+                printf("incorrect input\n");
+                return -1;
         }
-        else {
-            switch (c) {
-                case 'd':
-                        yydebug = 1;
-                        if(optarg != NULL)
-                            filename = optarg;
-                        break;
-
-                case 'p':
-                        canPrint = 1;
-                        if(optarg != NULL)
-                            filename = optarg;
-                        break;
-
-                case 'P':
-                        canPrint = 2;
-                        if(optarg != NULL)
-                            filename = optarg;            
-                        break;
-
-                case '\?':
-                        printf("c-: Invalid option \n");
-                        return -1;
-                        break;
-                case ':':
-                        printf("c-: %s option requires argument\n", optarg);
-                        return -1;
-                        break;
-                default:
-                        break;
-            }  
-        }
-
-    }
-    if(filename == NULL)
-        printf("invalid file name\n");
-    else
-        parseFile(filename);
-
-    if(canPrint == 1) {
-        if(numerror == 0) {
-            //print AST
-            printTree(root);
-        }
-        else
-            printf("Can't print tree with errors\n");
     }
 
-    if(canPrint == 2) {
-        if(numerror == 0) {
-            //print AST with types
-            printf("Type print placeholde\n");
-        }
-        else
-            printf("Can't print tree with errors\n");
-    }
-
-    printf("Number of warnings: %d\n", numwarn);
-    printf("Number of errors: %d\n", numerror);
-}
-
-void parseFile(char *filename)
-{
     //open file
-    if(filename != NULL) {
+    if(argc > 1) {
         FILE *myfile = fopen(filename, "r");
         if (!myfile) {
             printf("I can't open the file\n");
@@ -506,9 +451,27 @@ void parseFile(char *filename)
         if(yyparse() != 0) {
             printf("Number of warnings: %d\n", numwarn);
             printf("Number of errors: %d\n", numerror);
+        //printf("exit\n");
             exit(-1);
         }
     } while (!feof(yyin));
+
+    //print tree
+    printTree(root);
+
+    if (numerror == 0) {
+	if (printSyntaxTree)
+	    //print tree as in Assignment 2
+	    printTree(root);
+	//semantic analysis
+	//scopeAndType(root);
+	if (printAnnotatedSyntaxTree)
+	    //print tree with types
+	    printTree(root); //add types
+    }
+
+    printf("Number of warnings: %d\n", numwarn);
+    printf("Number of errors: %d\n", numerror);
 }
 
 void yyerror(const char *s)
