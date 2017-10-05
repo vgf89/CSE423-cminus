@@ -5,6 +5,7 @@
 #include "printtree.h"
 #include "symbolTable.h"
 
+
 void scopeAndType(treeNode *parseTree)
 {
 
