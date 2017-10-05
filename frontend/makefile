@@ -22,11 +22,11 @@ $(BIN).tab.h $(BIN).tab.c: $(BIN).y
 lex.yy.c: $(BIN).l $(BIN).tab.h
 	flex $(BIN).l
 
-printtree.c: printtree.h scanType.h treenode.h
-	$(CC) $(CFLAGS) -c printtree.h -o printtree.o
+printtree.c: printtree.h printtree.c
+	$(CC) $(CFLAGS) -c printtree.c -o printtree.o
 
-annotated.c: annotated.h treenode.h printtree.h
-	$(CC) $(CFLAGS) -c annotated.h -o annotated.o
+annotated.c: annotated.c annotated.h
+	$(CC) $(CFLAGS) -c annotated.c -o annotated.o
 
 all:
 	make
