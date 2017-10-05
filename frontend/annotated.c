@@ -3,6 +3,7 @@
  * Group: _Za_Worldo_
  */
 #include "printtree.h"
+#include "symbolTable.h"
 
 void scopeAndType(treeNode *parseTree)
 {
