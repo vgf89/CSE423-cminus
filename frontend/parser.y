@@ -183,10 +183,10 @@ program:
         ;
     
     varDeclId:
-        ID  { $$ = makeVarDeclarationId($1.IDvalue, 0, 0, $1.lineNumber); }
+        ID  { $$ = makeVarDeclarationId($1, $1.IDvalue, 0, 0, $1.lineNumber); }
         | ID BRACL NUMCONST BRACR     {
             //printf("%s\n", $1.IDvalue);
-            $$ = makeVarDeclarationId($1.IDvalue, 1, $3.numericalValue, $1.lineNumber); 
+            $$ = makeVarDeclarationId($1, $1.IDvalue, 1, $3.numericalValue, $1.lineNumber); 
                                         $$->arrayLength = $3.numericalValue; }
         ;
     
@@ -200,13 +200,17 @@ program:
 
     typeSpecifier:
         returnTypeSpecifier { $$ = $1; }
-        | RECTYPE       { $$ = makeRecordType($1.lineNumber); }
+        | RECTYPE       { $$ = makeRecordType($1.lineNumber); 
+				$1.type = superToken::RecordType; }
         ;
     
     returnTypeSpecifier:
-        INT             { $$ = makeIntType($1.lineNumber); }
-        | BOOL          { $$ = makeBoolType($1.lineNumber); }
-        | CHAR          { $$ = makeCharType($1.lineNumber); }
+        INT             { $$ = makeIntType($1.lineNumber); 
+				$1.type = superToken::IntType; }
+        | BOOL          { $$ = makeBoolType($1.lineNumber); 
+				$1.type = superToken::BoolType; }
+        | CHAR          { $$ = makeCharType($1.lineNumber); 
+				$1.type = superToken::CharType; }
         ;
     
     funDeclaration:
@@ -375,7 +379,8 @@ program:
         ;
     
     Mutable:
-        ID  { $$ = makeMutableID($1.IDvalue, $1.lineNumber); }
+        ID  { $$ = makeMutableID($1, $1.IDvalue, $1.lineNumber);
+		$$->type = getTokenType($1)->type; }
         | Mutable BRACL expression BRACR  { 
             $$ = makeMutableBracketExpression($1, $3, $2.lineNumber); }
         | Mutable DOT ID  { $$ = makeMutableDotId($1, $3.IDvalue, $3.lineNumber); }

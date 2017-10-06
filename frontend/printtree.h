@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include "treenode.h"
+#include "scanType.h"
 
  typedef enum {SIMPLE, DETAILED} printFormat;
 
@@ -34,6 +35,8 @@ void printReturn(int type, int linenum, printFormat p);
 
 treeNode *newNode(int linenum);
 
+treeNode *getTokenType(SPT token);
+
 treeNode *makeRecordDeclaration(char* id, treeNode* localDeclarations, int linenum);
 treeNode *makeLocalDeclaration(treeNode* localDeclarations, treeNode* scopedVarDeclaration);
 treeNode *makeScopedVarDeclaration(treeNode *scopedTypedSpecifier, treeNode *varDeclList);
@@ -41,7 +44,7 @@ treeNode *addVarDeclarationInitialize(treeNode *varDeclList, treeNode *varDeclIn
 
 treeNode *makeDeclaration(treeNode* declarationList, treeNode* declaration);
 treeNode *makeVarDeclaration(treeNode* typeSpecifier, treeNode* varDeclList);
-treeNode *makeVarDeclarationId(char* id, int isArray, int arraylength, int linenum);
+treeNode *makeVarDeclarationId(SPT token, char* id, int isArray, int arraylength, int linenum);
 treeNode *addSimpleExpressionToVarDeclarationID(treeNode *varDeclId, treeNode *simpleExpression);
 
 treeNode *makeFuncStatement(treeNode* typeSpecifier, char* id, treeNode* params, treeNode* statement, int linenum);
@@ -100,7 +103,7 @@ treeNode *makeBreakStatement(int linenum);
 treeNode *makeReturnStatement(treeNode *expression, int linenum);
 treeNode *makeCompound(treeNode *left, treeNode *right, int linenum);
 
-treeNode *makeMutableID(char *id, int linenum);
+treeNode *makeMutableID(SPT token, char *id, int linenum);
 treeNode *makeMutableBracketExpression(treeNode* mutable_t, treeNode* expression, int linenum);
 treeNode *makeMutableDotId(treeNode* Mutable, char *id, int linenum);
 

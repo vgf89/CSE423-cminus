@@ -7,7 +7,9 @@
 
 typedef struct superToken {
     int lineNumber;
-    char* tokenType;
+    char* tokenType; //string from scanner
+    enum {IntType, VoidType, CharType, BoolType, RecordType, UndefinedType} type; 
+    	//enum for ID types, set in grammar
     char *stringThatWasTyped;
     char* KWTvalue;
     long long numericalValue;

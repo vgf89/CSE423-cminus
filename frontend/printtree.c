@@ -434,6 +434,34 @@ treeNode *newNode(int linenum)
 	return node;
 }
 
+treeNode *getTokenType(SPT token)
+{
+	treeNode *n = newNode(0); // just used for type
+	switch(token.type) {
+		case SPT::IntType:
+			n->type = treeNode::IntType;
+			break;
+		case SPT::VoidType:
+			n->type = treeNode::VoidType;
+			break;
+		case SPT::CharType:
+			n->type = treeNode::CharType;
+			break;
+		case SPT::BoolType:
+			printf("bool token type\n");
+			n->type = treeNode::BoolType;
+			break;
+		case SPT::RecordType:
+			n->type = treeNode::RecordType;
+			break;
+		case SPT::UndefinedType:
+			n->type = treeNode::UndefinedType;
+			break;
+		default:
+			break;
+	}
+	return n;
+}
 
 /*
  * makes a new node for record decleration
@@ -509,6 +537,7 @@ treeNode *makeScopedVarDeclaration(treeNode *scopedTypedSpecifier, treeNode *var
 treeNode *addVarDeclarationInitialize(treeNode *varDeclList, treeNode *varDeclInitialize)
 {
 	treeNode* t = varDeclList;
+	t->type = varDeclList->type;
 	// Traverse sibling list to add varDeclInitialize onto the end
 	if (t != NULL)
 	{
@@ -528,6 +557,7 @@ treeNode *addVarDeclarationInitialize(treeNode *varDeclList, treeNode *varDeclIn
 treeNode *makeVarDeclaration(treeNode* typeSpecifier, treeNode* varDeclList)
 {
 	treeNode* t = varDeclList;
+	varDeclList->type = typeSpecifier->type;
 	//Iterate over each sibling in varDeclList and set its type to typeSpecifier
 	while (t != NULL)
 	{
@@ -540,12 +570,13 @@ treeNode *makeVarDeclaration(treeNode* typeSpecifier, treeNode* varDeclList)
 /*
  * creates a new var decleration ID node
  */
-treeNode *makeVarDeclarationId(char* id, int isArray, int arraylength, int linenum)
+treeNode *makeVarDeclarationId(SPT token, char* id, int isArray, int arraylength, int linenum)
 {
 	treeNode* t = newNode(linenum);
 	t->val.id = id;
 	t->kind = treeNode::Var;
-	//TODO t->type = 
+	treeNode* n = getTokenType(token);
+	t->type = n->type;
 	if (isArray) {
 		t->isArray = isArray;
 		t->arrayLength = arraylength;
@@ -559,6 +590,7 @@ treeNode *makeVarDeclarationId(char* id, int isArray, int arraylength, int linen
 treeNode *addSimpleExpressionToVarDeclarationID(treeNode *varDeclId, treeNode *simpleExpression)
 {
 	varDeclId->children[0] = simpleExpression;
+
 	return varDeclId;
 }
 
@@ -585,6 +617,7 @@ treeNode *makeEquExpression(treeNode* Mutable, treeNode* expression, int linenum
 	n->children[0] = Mutable;
 	n->children[1] = expression;
 	n->opType = treeNode::Eq;
+	n->type = Mutable->type;
 	if (Mutable->type == expression->type) {
 		n->type = Mutable->type;
 	} else {
@@ -1087,12 +1120,14 @@ treeNode *makeIterationStatement(treeNode* simpleExpression, treeNode* statement
 /*
  * creates a Mutable ID node
  */
-treeNode *makeMutableID(char *id, int linenum)
+treeNode *makeMutableID(SPT token, char *id, int linenum)
 {
 	treeNode* n = newNode(linenum);
 	n->kind = treeNode::Id;
 	n->val.id = id;
 	//TODO type?
+	treeNode *t = getTokenType(token);
+	n->type = t->type;
 	return n;
 
 }
