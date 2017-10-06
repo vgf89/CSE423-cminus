@@ -2,6 +2,9 @@
  * CSE423 Fall 2017
  * Group: _Za_Worldo_
  */
+#ifndef TREENODE_H
+#define TREENODE_H
+
 #define MAXCHILDREN 2048
 
 typedef struct treeNode {
@@ -37,3 +40,4 @@ typedef struct treeNode {
     int isStatic;        //is staticly allocated 
 } treeNode;
 
+#endif

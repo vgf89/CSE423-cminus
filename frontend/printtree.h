@@ -2,6 +2,9 @@
  * CSE423 Fall 2017
  * Group: _Za_Worldo_
  */
+#ifndef PRINTTREE_H
+#define PRINTTREE_H
+
 #include <stdio.h>
 #include "treenode.h"
 
@@ -107,3 +110,5 @@ treeNode *makeArgList(treeNode* arglist, treeNode* expression);
 treeNode *makeBoolConst(int b, int linenum);
 treeNode *makeIntConst(int i, int linenum);
 treeNode *makeCharConst(char c, int linenum);
+
+#endif /* PRINTTREE_H */

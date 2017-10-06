@@ -13,23 +13,24 @@ OBJS = lex.yy.o $(BIN).tab.o printtree.o annotated.o symbolTable.o
 LIBS = -lfl
 
 
-$(BIN): $(OBJS)
+$(OUTPUT): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(OUTPUT)
 
-$(BIN).tab.h $(BIN).tab.c: $(BIN).y
+$(BIN).tab.h $(BIN).tab.c lex.yy.c: $(BIN).y
 	bison -v -t -d $(BIN).y
 
-lex.yy.c: $(BIN).l $(BIN).tab.h
+lex.yy.o: $(BIN).l lex.yy.c
 	flex $(BIN).l
+	g++ -g -c -o lex.yy.o lex.yy.c
 
-printtree.c: printtree.h printtree.c
+printtree.o: printtree.h printtree.c
 	$(CC) $(CFLAGS) -c printtree.c -o printtree.o
 
-annotated.c: annotated.c annotated.h symbolTable.h
+annotated.o: annotated.c annotated.h
 	$(CC) $(CFLAGS) -c annotated.c -o annotated.o
 
-symbolTable:
-	$(CC) $(CFLAGS) -c symbolTable.h -o symbolTable.o 
+symbolTable.o: symbolTable.cpp symbolTable.h
+	$(CC) $(CFLAGS) -c symbolTable.cpp -o symbolTable.o 
 
 all:
 	make
