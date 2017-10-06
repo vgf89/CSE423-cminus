@@ -7,3 +7,4 @@
 
 void scopeAndType(treeNode *parseTree);
 void treeTraverse(treeNode *parseTree);
+void traverseSubTree(treeNode *curNode);
