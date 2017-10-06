@@ -90,4 +90,4 @@ public:
                                                      // returns false if already defined
 };
 
-#endif
+#endif /* _SYMBOLTABLE_H_ */
