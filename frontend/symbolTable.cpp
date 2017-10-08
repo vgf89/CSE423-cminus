@@ -8,8 +8,8 @@ void SymbolTable::newScope() {
 	this->stack.push_back(new Scope);
 }
 
-int SymbolTable::insertSymbol(std::string name, std::string type, kind_enum kind, bool isStatic, bool isArray, bool isRecord) {
-	this->stack.back()->insertSymbol(name, type, kind, isStatic, isArray, isRecord);	
+int SymbolTable::insertSymbol(std::string name, std::string type, kind_enum kind, bool isStatic, bool isArray, bool isRecord, int linenum) {
+	this->stack.back()->insertSymbol(name, type, kind, isStatic, isArray, isRecord, linenum);	
 	return 0;
 }
 
@@ -42,7 +42,7 @@ bool SymbolTable::searchAll(std::string name) {
     return false;
 }
 
-int Scope::insertSymbol(std::string name, std::string type, kind_enum kind, bool isStatic, bool isArray, bool isRecord) {
+int Scope::insertSymbol(std::string name, std::string type, kind_enum kind, bool isStatic, bool isArray, bool isRecord, int linenum) {
 	Entry *e = new Entry();
 	e->type = type; //In case of Record, name of the record type (i.e. Point)
     /* attribute */
@@ -50,6 +50,7 @@ int Scope::insertSymbol(std::string name, std::string type, kind_enum kind, bool
     e->isStatic = isStatic;
     e->isArray = isArray;
     e->isRecord = isRecord;
+    e->linenum = linenum;
 
     this->symbols.insert(name, e);
 
