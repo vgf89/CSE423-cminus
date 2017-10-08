@@ -26,8 +26,8 @@ lex.yy.o: $(BIN).l lex.yy.c
 printtree.o: printtree.h printtree.c
 	$(CC) $(CFLAGS) -c printtree.c -o printtree.o
 
-annotated.o: annotated.c annotated.h
-	$(CC) $(CFLAGS) -c annotated.c -o annotated.o
+annotated.o: annotated.cpp annotated.h
+	$(CC) $(CFLAGS) -c annotated.cpp -o annotated.o
 
 symbolTable.o: symbolTable.cpp symbolTable.h
 	$(CC) $(CFLAGS) -c symbolTable.cpp -o symbolTable.o 
