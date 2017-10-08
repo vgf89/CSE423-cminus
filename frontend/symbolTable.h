@@ -48,7 +48,7 @@ public:
     /* Assuming children can redeclare variable... */
     Entry* searchCurrent(std::string name); // Used for checking during declaration (true if found, false otherwise)
     Entry* searchAll(std::string name); // Used for checking during type checks (true if found, false otherwise)
-    int getDepth(); // Just returns stack.length();
+    int getDepth(); // Just returns stack.size();
     bool getDebug();
     void setDebug(bool d);
 
