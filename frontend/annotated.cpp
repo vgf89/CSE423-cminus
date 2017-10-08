@@ -23,7 +23,7 @@ void treeTraverse(treeNode *curNode) {
 	case Var:
 		//printf("new Var: %s\n",curNode->val.id );
 		// Declare Variable
-		st.insertSymbol(
+		e = st.insertSymbol(
 			curNode->val.id,
 			curNode->type,
 			Var,
@@ -40,7 +40,7 @@ void treeTraverse(treeNode *curNode) {
 	case Func:
 		printf("new Func: %s\n", curNode->val.id);
 		// Declare new Function
-		st.insertSymbol(
+		e = st.insertSymbol(
 			curNode->val.id,
 			curNode->type,
 			Func,
@@ -56,7 +56,7 @@ void treeTraverse(treeNode *curNode) {
 	
 	case Rec:
 		// Declare new Record
-		st.insertSymbol(
+		e = st.insertSymbol(
 			curNode->val.id,
 			curNode->type,
 			Rec,
@@ -72,7 +72,7 @@ void treeTraverse(treeNode *curNode) {
 
 	case Id:
 		//printf("check %s\n", curNode->val.id);
-		st.searchAll(std::string(curNode->val.id));
+		e = st.searchAll(std::string(curNode->val.id));
 		if (e == NULL) {
 			printSymbolNotDefinedError(curNode->linenum, curNode->val.id);
 		}
@@ -80,7 +80,7 @@ void treeTraverse(treeNode *curNode) {
 	
 	case Param:
 		// Declare Variable
-		st.insertSymbol(
+		e = st.insertSymbol(
 			curNode->val.id,
 			curNode->type,
 			Var,
