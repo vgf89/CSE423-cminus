@@ -13,7 +13,7 @@
 
 void parseFile(char *filename);
 
-char* getType(int type);
+const char* getType(int type);
 void printTree(treeNode *parseTree, printFormat p);
 void printSubTree(treeNode *parseTree, int siblingNum, int childNum, int treeLevel, printFormat p);
 void printNode(treeNode *parseTree, printFormat p);
