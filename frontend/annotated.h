@@ -8,9 +8,11 @@
 #include "printtree.h"
 #include "symbolTable.h"
 
+extern int numwarn;
+extern int numerror;
+
 void scopeAndType(treeNode *parseTree);
-void treeTraverse(treeNode *parseTree);
-void traverseSubTree(treeNode *curNode);
+void treeTraverse(treeNode *curTree);
 
 
 // Error printing functions
