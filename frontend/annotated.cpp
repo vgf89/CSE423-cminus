@@ -115,35 +115,78 @@ void treeTraverse(treeNode *curNode) {
 	}
 }
 
-void printSymbolAlreadyDefinedError(int linenum, char* s, int ln)
+void printSymbolAlreadyDefinedError(int linenum1, char* symbol, int linenum2)
 {
-	printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", linenum, s, ln);
+	printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", linenum1, symbol, linenum2);
 }
 
-void printSymbolNotDefinedError(int linenum, char* s)
+void printSymbolNotDefinedError(int linenum, char* symbol)
 {
-	printf("ERROR(%d): Symbol '%s' is not defined.\n", linenum, s);
+	printf("ERROR(%d): Symbol '%s' is not defined.\n", linenum, symbol);
 }
 
-void simpleVarCalledError(int lineum, char* s) 
+void simpleVarCalledError(int linenum, char* var) 
 {
-	printf("ERROR(%d): '%s' is a simple variable and cannot be called.\n");
+	printf("ERROR(%d): '%s' is a simple variable and cannot be called.\n", linenum, var);
 }
 
-/*
-"ERROR(%d): '%s' is a simple variable and cannot be called.\n"
-"ERROR(%d): '%s' requires operands of %s but lhs is of %s.\n"
-"ERROR(%d): '%s' requires operands of %s but rhs is of %s.\n"
-"ERROR(%d): '%s' requires operands of the same type but lhs is %s and rhs is %s.\n"
-"ERROR(%d): Array '%s' should be indexed by type int but got %s.\n"
-"ERROR(%d): Array index is the unindexed array '%s'.\n"
-"ERROR(%d): Cannot index nonarray '%s'.\n"
-"ERROR(%d): Cannot index nonarray.\n"
-"ERROR(%d): Cannot return an array.\n"
-"ERROR(%d): Cannot use function '%s' as a variable.\n"
-"ERROR(%d): Symbol '%s' is already defined at line %d.\n"
-"ERROR(%d): Symbol '%s' is not defined.\n"
-"ERROR(%d): The operation '%s' does not work with arrays.\n"
-"ERROR(%d): The operation '%s' only works with arrays.\n"
-"ERROR(%d): Unary '%s' requires an operand of type %s but was given %s.\n"
-*/
+void requiredOpLhsError(int linenum, char* reqType, char* givenType)
+{
+	printf("ERROR(%d): '%s' requires operands of %s but lhs is of %s.\n", linenum, reqType, givenType);
+}
+	
+void requiredOpRhsError(int linenum, char* reqType, char* givenType)
+{
+	printf("ERROR(%d): '%s' requires operands of %s but rhs is of %s.\n", linenum, reqType, givenType);
+}
+	
+void operandTypeMistmatchError(int linenum, char* givenType, char *lhType, char *rhType)
+{
+	printf("ERROR(%d): '%s' requires operands of the same type but lhs is %s and rhs is %s.\n", linenum, givenType, lhType, rhType);
+}
+	
+void arrayIndexTypeError(int linenum, char* reqType, char* givenType)
+{
+	printf("ERROR(%d): Array '%s' should be indexed by type int but got %s.\n", linenum, reqType, givenType);
+}
+	
+void unindexedArrayError(int linenum, char* array)
+{
+	printf("ERROR(%d): Array index is the unindexed array '%s'.\n", linenum, array);
+}
+	
+void indexingNamedNonArrayError(int linenum, char* array)
+{
+	printf("ERROR(%d): Cannot index nonarray '%s'.\n", linenum, array);
+}
+	
+void indexingUnamedNonArrayError(int linenum)
+{
+	printf("ERROR(%d): Cannot index nonarray.\n", linenum);
+}
+	
+void returnArrayError(int linenum)
+{
+	printf("ERROR(%d): Cannot return an array.\n", linenum);
+}
+	
+void functionAsVariableError(int linenum, char* func)
+{
+	printf("ERROR(%d): Cannot use function '%s' as a variable.\n", linenum, func);
+}
+	
+void invalidArrayOperationError(int linenum, char* op)
+{
+	printf("ERROR(%d): The operation '%s' does not work with arrays.\n", linenum, op);
+}
+	
+void opOnlyForArraysError(int linenum, char* op)
+{
+	printf("ERROR(%d): The operation '%s' only works with arrays.\n", linenum, op);
+}
+	
+void invalidUnaryOpError(int linenum, char* reqOp, char* givenOp)
+{
+	printf("ERROR(%d): Unary '%s' requires an operand of type %s but was given %s.\n", linenum, reqOp, givenOp);
+}
+	
