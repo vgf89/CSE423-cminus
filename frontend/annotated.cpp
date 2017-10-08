@@ -17,7 +17,9 @@ void treeTraverse(treeNode *curNode) {
 	switch (curNode->kind) {
 	case Compound:
 		// Create new scope
-		st.newScope();
+		Entry* previous = st.getParentLast();
+		if(previous->kind != Func)
+			st.newScope();
 		break;
 
 	case Var:
@@ -110,6 +112,11 @@ void treeTraverse(treeNode *curNode) {
 	// This was a compound node, need to pop the top the symbol table when exiting
 	switch (curNode->kind) {
 	case Compound:
+		Entry* previous = st.getParentLast();
+		if(previous->kind != Func)
+			st.pop();
+		break;
+	case Func:
 		st.pop();
 		break;
 	}
