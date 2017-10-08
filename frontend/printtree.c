@@ -437,7 +437,7 @@ treeNode *newNode(int linenum)
 
 treeNode *getTokenType(SPT token)
 {
-	treeNode *n = newNode(0); // just used for type
+	treeNode *n = newNode(token.lineNumber); // just used for type
 	switch(token.type) {
 		case SPT::IntType:
 			n->type = IntType;

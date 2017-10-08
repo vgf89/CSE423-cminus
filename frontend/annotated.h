@@ -12,4 +12,9 @@ void scopeAndType(treeNode *parseTree);
 void treeTraverse(treeNode *parseTree);
 void traverseSubTree(treeNode *curNode);
 
+
+// Error printing functions
+void printSymbolAlreadyDefinedError(int linenum, char* s);
+void printSymbolNotDefinedError(int linenum, char* s);
+
 #endif /* ANNOTATED_H */

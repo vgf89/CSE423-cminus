@@ -6,7 +6,7 @@ SymbolTable::SymbolTable(bool debug) {
 }
 
 void SymbolTable::newScope() {
-    printf("Adding new scope\n");
+    //printf("Adding new scope\n");
 	this->stack.push_back(new Scope);
 }
 
@@ -16,7 +16,7 @@ int SymbolTable::insertSymbol(std::string name, std::string type, kind_enum kind
 }
 
 int SymbolTable::pop() {
-    printf("Popping scope\n");
+    //printf("Popping scope\n");
 	if (!this->stack.empty()) {
 		this->stack.pop_back();
 		return 0;
@@ -47,7 +47,7 @@ bool SymbolTable::searchAll(std::string name) {
 
 int Scope::insertSymbol(std::string name, std::string type, kind_enum kind, bool isStatic, bool isArray, bool isRecord, int linenum) {
 	Entry *e = new Entry();
-	e->type = type; //In case of Record, name of the record type (i.e. Point)
+	e->type = type;
     /* attribute */
     e->kind = kind;
     e->isStatic = isStatic;
@@ -55,8 +55,11 @@ int Scope::insertSymbol(std::string name, std::string type, kind_enum kind, bool
     e->isRecord = isRecord;
     e->linenum = linenum;
 
-    this->symbols.insert(std::make_pair(name, *e));
+    if(this->symbols.find(name) != this->symbols.end())
+        return 1;
 
+    //printf("Adding symbol: %s\n", name.c_str());
+    this->symbols.insert(std::make_pair(name, *e));
     return 0;
 
 }

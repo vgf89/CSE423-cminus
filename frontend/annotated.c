@@ -46,7 +46,7 @@ void traverseSubTree(treeNode *curNode) {
 			curNode->isRecord
 		);
 		if (retval) {
-			//print error
+			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id);
 		}
 	}
 	
@@ -62,12 +62,13 @@ void traverseSubTree(treeNode *curNode) {
 			curNode->isRecord
 		);
 		if (retval) {
-			//print error
+			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id);
 		}
 	}
 
 	else if (curNode->kind == Func)
 	{
+		printf("new Func: %s\n", curNode->val.id);
 		// Declare new Function
 		int retval = st.insertSymbol(
 			curNode->val.id,
@@ -78,13 +79,16 @@ void traverseSubTree(treeNode *curNode) {
 			curNode->isRecord
 		);
 		if (retval) {
-			//print error
+			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id);
 		}
 	}
 
 	else if (curNode->kind == Id)
 	{
-		st.searchAll(std::string(curNode->val.id));
+		bool retval = st.searchAll(std::string(curNode->val.id));
+		if (!retval) {
+			printSymbolNotDefinedError(curNode->linenum, curNode->val.id);
+		}
 	}
 
 	int i = 0;
@@ -103,4 +107,15 @@ void traverseSubTree(treeNode *curNode) {
 		st.pop();
 	}
 
+}
+
+
+void printSymbolAlreadyDefinedError(int linenum, char* s)
+{
+	printf("ERROR(%d): Symbol '%s' is already defined at line TODO(%%d).\n", linenum, s);
+}
+
+void printSymbolNotDefinedError(int linenum, char* s)
+{
+	printf("ERROR(%d): Symbol '%s' is not defined.\n", linenum, s);
 }
