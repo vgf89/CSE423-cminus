@@ -49,6 +49,8 @@ public:
     Entry* searchCurrent(std::string name); // Used for checking during declaration (true if found, false otherwise)
     Entry* searchAll(std::string name); // Used for checking during type checks (true if found, false otherwise)
     int depth(); // Just returns stack.length();
+    bool getDebug();
+    void setDebug(bool d);
 
 private:
     bool debug;

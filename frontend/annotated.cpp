@@ -6,10 +6,9 @@
 #include "symbolTable.h"
 #include "annotated.h"
 
-SymbolTable st = NULL;
+SymbolTable st = new SymbolTable(true);
 
 void scopeAndType(treeNode *parseTree) {
-	st = SymbolTable(true);
 	treeTraverse(parseTree);
 }
 

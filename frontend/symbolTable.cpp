@@ -51,6 +51,14 @@ Entry* SymbolTable::searchAll(std::string name) {
     return NULL;
 }
 
+bool SymbolTable::getDebug() {
+	return this->debug;
+}
+
+void SymbolTable::setDebug(bool d) {
+	this->debug = d;
+}
+
 Entry* Scope::insertSymbol(std::string name, enum typeEnum type, enum kindEnum kind, bool isStatic, bool isArray, bool isRecord, int linenum) {
 	Entry *e = new Entry();
 	e->type = type;
