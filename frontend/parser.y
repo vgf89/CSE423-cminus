@@ -206,11 +206,11 @@ program:
     
     returnTypeSpecifier:
         INT             { $$ = makeIntType($1.lineNumber); 
-				$1.type = superToken::IntType; }
+				          $1.type = superToken::IntType; }
         | BOOL          { $$ = makeBoolType($1.lineNumber); 
-				$1.type = superToken::BoolType; }
+				          $1.type = superToken::BoolType; }
         | CHAR          { $$ = makeCharType($1.lineNumber); 
-				$1.type = superToken::CharType; }
+			              $1.type = superToken::CharType; }
         ;
     
     funDeclaration:
