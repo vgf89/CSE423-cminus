@@ -10,7 +10,7 @@ void SymbolTable::newScope() {
 	this->stack.push_back(new Scope);
 }
 
-int SymbolTable::insertSymbol(std::string name, std::string type, kind_enum kind, bool isStatic, bool isArray, bool isRecord, int linenum) {
+int SymbolTable::insertSymbol(std::string name, enum typeEnum type, enum kindEnum kind, bool isStatic, bool isArray, bool isRecord, int linenum) {
 	this->stack.back()->insertSymbol(name, type, kind, isStatic, isArray, isRecord, linenum);	
 	return 0;
 }
@@ -45,7 +45,7 @@ bool SymbolTable::searchAll(std::string name) {
     return false;
 }
 
-int Scope::insertSymbol(std::string name, std::string type, kind_enum kind, bool isStatic, bool isArray, bool isRecord, int linenum) {
+int Scope::insertSymbol(std::string name, enum typeEnum type, enum kindEnum kind, bool isStatic, bool isArray, bool isRecord, int linenum) {
 	Entry *e = new Entry();
 	e->type = type;
     /* attribute */

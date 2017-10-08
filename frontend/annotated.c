@@ -43,7 +43,8 @@ void traverseSubTree(treeNode *curNode) {
 			Var,
 			curNode->isStatic,
 			curNode->isArray,
-			curNode->isRecord
+			curNode->isRecord,
+			curNode->linenum
 		);
 		if (retval) {
 			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id);
@@ -59,7 +60,8 @@ void traverseSubTree(treeNode *curNode) {
 			Rec,
 			curNode->isStatic,
 			curNode->isArray,
-			curNode->isRecord
+			curNode->isRecord,
+			curNode->linenum
 		);
 		if (retval) {
 			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id);
@@ -76,9 +78,11 @@ void traverseSubTree(treeNode *curNode) {
 			Func,
 			curNode->isStatic,
 			curNode->isArray,
-			curNode->isRecord
+			curNode->isRecord,
+			curNode->linenum
 		);
 		if (retval) {
+
 			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id);
 		}
 	}
@@ -112,7 +116,7 @@ void traverseSubTree(treeNode *curNode) {
 
 void printSymbolAlreadyDefinedError(int linenum, char* s)
 {
-	printf("ERROR(%d): Symbol '%s' is already defined at line TODO(%%d).\n", linenum, s);
+	printf("ERROR(%d): Symbol '%s' is already defined at line %%d.\n", linenum, s);
 }
 
 void printSymbolNotDefinedError(int linenum, char* s)

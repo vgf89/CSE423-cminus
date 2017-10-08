@@ -26,7 +26,7 @@ public:
 
 class Scope {
 public:
-    int insertSymbol(std::string name, std::string type, kind_enum kind, bool isStatic, bool isArray, bool isRecord, int linenum); /*
+    int insertSymbol(std::string name, enum typeEnum type, enum kindEnum kind, bool isStatic, bool isArray, bool isRecord, int linenum); /*
         Add symbol to scope. Return 0 on succcess, 1 on failure (symbol already exists).
         If debugging print new entry
     */
@@ -41,7 +41,7 @@ public:
     SymbolTable(bool debug); // Make new symboltable, initializes the global scope
     void newScope(); // Next (child) scope. new Scope is made inside this function and pushed to stack, if debug print new scope depth
 
-    int insertSymbol(std::string name, std::string type, kind_enum kind, bool isStatic, bool isArray, bool isRecord, int linenum); // Add symbol to current scope (top of stack)
+    int insertSymbol(std::string name, enum typeEnum type, enum kindEnum kind, bool isStatic, bool isArray, bool isRecord, int linenum); // Add symbol to current scope (top of stack)
 
     int pop();  // Removes and frees(?) current scope, return int for errors (0 = success, 1 = already popped global)
 
