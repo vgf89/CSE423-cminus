@@ -63,7 +63,7 @@ Entry* SymbolTable::getParentLast() {
 	if (stack.size() < 2) {
 		return NULL;
 	}
-	return this->stack[stack.size()-2]->symbols.end()->second; 
+	return this->stack[stack.size()-2]->symbols.rbegin()->second; 
 }
 
 Entry* Scope::insertSymbol(std::string name, enum typeEnum type, enum kindEnum kind, bool isStatic, bool isArray, bool isRecord, int linenum) {
