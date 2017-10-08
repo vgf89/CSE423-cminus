@@ -201,7 +201,7 @@ program:
     typeSpecifier:
         returnTypeSpecifier { $$ = $1; }
         | RECTYPE       { $$ = makeRecordType($1.lineNumber); 
-				$1.type = superToken::RecordType; }
+				          $1.type = superToken::RecordType; }
         ;
     
     returnTypeSpecifier:
@@ -379,8 +379,7 @@ program:
         ;
     
     Mutable:
-        ID  { $$ = makeMutableID($1, $1.IDvalue, $1.lineNumber);
-		$$->type = getTokenType($1)->type; }
+        ID { $$ = makeMutableID($1, $1.IDvalue, $1.lineNumber); }
         | Mutable BRACL expression BRACR  { 
             $$ = makeMutableBracketExpression($1, $3, $2.lineNumber); }
         | Mutable DOT ID  { $$ = makeMutableDotId($1, $3.IDvalue, $3.lineNumber); }

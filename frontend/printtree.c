@@ -122,9 +122,9 @@ void printNode(treeNode *parseTree, printFormat p)
 /*
  * Utility function for printing types when necessary
  */
-char* getType(int type)
+const char* getType(int type)
 {
-	char *finalString = NULL;
+	const char *finalString;
 
 	switch(type){
 		case treeNode::IntType:
@@ -1125,7 +1125,7 @@ treeNode *makeMutableID(SPT token, char *id, int linenum)
 	treeNode* n = newNode(linenum);
 	n->kind = treeNode::Id;
 	n->val.id = id;
-	//TODO type?
+
 	treeNode *t = getTokenType(token);
 	n->type = t->type;
 	return n;
