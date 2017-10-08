@@ -15,15 +15,7 @@ void scopeAndType(treeNode *parseTree) {
 
 void treeTraverse(treeNode *parseTree) {
 	if(parseTree != NULL) {	
-		int i = 0;
-		while (i < 3 || parseTree->children[i] != NULL) {
-			if (parseTree->children[i] != NULL)
-				traverseSubTree(parseTree->children[i]);
-			i++;
-		}
-		if (parseTree->sibling != NULL) {
-			traverseSubTree(parseTree->sibling);
-		}
+		traverseSubTree(parseTree);
 	}
 }
 
@@ -36,6 +28,7 @@ void traverseSubTree(treeNode *curNode) {
 
 	else if (curNode->kind == Var)
 	{
+		//printf("new Var: %s\n",curNode->val.id );
 		// Declare Variable
 		Entry* e = st.insertSymbol(
 			curNode->val.id,
@@ -88,6 +81,7 @@ void traverseSubTree(treeNode *curNode) {
 
 	else if (curNode->kind == Id)
 	{
+		//printf("check %s\n", curNode->val.id);
 		Entry* e = st.searchAll(std::string(curNode->val.id));
 		if (e == NULL) {
 			printSymbolNotDefinedError(curNode->linenum, curNode->val.id);

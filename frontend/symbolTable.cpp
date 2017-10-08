@@ -42,14 +42,11 @@ Entry* SymbolTable::searchCurrent(std::string name) {
 // Returns the symbol found in the scope stack
 Entry* SymbolTable::searchAll(std::string name) {
     Entry* e;
-	for (auto i = this->stack.begin(); i != this->stack.end(); ) {
-        e = (*i)->search(name);
-    	if ((*i)->search(name) == NULL) {
-        	i++;
-    	}
-      	else {
+	for (std::size_t i = 0; i < stack.size(); i++) {
+        e = stack[i]->search(name);
+    	if (e != NULL) {
         	return e;
-      	}
+    	}
     }
     return NULL;
 }
@@ -68,7 +65,7 @@ Entry* Scope::insertSymbol(std::string name, enum typeEnum type, enum kindEnum k
         return this->symbols.find(name)->second;
 
     //printf("Adding symbol: %s\n", name.c_str());
-    this->symbols.insert(std::make_pair(name, e));
+    this->symbols[name] = e;
     return NULL;
 
 }
