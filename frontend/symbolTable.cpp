@@ -1,4 +1,5 @@
 #include "symbolTable.h"
+#include <utility>
 
 SymbolTable::SymbolTable(bool debug) {
     this->newScope();
@@ -8,7 +9,7 @@ void SymbolTable::newScope() {
 	this->stack.push_back(new Scope);
 }
 
-int SymbolTable::insertSymbol(std::string name, std::string type, kind_enum kind, bool isStatic, bool isArray, bool isRecord) {
+int SymbolTable::insertSymbol(std::string name, enum typeEnum type, enum kindEnum kind, bool isStatic, bool isArray, bool isRecord) {
 	this->stack.back()->insertSymbol(name, type, kind, isStatic, isArray, isRecord);	
 	return 0;
 }
@@ -42,7 +43,7 @@ bool SymbolTable::searchAll(std::string name) {
     return false;
 }
 
-int Scope::insertSymbol(std::string name, std::string type, kind_enum kind, bool isStatic, bool isArray, bool isRecord) {
+int Scope::insertSymbol(std::string name, enum typeEnum type, enum kindEnum kind, bool isStatic, bool isArray, bool isRecord) {
 	Entry *e = new Entry();
 	e->type = type; //In case of Record, name of the record type (i.e. Point)
     /* attribute */
@@ -51,7 +52,7 @@ int Scope::insertSymbol(std::string name, std::string type, kind_enum kind, bool
     e->isArray = isArray;
     e->isRecord = isRecord;
 
-    this->symbols.insert(name, e);
+    this->symbols.insert(std::make_pair(name, *e));
 
     return 0;
 
@@ -64,7 +65,6 @@ bool Scope::search(std::string name) {
 		return true;
 	}
 } 
-
 
 
 

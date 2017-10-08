@@ -7,6 +7,10 @@
 
 #define MAXCHILDREN 2048
 
+typedef enum kindEnum {Var, Func, Rec, Param, Compound, Const, Id, Op, Assign, If, Break, Call, Return, While} kindEnum;
+typedef enum typeEnum {IntType, VoidType, CharType, BoolType, RecordType, UndefinedType} typeEnum;
+typedef enum opTypeEnum {Or, And, Not, Leq, Geq, Lss, Gss, Eq, AddE, SubE, MulE, DivE, Noteq, Add, Sub, Mul, Div, Mod, Rand, Neg, Inc, Dec, Dot, Bracl, EEq} opTypeEnum;
+
 typedef struct treeNode {
     //connecivity in the tree
 
@@ -15,13 +19,13 @@ typedef struct treeNode {
     struct treeNode *sibling;               //siblings for the node 
 
     //extra properties about the node depending on type of the node
-    enum {Var, Func, Rec, Param, Compound, Const, Id, Op, Assign, If, Break, Call, Return, While} kind;
+    enum kindEnum kind;
 
     //all data types
-    enum {IntType, VoidType, CharType, BoolType, RecordType, UndefinedType} type;
+    enum typeEnum type;
 
     //all operator types
-    enum {Or, And, Not, Leq, Geq, Lss, Gss, Eq, AddE, SubE, MulE, DivE, Noteq, Add, Sub, Mul, Div, Mod, Rand, Neg, Inc, Dec, Dot, Bracl, EEq} opType;
+    enum opTypeEnum opType;
     
     //holds relevent values
     union {

@@ -4,18 +4,19 @@
 #include <map>
 #include <vector>
 #include <string>
+#include "treenode.h"
 
 
-enum class kind_enum {Var, Func};
+//enum class kind_enum {Var, Func};
 
 class Entry {
 public: 
     /* name */
     //string name (already key of map)
     /* type */
-    std::string type; //In case of Record, name of the record type (i.e. Point)
+    enum typeEnum type;
     /* attribute */
-    kind_enum kind ;
+    enum kindEnum kind; //In case of Record, name of the record type (i.e. Point)
     bool isStatic;
     bool isArray;
     bool isRecord;
@@ -23,7 +24,7 @@ public:
 
 class Scope {
 public:
-    int insertSymbol(std::string name, std::string type, kind_enum kind, bool isStatic, bool isArray, bool isRecord); /*
+    int insertSymbol(std::string name, enum typeEnum type, enum kindEnum kind, bool isStatic, bool isArray, bool isRecord); /*
         Add symbol to scope. Return 0 on succcess, 1 on failure (symbol already exists).
         If debugging print new entry
     */
@@ -37,7 +38,7 @@ class SymbolTable {
 public:
     SymbolTable(bool debug); // Make new symboltable, initializes the global scope
     void newScope(); // Next (child) scope. new Scope is made inside this function and pushed to stack, if debug print new scope depth
-    int insertSymbol(std::string name, std::string type, kind_enum kind, bool isStatic, bool isArray, bool isRecord); // Add symbol to current scope (top of stack)
+    int insertSymbol(std::string name, enum typeEnum type, enum kindEnum kind, bool isStatic, bool isArray, bool isRecord); // Add symbol to current scope (top of stack)
     int pop();  // Removes and frees(?) current scope, return int for errors (0 = success, 1 = already popped global)
 
     /* Assuming children can redeclare variable... */
