@@ -42,12 +42,11 @@ public:
     /* Assuming children can redeclare variable... */
     bool searchCurrent(std::string name); // Used for checking during declaration (true if found, false otherwise)
     bool searchAll(std::string name); // Used for checking during type checks (true if found, false otherwise)
+    int depth(); // Just returns stack.length();
 
 private:
     bool debug;
-    int depth(); // Just returns stack.length();
     std::vector<Scope *> stack; // stack.at(0) is the global scope
-
 };
 
 
