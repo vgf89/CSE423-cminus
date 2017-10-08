@@ -30,7 +30,7 @@ int SymbolTable::pop() {
 	}
 }
 
-int SymbolTable::depth() {
+int SymbolTable::getDepth() {
 	return this->stack.size();
 }
 
