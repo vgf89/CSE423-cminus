@@ -6,6 +6,7 @@ SymbolTable::SymbolTable(bool debug) {
 }
 
 void SymbolTable::newScope() {
+    printf("Adding new scope\n");
 	this->stack.push_back(new Scope);
 }
 
@@ -15,6 +16,7 @@ int SymbolTable::insertSymbol(std::string name, std::string type, kind_enum kind
 }
 
 int SymbolTable::pop() {
+    printf("Popping scope\n");
 	if (!this->stack.empty()) {
 		this->stack.pop_back();
 		return 0;

@@ -28,7 +28,6 @@ void treeTraverse(treeNode *parseTree) {
 }
 
 void traverseSubTree(treeNode *curNode) {
-
 	if (curNode->kind == Compound)
 	{
 		// Create new scope

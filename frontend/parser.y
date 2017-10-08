@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include "scanType.h"
 #include "printtree.h"
+#include "annotated.h"
 
 // Stuff from flex that bison needs
 extern "C" int yylex();
@@ -474,6 +475,8 @@ int main (int argc, char** argv)
         printf("invalid file name\n");
     else
         parseFile(filename);
+
+    scopeAndType(root);
 
     if(canPrint == 1) {
         p = SIMPLE;
