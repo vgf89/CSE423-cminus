@@ -18,7 +18,8 @@ void treeTraverse(treeNode *curNode) {
 	switch (curNode->kind) {
 	case Compound:
 		// Create new scope
-		if(previous && previous->kind != Func)
+		printf("previous: %p", previous);
+		if(previous != NULL && previous->kind != Func)
 			st.newScope();
 		break;
 
@@ -54,6 +55,7 @@ void treeTraverse(treeNode *curNode) {
 		if (e != NULL) {
 			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
 		}
+		st.newScope();
 		break;
 	
 	case Rec:
@@ -112,7 +114,7 @@ void treeTraverse(treeNode *curNode) {
 	// This was a compound node, need to pop the top the symbol table when exiting
 	switch (curNode->kind) {
 	case Compound:
-		if(previous && previous->kind != Func)
+		if(previous != NULL && previous->kind != Func)
 			st.pop();
 		break;
 	case Func:
