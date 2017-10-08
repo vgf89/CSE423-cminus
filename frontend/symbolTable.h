@@ -9,6 +9,7 @@
 enum class kind_enum {Var, Func};
 
 class Entry {
+public: 
     /* name */
     //string name (already key of map)
     /* type */
