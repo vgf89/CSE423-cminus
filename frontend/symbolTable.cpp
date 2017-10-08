@@ -1,4 +1,5 @@
 #include "symbolTable.h"
+#include <utility>
 
 SymbolTable::SymbolTable(bool debug) {
     this->newScope();
@@ -52,7 +53,7 @@ int Scope::insertSymbol(std::string name, std::string type, kind_enum kind, bool
     e->isRecord = isRecord;
     e->linenum = linenum;
 
-    this->symbols.insert(name, e);
+    this->symbols.insert(std::make_pair(name, *e));
 
     return 0;
 
@@ -65,7 +66,6 @@ bool Scope::search(std::string name) {
 		return true;
 	}
 } 
-
 
 
 

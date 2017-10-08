@@ -6,7 +6,7 @@
 BIN = parser
 OUTPUT = c-
 CC = g++
-CFLAGS = -g
+CFLAGS = -std=c++11 -g
 
 SRCS = $(BIN).l $(BIN).y printtree.h annotated.h scanType.h treenode.h symbolTable.h
 OBJS = lex.yy.o $(BIN).tab.o printtree.o annotated.o symbolTable.o
