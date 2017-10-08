@@ -14,7 +14,7 @@ void traverseSubTree(treeNode *curNode);
 
 
 // Error printing functions
-void printSymbolAlreadyDefinedError(int linenum, char* s);
+void printSymbolAlreadyDefinedError(int linenum, char* s, int ln);
 void printSymbolNotDefinedError(int linenum, char* s);
 
 #endif /* ANNOTATED_H */

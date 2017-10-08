@@ -34,10 +34,10 @@ void traverseSubTree(treeNode *curNode) {
 		st.newScope();
 	}
 
-	if (curNode->kind == Var)
+	else if (curNode->kind == Var)
 	{
 		// Declare Variable
-		int retval = st.insertSymbol(
+		Entry* e = st.insertSymbol(
 			curNode->val.id,
 			curNode->type,
 			Var,
@@ -46,25 +46,8 @@ void traverseSubTree(treeNode *curNode) {
 			curNode->isRecord,
 			curNode->linenum
 		);
-		if (retval) {
-			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id);
-		}
-	}
-	
-	else if (curNode->kind == Rec)
-	{
-		// Declare new Record
-		int retval = st.insertSymbol(
-			curNode->val.id,
-			curNode->type,
-			Rec,
-			curNode->isStatic,
-			curNode->isArray,
-			curNode->isRecord,
-			curNode->linenum
-		);
-		if (retval) {
-			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id);
+		if (e != NULL) {
+			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
 		}
 	}
 
@@ -72,7 +55,7 @@ void traverseSubTree(treeNode *curNode) {
 	{
 		printf("new Func: %s\n", curNode->val.id);
 		// Declare new Function
-		int retval = st.insertSymbol(
+		Entry* e = st.insertSymbol(
 			curNode->val.id,
 			curNode->type,
 			Func,
@@ -81,17 +64,50 @@ void traverseSubTree(treeNode *curNode) {
 			curNode->isRecord,
 			curNode->linenum
 		);
-		if (retval) {
-
-			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id);
+		if (e != NULL) {
+			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
+		}
+	}
+	
+	else if (curNode->kind == Rec)
+	{
+		// Declare new Record
+		Entry* e = st.insertSymbol(
+			curNode->val.id,
+			curNode->type,
+			Rec,
+			curNode->isStatic,
+			curNode->isArray,
+			curNode->isRecord,
+			curNode->linenum
+		);
+		if (e != NULL) {
+			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
 		}
 	}
 
 	else if (curNode->kind == Id)
 	{
-		bool retval = st.searchAll(std::string(curNode->val.id));
-		if (!retval) {
+		Entry* e = st.searchAll(std::string(curNode->val.id));
+		if (e == NULL) {
 			printSymbolNotDefinedError(curNode->linenum, curNode->val.id);
+		}
+	}
+	
+	else if (curNode->kind == Param)
+	{
+		// Declare Variable
+		Entry* e = st.insertSymbol(
+			curNode->val.id,
+			curNode->type,
+			Var,
+			curNode->isStatic,
+			curNode->isArray,
+			curNode->isRecord,
+			curNode->linenum
+		);
+		if (e != NULL) {
+			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
 		}
 	}
 
@@ -114,9 +130,9 @@ void traverseSubTree(treeNode *curNode) {
 }
 
 
-void printSymbolAlreadyDefinedError(int linenum, char* s)
+void printSymbolAlreadyDefinedError(int linenum, char* s, int ln)
 {
-	printf("ERROR(%d): Symbol '%s' is already defined at line %%d.\n", linenum, s);
+	printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", linenum, s, ln);
 }
 
 void printSymbolNotDefinedError(int linenum, char* s)

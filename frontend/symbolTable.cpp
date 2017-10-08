@@ -10,9 +10,14 @@ void SymbolTable::newScope() {
 	this->stack.push_back(new Scope);
 }
 
-int SymbolTable::insertSymbol(std::string name, enum typeEnum type, enum kindEnum kind, bool isStatic, bool isArray, bool isRecord, int linenum) {
-	this->stack.back()->insertSymbol(name, type, kind, isStatic, isArray, isRecord, linenum);	
-	return 0;
+// Returns NULL on success, or the previous-existing symbol on failure
+Entry* SymbolTable::insertSymbol(std::string name, enum typeEnum type, enum kindEnum kind, bool isStatic, bool isArray, bool isRecord, int linenum) {
+    if (this->searchCurrent(name) == NULL) {
+        this->stack.back()->insertSymbol(name, type, kind, isStatic, isArray, isRecord, linenum);
+        return NULL;
+    }
+
+        return this->searchCurrent(name);
 }
 
 int SymbolTable::pop() {
@@ -29,23 +34,27 @@ int SymbolTable::depth() {
 	return this->stack.size();
 }
 
-bool SymbolTable::searchCurrent(std::string name) {
+// Returns the symbol found in the current scope
+Entry* SymbolTable::searchCurrent(std::string name) {
 	return this->stack.back()->search(name);
 }
 
-bool SymbolTable::searchAll(std::string name) {
+// Returns the symbol found in the scope stack
+Entry* SymbolTable::searchAll(std::string name) {
+    Entry* e;
 	for (auto i = this->stack.begin(); i != this->stack.end(); ) {
-    	if ((*i)->search(name) == false) {
+        e = (*i)->search(name);
+    	if ((*i)->search(name) == NULL) {
         	i++;
     	}
       	else {
-        	return true;
+        	return e;
       	}
     }
-    return false;
+    return NULL;
 }
 
-int Scope::insertSymbol(std::string name, enum typeEnum type, enum kindEnum kind, bool isStatic, bool isArray, bool isRecord, int linenum) {
+Entry* Scope::insertSymbol(std::string name, enum typeEnum type, enum kindEnum kind, bool isStatic, bool isArray, bool isRecord, int linenum) {
 	Entry *e = new Entry();
 	e->type = type;
     /* attribute */
@@ -56,19 +65,20 @@ int Scope::insertSymbol(std::string name, enum typeEnum type, enum kindEnum kind
     e->linenum = linenum;
 
     if(this->symbols.find(name) != this->symbols.end())
-        return 1;
+        return this->symbols.find(name)->second;
 
     //printf("Adding symbol: %s\n", name.c_str());
-    this->symbols.insert(std::make_pair(name, *e));
-    return 0;
+    this->symbols.insert(std::make_pair(name, e));
+    return NULL;
 
 }
 
-bool Scope::search(std::string name) {
-	if(this->symbols.find(name) == this->symbols.end()) {
-		return false;
+Entry* Scope::search(std::string name) {
+    auto e = this->symbols.find(name);
+	if(e == this->symbols.end()) {
+		return NULL;
 	} else {
-		return true;
+		return e->second;
 	}
 } 
 
