@@ -18,7 +18,6 @@ void treeTraverse(treeNode *curNode) {
 	switch (curNode->kind) {
 	case Compound:
 		// Create new scope
-		printf("previous: %p", previous);
 		if(previous != NULL && previous->kind != Func)
 			st.newScope();
 		break;
@@ -133,7 +132,7 @@ void printSymbolNotDefinedError(int linenum, char* symbol)
 	printf("ERROR(%d): Symbol '%s' is not defined.\n", linenum, symbol);
 }
 
-void simpleVarCalledError(int lineum, char* var)
+void simpleVarCalledError(int linenum, char* var)
 {
 	printf("ERROR(%d): '%s' is a simple variable and cannot be called.\n", linenum, var);
 }
