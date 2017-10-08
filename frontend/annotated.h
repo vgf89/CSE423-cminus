@@ -11,6 +11,8 @@
 extern int numwarn;
 extern int numerror;
 
+extern int yydebug;
+
 void scopeAndType(treeNode *parseTree);
 void treeTraverse(treeNode *curTree);
 

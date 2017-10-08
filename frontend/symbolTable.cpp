@@ -42,8 +42,8 @@ Entry* SymbolTable::searchCurrent(std::string name) {
 // Returns the symbol found in the scope stack
 Entry* SymbolTable::searchAll(std::string name) {
     Entry* e;
-	for (std::size_t i = 0; i < stack.size(); i++) {
-        e = stack[i]->search(name);
+	for (std::size_t i = 0; i < this->stack.size(); i++) {
+        e = this->stack[i]->search(name);
     	if (e != NULL) {
         	return e;
     	}
@@ -57,6 +57,13 @@ bool SymbolTable::getDebug() {
 
 void SymbolTable::setDebug(bool d) {
 	this->debug = d;
+}
+
+Entry* SymbolTable::getParentLast() {
+	if (stack.size() < 2) {
+		return NULL;
+	}
+	return this->stack[stack.size()-2]->symbols.end()->second; 
 }
 
 Entry* Scope::insertSymbol(std::string name, enum typeEnum type, enum kindEnum kind, bool isStatic, bool isArray, bool isRecord, int linenum) {

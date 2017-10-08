@@ -52,6 +52,8 @@ public:
     bool getDebug();
     void setDebug(bool d);
 
+    Entry* getParentLast();
+
 private:
     bool debug;
     std::vector<Scope *> stack; // stack.at(0) is the global scope
