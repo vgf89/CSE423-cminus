@@ -25,139 +25,149 @@ void treeTraverse(treeNode *curNode) {
 	Entry* previous = st.getParentLast();
 	static bool funcflag = false;
 	switch (curNode->kind) {
-		case Compound:
-			// Create new scope
-			if(previous != NULL && previous->kind != Func && funcflag) {
-				st.newScope();
-				if(yydebug) printf("New Compound scope\n");
-			} else if (previous != NULL && previous->kind && !funcflag) {
-				//if(yydebug) printf("Compound immediately in function, don't make new scope\n");
-				funcflag = true;
-			}
-			break;
-
-		case Var:
-			//if(yydebug) printf("new Var: %s\n",curNode->val.id );
-			// Declare Variable
-			e = st.insertSymbol(
-				curNode->val.id,
-				curNode->type,
-				Var,
-				curNode->isStatic,
-				curNode->isArray,
-				curNode->isRecord,
-				curNode->linenum
-			);
-			if (e != NULL)
-				printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
-			else {
-				if(yydebug)
-					printEntry(curNode->val.id, curNode->type, Var, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
-			}
-			break;
-
-		case Func:
-			// Declare new Function
-			e = st.insertSymbol(
-				curNode->val.id,
-				curNode->type,
-				Func,
-				curNode->isStatic,
-				curNode->isArray,
-				curNode->isRecord,
-				curNode->linenum
-			);
-			if (e != NULL) {
-				printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
-			}
-			else {
-				if(yydebug)
-					printEntry(curNode->val.id, curNode->type, Func, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
-			}
+	case Compound:
+		// Create new scope
+		if(previous != NULL && previous->kind != Func && funcflag) {
 			st.newScope();
-			break;
-		
-		case Rec:
-			// Declare new Record
-			e = st.insertSymbol(
-				curNode->val.id,
-				curNode->type,
-				Rec,
-				curNode->isStatic,
-				curNode->isArray,
-				curNode->isRecord,
-				curNode->linenum
-			);
-			if (e != NULL) {
-				printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
-			}
-			else {
-				if(yydebug)
-					printEntry(curNode->val.id, curNode->type, Rec, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
-			}
-			break;
+			if(yydebug) printf("New Compound scope\n");
+		} else if (previous != NULL && previous->kind && !funcflag) {
+			//if(yydebug) printf("Compound immediately in function, don't make new scope\n");
+			funcflag = true;
+		}
+		break;
 
-		case Id:
-			//process ID symbol
-			e = st.searchAll(std::string(curNode->val.id));
-			if (e == NULL) {
-				printSymbolNotDefinedError(curNode->linenum, curNode->val.id);
-			}
-			else {
-				curNode->type = e->type;
-			}
-			break;
-		
-		case Param:
-			//Declare Parameter
-			e = st.insertSymbol(
-				curNode->val.id,
-				curNode->type,
-				Param,
-				curNode->isStatic,
-				curNode->isArray,
-				curNode->isRecord,
-				curNode->linenum
-			);
-			if (e != NULL) {
-				printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
-			}
-			else {
-				if(yydebug)
-					printEntry(curNode->val.id, curNode->type, Param, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
-			}
-			break;
+	case Var:
+		//if(yydebug) printf("new Var: %s\n",curNode->val.id );
+		// Declare Variable
+		e = st.insertSymbol(
+			curNode->val.id,
+			curNode->type,
+			Var,
+			curNode->isStatic,
+			curNode->isArray,
+			curNode->isRecord,
+			curNode->linenum
+		);
+		if (e != NULL)
+			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
+		else {
+			if(yydebug)
+				printEntry(curNode->val.id, curNode->type, Var, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
+		}
+		break;
 
-		case Assign:
-			//assign type for assignment
-			const char *lh_type = (const char *) getType(curNode->children[0]->type);
-			const char *rh_type = (const char *) getType(curNode->children[1]->type);
-			if(curNode->children[0]->type != curNode->children[1]->type) {
-				//operandTypeMistmatchError(curNode->linenum, "assignment", lh_type, rh_type);
-			}
-			else {
-				curNode->type = curNode->children[0]->type;
-			}
-			break;
-		/*
-		case If:
-			break;
+	case Func:
+		// Declare new Function
+		e = st.insertSymbol(
+			curNode->val.id,
+			curNode->type,
+			Func,
+			curNode->isStatic,
+			curNode->isArray,
+			curNode->isRecord,
+			curNode->linenum
+		);
+		if (e != NULL) {
+			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
+		}
+		else {
+			if(yydebug)
+				printEntry(curNode->val.id, curNode->type, Func, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
+		}
+		st.newScope();
+		break;
+	
+	case Rec:
+		// Declare new Record
+		e = st.insertSymbol(
+			curNode->val.id,
+			curNode->type,
+			Rec,
+			curNode->isStatic,
+			curNode->isArray,
+			curNode->isRecord,
+			curNode->linenum
+		);
+		if (e != NULL) {
+			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
+		}
+		else {
+			if(yydebug)
+				printEntry(curNode->val.id, curNode->type, Rec, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
+		}
+		break;
 
-		case While:
-			break;
+	case Id:
+		//process ID symbol
+		e = st.searchAll(std::string(curNode->val.id));
+		if (e == NULL) {
+			printSymbolNotDefinedError(curNode->linenum, curNode->val.id);
+		}
+		else {
+			curNode->type = e->type;
+		}
+		break;
+	
+	case Param:
+		//Declare Parameter
+		e = st.insertSymbol(
+			curNode->val.id,
+			curNode->type,
+			Param,
+			curNode->isStatic,
+			curNode->isArray,
+			curNode->isRecord,
+			curNode->linenum
+		);
+		if (e != NULL) {
+			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
+		}
+		else {
+			if(yydebug)
+				printEntry(curNode->val.id, curNode->type, Param, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
+		}
+		break;
 
-		case Break:
-			break;
+	case Assign:
+		//assign type for assignment
+		char *lh_type = (char *) getType(curNode->children[0]->type);
+		const char *assign = "assignment";
+		const char *notnull = "not NULL";
+		const char *null = "NULL";
 
-		case Call:
-			break;
+		if(curNode->children[1] == NULL) {
+			if(curNode->opType != Dec && curNode->opType != Inc)
+				requiredOpRhsError(curNode->linenum, (char*) notnull, (char *) null);
+		}
+		else if(curNode->children[0]->type != curNode->children[1]->type) {
+			char *rh_type = (char *) getType(curNode->children[1]->type);
+			operandTypeMistmatchError(curNode->linenum, (char *)assign, lh_type, rh_type);
+		}
+		else if(curNode->children[0]->opType == Bracl) {
+			curNode->type = curNode->children[0]->type;
+		}
+		else {
+			printf("%s, line: %d\n", (char *)curNode->children[0]->val.id, curNode->linenum);
+			Entry *tmp = st.searchAll(std::string(curNode->children[0]->val.id));
+			curNode->type = tmp->type;
+		}
+		break;
+	/*
+	case If:
+		break;
 
-		case Return:
-			break;
+	case While:
+		break;
 
-		default:
-			break;
-			*/
+	case Break:
+		break;
+
+	case Return:
+		break;
+
+	default:
+		break;
+	*/
 	}
 	
 	//Evaluate Children
