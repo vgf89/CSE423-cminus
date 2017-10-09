@@ -347,11 +347,11 @@ void treeTraverse(treeNode *curNode) {
 		case Bracl:
 			if(curNode->children[0]->isArray == 0) {
 				errorVector.push_back(opOnlyForArraysError(curNode->linenum, "["));
+				curNode->type = UndefinedType;
 				break;
 			}
 			if(curNode->children[1]->type != IntType) {
 				errorVector.push_back(arrayIndexTypeError(curNode->linenum, curNode->children[0]->val.id, typeToChar(curNode->children[1]->type)));
-				break;
 			}
 			curNode->type = curNode->children[0]->type;
 			break;
