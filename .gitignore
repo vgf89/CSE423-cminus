@@ -51,3 +51,10 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Artifacts
+frontend/c-
+frontend/lex.yy.c
+frontend/parser.output
+frontend/parser.tab.c
+frontend/parser.tab.h
