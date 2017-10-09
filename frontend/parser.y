@@ -512,6 +512,7 @@ void parseFile(char *filename)
             exit(-1);
         }
     } while (!feof(yyin));
+    printErrors();
 }
 
 void yyerror(const char *s)

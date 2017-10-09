@@ -8,8 +8,6 @@
 #include <vector>
 #include "symbolTable.h"
 #include "annotated.h"
-//TODO add printVector that iterates over errorVector and prints error messages
-//TODO change printError functions to return error message formated string
 
 std::vector<std::string> errorVector;
 
@@ -286,9 +284,9 @@ void invalidUnaryOpError(int linenum, char* reqOp, char* givenOp)
 	printf("ERROR(%d): Unary '%s' requires an operand of type %s but was given %s.\n", linenum, reqOp, givenOp);
 }
 
-void printErrors(std::vector<std::string> errorVector)
+void printErrors()
 {
-	for (auto& error: errorVector) {
+	for (std::string& error: errorVector) {
 		std::cout << error;
 	}
 }
