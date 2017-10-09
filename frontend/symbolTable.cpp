@@ -55,7 +55,7 @@ Entry* SymbolTable::searchCurrent(std::string name) {
 // Returns the symbol found in the scope stack
 Entry* SymbolTable::searchAll(std::string name) {
     Entry* e;
-	for (std::size_t i = this->stack.size() - 1; i>= 0; i--) {
+	for (int i = this->stack.size() - 1; i >= 0; i--) {
         e = this->stack[i]->search(name);
     	if (e != NULL) {
         	return e;
