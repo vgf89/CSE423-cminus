@@ -23,13 +23,13 @@ void treeTraverse(treeNode *curNode) {
 			st.newScope();
 			if(yydebug) printf("New Compound scope\n");
 		} else if (previous != NULL && previous->kind && !funcflag) {
-			if(yydebug) printf("Compound immediately in function, don't make new scope\n");
+			//if(yydebug) printf("Compound immediately in function, don't make new scope\n");
 			funcflag = true;
 		}
 		break;
 
 	case Var:
-		if(yydebug) printf("new Var: %s\n",curNode->val.id );
+		//if(yydebug) printf("new Var: %s\n",curNode->val.id );
 		// Declare Variable
 		e = st.insertSymbol(
 			curNode->val.id,

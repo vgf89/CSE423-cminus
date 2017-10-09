@@ -8,7 +8,7 @@ SymbolTable::SymbolTable(bool debug) {
 
 void SymbolTable::newScope() {
 	this->stack.push_back(new Scope);
-    if(yydebug) printf("New Scope: %d\n", this->getDepth());
+    //if(yydebug) printf("New Scope: %d\n", this->getDepth());
 }
 
 // Returns NULL on success, or the previous-existing symbol on failure
@@ -23,7 +23,7 @@ Entry* SymbolTable::insertSymbol(std::string name, enum typeEnum type, enum kind
 
 int SymbolTable::pop() {
     //printf("Popping scope\n");
-    if(yydebug) printf("Remove Scope: %d\n", this->getDepth());
+    //if(yydebug) printf("Remove Scope: %d\n", this->getDepth());
 	if (!this->stack.empty()) {
 		this->stack.pop_back();
 		return 0;
@@ -68,7 +68,7 @@ Entry* SymbolTable::getParentLast() {
     auto test = this->stack[stack.size()-2];
     auto test2 = test->symbols;
     auto test3 = test2.rbegin();
-    if (yydebug) printf("stack size: %d\n", this->getDepth());
+    //if (yydebug) printf("stack size: %d\n", this->getDepth());
     auto test4 = test3->second;
 	return test4; 
 }
@@ -86,7 +86,7 @@ Entry* Scope::insertSymbol(std::string name, enum typeEnum type, enum kindEnum k
     if(this->symbols.find(name) != this->symbols.end())
         return this->symbols.find(name)->second;
     
-    if (yydebug) printf("Adding symbol: %s\n", name.c_str());
+    //if (yydebug) printf("Adding symbol: %s\n", name.c_str());
     this->symbols[name] = e;
     return NULL;
 
