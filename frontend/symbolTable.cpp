@@ -32,7 +32,6 @@ Entry* SymbolTable::insertSymbol(std::string name, enum typeEnum type, enum kind
 int SymbolTable::pop() {
     //printf("Popping scope\n");
     
-    printf("Remove Scope: %d\n", this->getDepth());
 	if (!this->stack.empty()) {
 		this->stack.pop_back();
 		return 0;
