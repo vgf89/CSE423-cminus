@@ -141,7 +141,6 @@ void treeTraverse(treeNode *curNode) {
 		{
 		//assign type for assignment
 		char *lh_type = (char *) getType(curNode->children[0]->type);
-		const char *assign = "assignment";
 		const char *notnull = "not NULL";
 		const char *null = "NULL";
 		if(curNode->children[1] == NULL) {
@@ -150,7 +149,7 @@ void treeTraverse(treeNode *curNode) {
 		}
 		else if(curNode->children[0]->type != curNode->children[1]->type) {
 			char *rh_type = (char *) getType(curNode->children[1]->type);
-			errorVector.push_back(operandTypeMistmatchError(curNode->linenum, (char *)assign, lh_type, rh_type));
+			errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "=", lh_type, rh_type));
 		}
 		else if(curNode->children[0]->opType == Bracl) {
 			curNode->type = curNode->children[0]->type;
@@ -646,8 +645,8 @@ std::string requiredOpLhsError(int linenum, std::string op, std::string reqType,
 	numerror++;
 	std::ostringstream s;
 	s << "ERROR(" << linenum << "): '" << op
-		<< "' requires operands of " << reqType
-		<< " but lhs is of " << givenType << ".\n";
+		<< "' requires operands of type " << reqType
+		<< " but lhs is of type " << givenType << ".\n";
 	return s.str();
 }
 	
@@ -656,8 +655,8 @@ std::string requiredOpRhsError(int linenum, std::string op, std::string reqType,
 	numerror++;
 	std::ostringstream s;
 	s << "ERROR(" << linenum << "): '" << op
-		<< "' requires operands of " << reqType
-		<< " but rhs is of " << givenType << ".\n";
+		<< "' requires operands of type " << reqType
+		<< " but rhs is of type " << givenType << ".\n";
 	return s.str();
 }
 	
@@ -666,8 +665,8 @@ std::string operandTypeMistmatchError(int linenum, std::string givenType, std::s
 	numerror++;
 	std::ostringstream s;
 	s << "ERROR(" << linenum << "): '" << givenType
-		<< "' requires operands of the same type but lhs is " << lhType
-		<< "and rhs is " << rhType << ".\n";
+		<< "' requires operands of the same type but lhs is type " << lhType
+		<< " and rhs is type " << rhType << ".\n";
 	return s.str();
 }
 	
@@ -762,22 +761,22 @@ std::string typeToChar(enum typeEnum t) {
 	/*IntType, VoidType, CharType, BoolType, RecordType, UndefinedType*/
 	switch(t) {
 	case IntType:
-		return "Int";
+		return "int";
 		break;
 	case VoidType:
-		return "Void";
+		return "void";
 		break;
 	case CharType:
-		return "Char";
+		return "char";
 		break;
 	case BoolType:
-		return "Bool";
+		return "bool";
 		break;
 	case RecordType:
-		return "Record";
+		return "record";
 		break;
 	case UndefinedType:
-		return "Undefined";
+		return "undefined";
 		break;
 	default:
 		return " ";
