@@ -10,6 +10,8 @@
 #include "annotated.h"
 
 std::vector<std::string> errorVector;
+extern int numwarn;
+extern int numerror;
 
 SymbolTable st(true);
 
@@ -66,7 +68,7 @@ void treeTraverse(treeNode *curNode) {
 			curNode->linenum
 		);
 		if (e != NULL) {
-			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
+			errorVector.push_back(printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum));
 		}
 		else {
 			if(yydebug)
@@ -87,7 +89,7 @@ void treeTraverse(treeNode *curNode) {
 			curNode->linenum
 		);
 		if (e != NULL) {
-			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
+			errorVector.push_back(printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum));
 		}
 		else {
 			if(yydebug)
@@ -99,7 +101,7 @@ void treeTraverse(treeNode *curNode) {
 		//printf("check %s\n", curNode->val.id);
 		e = st.searchAll(std::string(curNode->val.id));
 		if (e == NULL) {
-			printSymbolNotDefinedError(curNode->linenum, curNode->val.id);
+			errorVector.push_back(printSymbolNotDefinedError(curNode->linenum, curNode->val.id));
 		}
 		else {
 			curNode->type = e->type;
@@ -118,7 +120,7 @@ void treeTraverse(treeNode *curNode) {
 			curNode->linenum
 		);
 		if (e != NULL) {
-			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
+			errorVector.push_back(printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum));
 		}
 		else {
 			if(yydebug)
@@ -127,7 +129,7 @@ void treeTraverse(treeNode *curNode) {
 		break;
 	}
 	
-	//Evvaluate Children
+	//Evaluate Children
 	int i = 0;
 	while (i < 3 || curNode->children[i] != NULL) {
 		if (curNode->children[i] != NULL)
@@ -222,30 +224,49 @@ const char* getKind(int kind)
 
 std::string printSymbolAlreadyDefinedError(int linenum1, char* symbol, int linenum2)
 {
+	numerror++;
 	std::ostringstream s;
 	s << "ERROR(" << linenum1 << "): Symbol '" << symbol 
 		<< "' is already defined at line " << linenum2 << ".\n"; 
 	return s.str();
 }
 
-void printSymbolNotDefinedError(int linenum, char* symbol)
+std::string printSymbolNotDefinedError(int linenum, char* symbol)
 {
-	printf("ERROR(%d): Symbol '%s' is not defined.\n", linenum, symbol);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): Symbol '" << symbol
+		<< "' is not defined.\n";
+	return s.str();
 }
 
-void simpleVarCalledError(int linenum, char* var)
+std::string simpleVarCalledError(int linenum, char* var)
 {
-	printf("ERROR(%d): '%s' is a simple variable and cannot be called.\n", linenum, var);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): '" << var
+		<< "' is a simple variable and cannot be called.\n";
+	return s.str();
 }
 
-void requiredOpLhsError(int linenum, char* reqType, char* givenType)
+std::string requiredOpLhsError(int linenum, char* reqType, char* givenType)
 {
-	printf("ERROR(%d): '%s' requires operands of %s but lhs is of %s.\n", linenum, reqType, givenType);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): '" << reqType
+		<< "' requires operands of " << reqType
+		<< " but lhs is of " << givenType << ".\n";
+	return s.str();
 }
 	
-void requiredOpRhsError(int linenum, char* reqType, char* givenType)
+std::string requiredOpRhsError(int linenum, char* reqType, char* givenType)
 {
-	printf("ERROR(%d): '%s' requires operands of %s but rhs is of %s.\n", linenum, reqType, givenType);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): '" << reqType
+		<< "' requires operands of " << reqType
+		<< " but rhs is of " << givenType << ".\n";
+	return s.str();
 }
 	
 void operandTypeMistmatchError(int linenum, char* givenType, char *lhType, char *rhType)

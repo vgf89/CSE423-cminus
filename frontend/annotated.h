@@ -19,10 +19,10 @@ void treeTraverse(treeNode *curTree);
 
 // Error printing functions
 std::string printSymbolAlreadyDefinedError(int linenum1, char* symbol, int linenum2);
-void printSymbolNotDefinedError(int linenum, char* symbol);
-void simpleVarCalledError(int linenum, char* var); 
-void requiredOpLhsError(int linenum, char* reqType, char* givenType);
-void requiredOpRhsError(int linenum, char* reqType, char* givenType);
+std::string printSymbolNotDefinedError(int linenum, char* symbol);
+std::string simpleVarCalledError(int linenum, char* var); 
+std::string requiredOpLhsError(int linenum, char* reqType, char* givenType);
+std::string requiredOpRhsError(int linenum, char* reqType, char* givenType);
 void operandTypeMistmatchError(int linenum, char* givenType, char *lhType, char *rhType);
 void arrayIndexTypeError(int linenum, char* reqType, char* givenType);
 void unindexedArrayError(int linenum, char* array);
