@@ -15,6 +15,8 @@ extern int numerror;
 
 SymbolTable st(true); //init single symbol table object
 
+static bool funcflag = false;
+
 void scopeAndType(treeNode *parseTree) {
 	treeTraverse(parseTree);
 }
@@ -23,17 +25,16 @@ void scopeAndType(treeNode *parseTree) {
 void treeTraverse(treeNode *curNode) {
 	Entry* e = NULL;
 	Entry* previous = st.getParentLast();
-	int flag;
-	static bool funcflag = false;
+
+	bool dontkill = false;
 	switch (curNode->kind) {
 		case Compound:
 			// Create new scope
-			if(previous != NULL && previous->kind != Func && funcflag) {
+			if(previous != NULL && previous->kind == Func && funcflag) {
+				dontkill = true;
+				funcflag = false;
+			} else {
 				st.newScope();
-				if(yydebug) printf("New Compound scope\n");
-			} else if (previous != NULL && previous->kind && !funcflag) {
-				//if(yydebug) printf("Compound immediately in function, don't make new scope\n");
-				funcflag = true;
 			}
 			break;
 
@@ -97,6 +98,7 @@ void treeTraverse(treeNode *curNode) {
 					printEntry(curNode->val.id, curNode->type, Rec, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
 			}
 			break;
+
 
 		case Id:
 			//process ID symbol
@@ -170,8 +172,8 @@ void treeTraverse(treeNode *curNode) {
 			break;
 
 		default:
-			break;
-			*/
+			break; */
+			
 	}
 	
 	//Evaluate Children
@@ -185,8 +187,11 @@ void treeTraverse(treeNode *curNode) {
 	// After analyzing children
 	switch (curNode->kind) {
 	case Compound:
-		if(previous != NULL && previous->kind != Func)
+		if(!dontkill)
 			st.pop();
+		break;
+	case Func:
+		st.pop();
 		break;
 	case Func:
 		st.pop();
