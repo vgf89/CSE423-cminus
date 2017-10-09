@@ -43,6 +43,9 @@ void treeTraverse(treeNode *curNode) {
 		);
 		if (e != NULL) {
 			errorVector.push_back(printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum));
+		else {
+			if(yydebug)
+				printEntry(curNode->val.id, curNode->type, Var, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
 		}
 		break;
 
@@ -61,6 +64,10 @@ void treeTraverse(treeNode *curNode) {
 		if (e != NULL) {
 			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
 		}
+		else {
+			if(yydebug)
+				printEntry(curNode->val.id, curNode->type, Func, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
+		}
 		st.newScope();
 		break;
 	
@@ -78,6 +85,10 @@ void treeTraverse(treeNode *curNode) {
 		if (e != NULL) {
 			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
 		}
+		else {
+			if(yydebug)
+				printEntry(curNode->val.id, curNode->type, Rec, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
+		}
 		break;
 
 	case Id:
@@ -93,7 +104,7 @@ void treeTraverse(treeNode *curNode) {
 		e = st.insertSymbol(
 			curNode->val.id,
 			curNode->type,
-			Var,
+			Param,
 			curNode->isStatic,
 			curNode->isArray,
 			curNode->isRecord,
@@ -101,6 +112,10 @@ void treeTraverse(treeNode *curNode) {
 		);
 		if (e != NULL) {
 			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
+		}
+		else {
+			if(yydebug)
+				printEntry(curNode->val.id, curNode->type, Param, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
 		}
 		break;
 	}
@@ -132,7 +147,74 @@ void treeTraverse(treeNode *curNode) {
 	}
 }
 
+<<<<<<< HEAD
 std::string printSymbolAlreadyDefinedError(int linenum1, char* symbol, int linenum2)
+=======
+void printEntry(std::string name, enum typeEnum type, enum kindEnum kind, bool isStatic, bool isArray, bool isRecord, int linenum)
+{
+	int depth = st.getDepth();
+
+	for (int i = 0; i < depth; ++i)
+		printf("   ");
+
+	printf("[%d] name: %10s | type: %10s | kind: %10s | isStatic: %d | isArray: %d | isRecord: %d |\n", linenum, name.c_str(), getType(type), getKind(kind), isStatic, isArray, isRecord);
+}
+
+const char* getKind(int kind)
+{
+	const char *finalString;
+
+	switch(kind){
+		case Var:
+			finalString = "variable";
+			break;
+		case Func:
+			finalString = "function";
+			break;
+		case Rec:
+			finalString = "record";
+			break;
+		case Param:
+			finalString = "parameter";
+			break;
+		case Compound:
+			finalString = "compound";
+			break;
+		case Const:
+			finalString = "constant";
+			break;
+		case Id:
+			finalString = "id";
+			break;
+		case Op:
+			finalString = "operator";
+			break;
+		case Assign:
+			finalString = "assignment";
+			break;
+		case If:
+			finalString = "if";
+			break;
+		case Break:
+			finalString = "break";
+			break;
+		case Call:
+			finalString = "call";
+			break;
+		case Return:
+			finalString = "return";
+			break;
+		case While:
+			finalString = "while";
+			break;
+		default:
+			return finalString;
+	}
+	return finalString;
+}
+
+void printSymbolAlreadyDefinedError(int linenum1, char* symbol, int linenum2)
+>>>>>>> a5fb7273835dc8fcd08bdb9d83948857f654314c
 {
 	std::ostringstream s;
 	s << "ERROR(" << linenum1 << "): Symbol '" << symbol 
