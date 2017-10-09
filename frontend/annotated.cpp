@@ -173,6 +173,9 @@ void treeTraverse(treeNode *curNode) {
 			errorVector.push_back(printSymbolNotDefinedError(curNode->linenum, curNode->val.id));
 		}
 		break;
+	default:
+		printf("hit default 2\n");
+		break;
 		}
 	}
 	//Evaluate Children
@@ -194,8 +197,6 @@ void treeTraverse(treeNode *curNode) {
 		break;
 	case Op:
 		switch (curNode->opType) {
-		case Dot:
-			break;
 		case And:
 			flag = 0;
 			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
@@ -536,12 +537,14 @@ void treeTraverse(treeNode *curNode) {
 			} 
 			curNode->type = IntType;
 			break;
-		
-		}
-	
 		default:
+			printf("hit the default\n");
 			break;
 		}
+	default:
+		printf("hit the default\n");
+		break;
+	}
 		
 	if (curNode->sibling != NULL) {
 		treeTraverse(curNode->sibling);
