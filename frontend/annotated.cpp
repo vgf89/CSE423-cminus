@@ -195,6 +195,8 @@ void treeTraverse(treeNode *curNode) {
 		break;
 	case Op:
 		switch (curNode->opType) {
+		case Dot:
+			break;
 		case And:
 			flag = 0;
 			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
@@ -240,6 +242,32 @@ void treeTraverse(treeNode *curNode) {
 			} else {
 				curNode->type = BoolType;
 			}
+			break;
+		case Not:
+			if(curNode->children[0]->isArray) {
+				errorVector.push_back(invalidArrayOperationError(curNode->linenum, "not"));
+				curNode->type = UndefinedType;
+				break;
+			}
+			if(curNode->children[0]->type != BoolType) {
+				errorVector.push_back(invalidUnaryOpError(curNode->linenum, "not", typeToChar(BoolType), typeToChar(curNode->children[0]->type)));
+				curNode->type = UndefinedType;
+				break;
+			} 
+			curNode->type = BoolType;
+			break;
+		case Neg:
+			if(curNode->children[0]->isArray) {
+				errorVector.push_back(invalidArrayOperationError(curNode->linenum, "!"));
+				curNode->type = UndefinedType;
+				break;
+			}
+			if(curNode->children[0]->type != BoolType) {
+				errorVector.push_back(invalidUnaryOpError(curNode->linenum, "!", typeToChar(BoolType), typeToChar(curNode->children[0]->type)));
+				curNode->type = UndefinedType;
+				break;
+			} 
+			curNode->type = BoolType;
 			break;
 		case Eq:
 			if(curNode->children[0]->type != curNode->children[1]->type) {
