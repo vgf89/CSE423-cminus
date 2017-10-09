@@ -1,3 +1,7 @@
+/**
+ * CSE423 Fall 2017
+ * Group: _Za_Worldo_
+ */
 #ifndef _SYMBOLTABLE_H_
 #define _SYMBOLTABLE_H_
 

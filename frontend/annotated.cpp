@@ -6,12 +6,13 @@
 #include "symbolTable.h"
 #include "annotated.h"
 
-SymbolTable st(true);
+SymbolTable st(true); //init single symbol table object
 
 void scopeAndType(treeNode *parseTree) {
 	treeTraverse(parseTree);
 }
 
+//Builds symbol table, semantic erro list, and (optionally) prints symbol table
 void treeTraverse(treeNode *curNode) {
 	Entry* e = NULL;
 	Entry* previous = st.getParentLast();
@@ -151,6 +152,7 @@ void treeTraverse(treeNode *curNode) {
 	}
 }
 
+//prints one entry for symbol table printing
 void printEntry(std::string name, enum typeEnum type, enum kindEnum kind, bool isStatic, bool isArray, bool isRecord, int linenum)
 {
 	int depth = st.getDepth();
@@ -161,6 +163,7 @@ void printEntry(std::string name, enum typeEnum type, enum kindEnum kind, bool i
 	printf("[%d] name: %10s | type: %10s | kind: %10s | isStatic: %d | isArray: %d | isRecord: %d |\n", linenum, name.c_str(), getType(type), getKind(kind), isStatic, isArray, isRecord);
 }
 
+//gets kind string for printEntry
 const char* getKind(int kind)
 {
 	const char *finalString;

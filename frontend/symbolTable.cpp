@@ -1,3 +1,7 @@
+/**
+ * CSE423 Fall 2017
+ * Group: _Za_Worldo_
+ */
 #include "symbolTable.h"
 #include <utility>
 #include <iostream>
@@ -6,6 +10,7 @@ SymbolTable::SymbolTable(bool debug) {
     this->newScope();
 }
 
+//pushed new scope onto stack
 void SymbolTable::newScope() {
 	this->stack.push_back(new Scope);
     //if(yydebug) printf("New Scope: %d\n", this->getDepth());
@@ -21,6 +26,7 @@ Entry* SymbolTable::insertSymbol(std::string name, enum typeEnum type, enum kind
         return this->searchCurrent(name);
 }
 
+//pops current scope off stack
 int SymbolTable::pop() {
     //printf("Popping scope\n");
     //if(yydebug) printf("Remove Scope: %d\n", this->getDepth());
@@ -32,6 +38,7 @@ int SymbolTable::pop() {
 	}
 }
 
+//gets depth of scope stack
 int SymbolTable::getDepth() {
     return this->stack.size();
 }
@@ -53,14 +60,17 @@ Entry* SymbolTable::searchAll(std::string name) {
     return NULL;
 }
 
+//gets debug flag
 bool SymbolTable::getDebug() {
 	return this->debug;
 }
 
+//gets debug flag
 void SymbolTable::setDebug(bool d) {
 	this->debug = d;
 }
 
+//gets last parent for when we have new scope after function decleration
 Entry* SymbolTable::getParentLast() {
 	if (stack.size() < 2) {
 		return NULL;
@@ -73,6 +83,7 @@ Entry* SymbolTable::getParentLast() {
 	return test4; 
 }
 
+//creates new entry for current scope
 Entry* Scope::insertSymbol(std::string name, enum typeEnum type, enum kindEnum kind, bool isStatic, bool isArray, bool isRecord, int linenum) {
 	Entry *e = new Entry();
 	e->type = type;
@@ -91,7 +102,7 @@ Entry* Scope::insertSymbol(std::string name, enum typeEnum type, enum kindEnum k
     return NULL;
 
 }
-
+//searches current scope for entry with key 'name'
 Entry* Scope::search(std::string name) {
     auto e = this->symbols.find(name);
 	if(e == this->symbols.end()) {
