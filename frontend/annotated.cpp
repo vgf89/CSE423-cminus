@@ -141,7 +141,6 @@ void treeTraverse(treeNode *curNode) {
 		{
 		//assign type for assignment
 		std::string lh_type = typeToChar(curNode->children[0]->type);
-		const char *assign = "assignment";
 		const char *notnull = "not NULL";
 		const char *null = "NULL";
 		if(curNode->children[1] == NULL) {
@@ -150,7 +149,7 @@ void treeTraverse(treeNode *curNode) {
 		}
 		else if(curNode->children[0]->type != curNode->children[1]->type && curNode->children[1]->kind != Op) {
 			std::string rh_type = typeToChar(curNode->children[1]->type);
-			errorVector.push_back(operandTypeMistmatchError(curNode->linenum, (char *)assign, lh_type, rh_type));
+			errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "=", lh_type, rh_type));
 		}
 		else if(curNode->children[0]->opType == Bracl) {
 			curNode->type = curNode->children[0]->type;
@@ -195,6 +194,8 @@ void treeTraverse(treeNode *curNode) {
 		break;
 	case Op:
 		switch (curNode->opType) {
+		case Dot:
+			break;
 		case And:
 			flag = 0;
 			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
@@ -240,6 +241,32 @@ void treeTraverse(treeNode *curNode) {
 			} else {
 				curNode->type = BoolType;
 			}
+			break;
+		case Not:
+			if(curNode->children[0]->isArray) {
+				errorVector.push_back(invalidArrayOperationError(curNode->linenum, "not"));
+				curNode->type = UndefinedType;
+				break;
+			}
+			if(curNode->children[0]->type != BoolType) {
+				errorVector.push_back(invalidUnaryOpError(curNode->linenum, "not", typeToChar(BoolType), typeToChar(curNode->children[0]->type)));
+				curNode->type = UndefinedType;
+				break;
+			} 
+			curNode->type = BoolType;
+			break;
+		case Neg:
+			if(curNode->children[0]->isArray) {
+				errorVector.push_back(invalidArrayOperationError(curNode->linenum, "!"));
+				curNode->type = UndefinedType;
+				break;
+			}
+			if(curNode->children[0]->type != BoolType) {
+				errorVector.push_back(invalidUnaryOpError(curNode->linenum, "!", typeToChar(BoolType), typeToChar(curNode->children[0]->type)));
+				curNode->type = UndefinedType;
+				break;
+			} 
+			curNode->type = BoolType;
 			break;
 		case Eq:
 			if(curNode->children[0]->type != curNode->children[1]->type) {
@@ -618,8 +645,8 @@ std::string requiredOpLhsError(int linenum, std::string op, std::string reqType,
 	numerror++;
 	std::ostringstream s;
 	s << "ERROR(" << linenum << "): '" << op
-		<< "' requires operands of " << reqType
-		<< " but lhs is of " << givenType << ".\n";
+		<< "' requires operands of type " << reqType
+		<< " but lhs is of type " << givenType << ".\n";
 	return s.str();
 }
 	
@@ -628,8 +655,8 @@ std::string requiredOpRhsError(int linenum, std::string op, std::string reqType,
 	numerror++;
 	std::ostringstream s;
 	s << "ERROR(" << linenum << "): '" << op
-		<< "' requires operands of " << reqType
-		<< " but rhs is of " << givenType << ".\n";
+		<< "' requires operands of type " << reqType
+		<< " but rhs is of type " << givenType << ".\n";
 	return s.str();
 }
 	
@@ -638,8 +665,8 @@ std::string operandTypeMistmatchError(int linenum, std::string givenType, std::s
 	numerror++;
 	std::ostringstream s;
 	s << "ERROR(" << linenum << "): '" << givenType
-		<< "' requires operands of the same type but lhs is " << lhType
-		<< "and rhs is " << rhType << ".\n";
+		<< "' requires operands of the same type but lhs is type " << lhType
+		<< " and rhs is type " << rhType << ".\n";
 	return s.str();
 }
 	
@@ -734,22 +761,22 @@ std::string typeToChar(enum typeEnum t) {
 	/*IntType, VoidType, CharType, BoolType, RecordType, UndefinedType*/
 	switch(t) {
 	case IntType:
-		return "Int";
+		return "int";
 		break;
 	case VoidType:
-		return "Void";
+		return "void";
 		break;
 	case CharType:
-		return "Char";
+		return "char";
 		break;
 	case BoolType:
-		return "Bool";
+		return "bool";
 		break;
 	case RecordType:
-		return "Record";
+		return "record";
 		break;
 	case UndefinedType:
-		return "Undefined";
+		return "undefined";
 		break;
 	default:
 		return " ";
