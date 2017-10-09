@@ -43,6 +43,7 @@ void treeTraverse(treeNode *curNode) {
 		);
 		if (e != NULL) {
 			errorVector.push_back(printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum));
+		}
 		else {
 			if(yydebug)
 				printEntry(curNode->val.id, curNode->type, Var, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
@@ -142,9 +143,6 @@ void treeTraverse(treeNode *curNode) {
 		st.pop();
 		break;
 	}
-	for (std::string error : errorVector) {
-		std::cout << error;
-	}
 }
 
 void printEntry(std::string name, enum typeEnum type, enum kindEnum kind, bool isStatic, bool isArray, bool isRecord, int linenum)
@@ -210,7 +208,7 @@ const char* getKind(int kind)
 	return finalString;
 }
 
-void printSymbolAlreadyDefinedError(int linenum1, char* symbol, int linenum2)
+std::string printSymbolAlreadyDefinedError(int linenum1, char* symbol, int linenum2)
 {
 	std::ostringstream s;
 	s << "ERROR(" << linenum1 << "): Symbol '" << symbol 
@@ -287,4 +285,10 @@ void invalidUnaryOpError(int linenum, char* reqOp, char* givenOp)
 {
 	printf("ERROR(%d): Unary '%s' requires an operand of type %s but was given %s.\n", linenum, reqOp, givenOp);
 }
-	
+
+void printErrors(std::vector<std::string> errorVector)
+{
+	for (auto& error: errorVector) {
+		std::cout << error;
+	}
+}
