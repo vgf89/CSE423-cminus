@@ -3,8 +3,15 @@
  * Group: _Za_Worldo_
  */
 #include <string>
+#include <sstream>
+#include <iostream>
+#include <vector>
 #include "symbolTable.h"
 #include "annotated.h"
+
+std::vector<std::string> errorVector;
+extern int numwarn;
+extern int numerror;
 
 SymbolTable st(true); //init single symbol table object
 
@@ -153,7 +160,7 @@ void treeTraverse(treeNode *curNode) {
 			*/
 	}
 	
-	//Evvaluate Children
+	//Evaluate Children
 	int i = 0;
 	while (i < 3 || curNode->children[i] != NULL) {
 		if (curNode->children[i] != NULL)
@@ -250,78 +257,146 @@ const char* getKind(int kind)
 	return finalString;
 }
 
-void printSymbolAlreadyDefinedError(int linenum1, char* symbol, int linenum2)
+std::string printSymbolAlreadyDefinedError(int linenum1, char* symbol, int linenum2)
 {
-	printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", linenum1, symbol, linenum2);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum1 << "): Symbol '" << symbol 
+		<< "' is already defined at line " << linenum2 << ".\n"; 
+	return s.str();
 }
 
-void printSymbolNotDefinedError(int linenum, char* symbol)
+std::string printSymbolNotDefinedError(int linenum, char* symbol)
 {
-	printf("ERROR(%d): Symbol '%s' is not defined.\n", linenum, symbol);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): Symbol '" << symbol
+		<< "' is not defined.\n";
+	return s.str();
 }
 
-void simpleVarCalledError(int linenum, char* var)
+std::string simpleVarCalledError(int linenum, char* var)
 {
-	printf("ERROR(%d): '%s' is a simple variable and cannot be called.\n", linenum, var);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): '" << var
+		<< "' is a simple variable and cannot be called.\n";
+	return s.str();
 }
 
-void requiredOpLhsError(int linenum, char* reqType, char* givenType)
+std::string requiredOpLhsError(int linenum, char* reqType, char* givenType)
 {
-	printf("ERROR(%d): '%s' requires operands of %s but lhs is of %s.\n", linenum, reqType, givenType);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): '" << reqType
+		<< "' requires operands of " << reqType
+		<< " but lhs is of " << givenType << ".\n";
+	return s.str();
 }
 	
-void requiredOpRhsError(int linenum, char* reqType, char* givenType)
+std::string requiredOpRhsError(int linenum, char* reqType, char* givenType)
 {
-	printf("ERROR(%d): '%s' requires operands of %s but rhs is of %s.\n", linenum, reqType, givenType);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): '" << reqType
+		<< "' requires operands of " << reqType
+		<< " but rhs is of " << givenType << ".\n";
+	return s.str();
 }
 	
-void operandTypeMistmatchError(int linenum, char* givenType, char *lhType, char *rhType)
+std::string operandTypeMistmatchError(int linenum, char* givenType, char *lhType, char *rhType)
 {
-	printf("ERROR(%d): '%s' requires operands of the same type but lhs is %s and rhs is %s.\n", linenum, givenType, lhType, rhType);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): '" << givenType
+		<< "' requires operands of the same type but lhs is " << lhType
+		<< "and rhs is " << rhType << ".\n";
+	return s.str();
 }
 	
-void arrayIndexTypeError(int linenum, char* reqType, char* givenType)
+std::string arrayIndexTypeError(int linenum, char* reqType, char* givenType)
 {
-	printf("ERROR(%d): Array '%s' should be indexed by type int but got %s.\n", linenum, reqType, givenType);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): Array '" << reqType
+		<< "' should be indexed by type int but got " << givenType << ".\n";
+	return s.str();
 }
 	
-void unindexedArrayError(int linenum, char* array)
+std::string unindexedArrayError(int linenum, char* array)
 {
-	printf("ERROR(%d): Array index is the unindexed array '%s'.\n", linenum, array);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): Array index is the unindexed array '"
+		<< array << "'.\n";
+	return s.str();
 }
 	
-void indexingNamedNonArrayError(int linenum, char* array)
+std::string indexingNamedNonArrayError(int linenum, char* array)
 {
-	printf("ERROR(%d): Cannot index nonarray '%s'.\n", linenum, array);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): Cannot index nonarray '"
+		<< array << "'.\n";
+	return s.str();
 }
 	
-void indexingUnamedNonArrayError(int linenum)
+std::string indexingUnamedNonArrayError(int linenum)
 {
-	printf("ERROR(%d): Cannot index nonarray.\n", linenum);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): Cannot index nonarray.\n";
+	return s.str();
 }
 	
-void returnArrayError(int linenum)
+std::string returnArrayError(int linenum)
 {
-	printf("ERROR(%d): Cannot return an array.\n", linenum);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): Cannot return an array.\n";
+	return s.str();
 }
 	
-void functionAsVariableError(int linenum, char* func)
+std::string functionAsVariableError(int linenum, char* func)
 {
-	printf("ERROR(%d): Cannot use function '%s' as a variable.\n", linenum, func);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): Cannot use function '"
+		<< func << "' as a variable.\n";
+	return s.str();
 }
 	
-void invalidArrayOperationError(int linenum, char* op)
+std::string invalidArrayOperationError(int linenum, char* op)
 {
-	printf("ERROR(%d): The operation '%s' does not work with arrays.\n", linenum, op);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): The operation '" << op
+		<< "' does not work with arrays.\n";
+	return s.str();
 }
 	
-void opOnlyForArraysError(int linenum, char* op)
+std::string opOnlyForArraysError(int linenum, char* op)
 {
-	printf("ERROR(%d): The operation '%s' only works with arrays.\n", linenum, op);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): The operation '" << op
+		<< "' only works with arrays.\n";
+	return s.str();
 }
 	
-void invalidUnaryOpError(int linenum, char* reqOp, char* givenOp)
+std::string invalidUnaryOpError(int linenum, char* reqOp, char* givenOp)
 {
-	printf("ERROR(%d): Unary '%s' requires an operand of type %s but was given %s.\n", linenum, reqOp, givenOp);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): Unary '" << reqOp
+		<< "' requires an operand of type " << reqOp
+		<< " but was given " << givenOp << ".\n";
+	return s.str();
 }
-	
+
+void printErrors()
+{
+	for (std::string& error: errorVector) {
+		std::cout << error;
+	}
+}
