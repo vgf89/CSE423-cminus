@@ -15,6 +15,8 @@ extern int numerror;
 
 SymbolTable st(true); //init single symbol table object
 
+static bool funcflag = false;
+int flag;
 void scopeAndType(treeNode *parseTree) {
 	treeTraverse(parseTree);
 }
@@ -23,16 +25,17 @@ void scopeAndType(treeNode *parseTree) {
 void treeTraverse(treeNode *curNode) {
 	Entry* e = NULL;
 	Entry* previous = st.getParentLast();
-	static bool funcflag = false;
+	int flag;
+
+	bool dontkill = false;
 	switch (curNode->kind) {
 	case Compound:
 		// Create new scope
-		if(previous != NULL && previous->kind != Func && funcflag) {
+		if(previous != NULL && previous->kind == Func && funcflag) {
+			dontkill = true;
+			funcflag = false;
+		} else {
 			st.newScope();
-			if(yydebug) printf("New Compound scope\n");
-		} else if (previous != NULL && previous->kind && !funcflag) {
-			//if(yydebug) printf("Compound immediately in function, don't make new scope\n");
-			funcflag = true;
 		}
 		break;
 
@@ -134,7 +137,6 @@ void treeTraverse(treeNode *curNode) {
 		const char *assign = "assignment";
 		const char *notnull = "not NULL";
 		const char *null = "NULL";
-
 		if(curNode->children[1] == NULL) {
 			if(curNode->opType != Dec && curNode->opType != Inc)
 				requiredOpRhsError(curNode->linenum, (char*) notnull, (char *) null);
@@ -152,24 +154,20 @@ void treeTraverse(treeNode *curNode) {
 			curNode->type = tmp->type;
 		}
 		break;
-	/*
-	case If:
-		break;
 
-	case While:
+	case Call:
+		e = st.searchAll(curNode->val.id);
+		if (e != NULL) {
+			if(e->kind != Func) {
+				simpleVarCalledError(e->linenum, curNode->val.id);
+			} else {
+				curNode->type = e->type;
+			}
+		} else {
+			printSymbolNotDefinedError(e->linenum, curNode->val.id);
+		}
 		break;
-
-	case Break:
-		break;
-
-	case Return:
-		break;
-
-	default:
-		break;
-	*/
 	}
-	
 	//Evaluate Children
 	int i = 0;
 	while (i < 3 || curNode->children[i] != NULL) {
@@ -178,24 +176,335 @@ void treeTraverse(treeNode *curNode) {
 		i++;
 	}
 
-
-
-
 	// After analyzing children
 	switch (curNode->kind) {
-		case Compound:
-			if(previous != NULL && previous->kind != Func)
-				st.pop();
-			break;
-		case Func:
+	case Compound:
+		if(!dontkill)
 			st.pop();
-			funcflag = false;
+		break;
+	case Func:
+		st.pop();
+		break;
+	case Op:
+		switch (curNode->opType) {
+		case And:
+			flag = 0;
+			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
+				invalidArrayOperationError(curNode->linenum, "and");
+				curNode->type = UndefinedType;
+				break;
+			}
+			if(curNode->children[0]->type != BoolType) {
+				requiredOpLhsError(curNode->linenum, "and", typeToChar(BoolType), typeToChar(curNode->children[0]->type));
+				curNode->type = UndefinedType;
+				flag++;
+			} 
+			if (curNode->children[1]->type != BoolType) {
+				requiredOpRhsError(curNode->linenum, "and", typeToChar(BoolType), typeToChar(curNode->children[1]->type));
+				curNode->type = UndefinedType;
+				flag++;
+			}
+			if (flag) {
+				curNode->type = UndefinedType;
+			} else {
+				curNode->type = BoolType;
+			}
 			break;
+		case Or:
+			flag = 0;
+			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
+				invalidArrayOperationError(curNode->linenum, "or");
+				curNode->type = UndefinedType;
+				break;
+			}
+			if(curNode->children[0]->type != BoolType) {
+				requiredOpLhsError(curNode->linenum, "or", typeToChar(BoolType), typeToChar(curNode->children[0]->type));
+				curNode->type = UndefinedType;
+				flag++;
+			} 
+			if (curNode->children[1]->type != BoolType) {
+				requiredOpRhsError(curNode->linenum, "or", typeToChar(BoolType), typeToChar(curNode->children[1]->type));
+				curNode->type = UndefinedType;
+				flag++;
+			}
+			if (flag) {
+				curNode->type = UndefinedType;
+			} else {
+				curNode->type = BoolType;
+			}
+			break;
+		case Eq:
+			if(curNode->children[0]->type != curNode->children[1]->type) {
+				operandTypeMistmatchError(curNode->linenum, "=", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[0]->type));
+				curNode->type = UndefinedType;
+			} else {
+				curNode->type = curNode->children[0]->type;
+			}
+			break;
+		case EEq:
+			if(curNode->children[0]->type != curNode->children[1]->type) {
+				operandTypeMistmatchError(curNode->linenum, "==", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[0]->type));
+				curNode->type = UndefinedType;
+			} else {
+				curNode->type = BoolType;
+			}
+			break;
+		case Noteq:
+			if(curNode->children[0]->type != curNode->children[1]->type) {
+				operandTypeMistmatchError(curNode->linenum, "!=", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[0]->type));
+				curNode->type = UndefinedType;
+			} else {
+				curNode->type = BoolType;
+			}
+			break;
+		case Lss:
+			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
+				invalidArrayOperationError(curNode->linenum, "and");
+				curNode->type = UndefinedType;
+				break;
+			}
+			if(curNode->children[0]->type != curNode->children[1]->type) {
+				operandTypeMistmatchError(curNode->linenum, "<", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[0]->type));
+				curNode->type = UndefinedType;
+			} else {
+				curNode->type = BoolType;
+			}
+			break;
+		case Gss:
+			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
+				invalidArrayOperationError(curNode->linenum, "and");
+				curNode->type = UndefinedType;
+				break;
+			}
+			if(curNode->children[0]->type != curNode->children[1]->type) {
+				operandTypeMistmatchError(curNode->linenum, ">", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[0]->type));
+				curNode->type = UndefinedType;
+			} else {
+				curNode->type = BoolType;
+			}
+			break;
+		case Leq:
+			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
+				invalidArrayOperationError(curNode->linenum, "and");
+				curNode->type = UndefinedType;
+				break;
+			}
+			if(curNode->children[0]->type != curNode->children[1]->type) {
+				operandTypeMistmatchError(curNode->linenum, "<=", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[0]->type));
+				curNode->type = UndefinedType;
+			} else {
+				curNode->type = BoolType;
+			}
+			break;
+		case Geq:
+			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
+				invalidArrayOperationError(curNode->linenum, "and");
+				curNode->type = UndefinedType;
+				break;
+			}
+			if(curNode->children[0]->type != curNode->children[1]->type) {
+				operandTypeMistmatchError(curNode->linenum, ">=", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[0]->type));
+				curNode->type = UndefinedType;
+			} else {
+				curNode->type = BoolType;
+			}
+			break;
+		case Bracl:
+			if(curNode->children[0]->isArray == 0) {
+				opOnlyForArraysError(curNode->linenum, "[");
+				break;
+			}
+			if(curNode->children[1]->type != IntType) {
+				arrayIndexTypeError(curNode->linenum, curNode->children[0]->val.id, curNode->children[1]->type);
+				break;
+			}
+			curNode->type = curNode->children[0]->type;
+			break;
+		case Mul:
+			if (curNode->children[1] == NULL && curNode->children[0] != NULL) {
+				if (curNode->children[0].isArray == 0) {
+					opOnlyForArraysError(curNode->linenum, "*");
+					break;
+				} else {
+					curNode->type = IntType;
+					break;
+				}
+			} else {
+				int flag = 0;
+				if(curNode->children[0]->type != IntType) {
+					requiredOpLhsError(curNode->linenum, "*", typeToChar(IntType), typeToChar(curNode->children[0]->type));
+					flag++;
+				} 
+				if (curNode->children[1]->type != IntType) {
+					requiredOpRhsError(curNode->linenum, "*", typeToChar(IntType), typeToChar(curNode->children[1]->type));
+					flag++;
+				}
+				if (flag) {
+					curNode->type = UndefinedType;
+				} else {
+					curNode->type = IntType;
+				}
+			}
+			break;	
+			/*Or, And, Not, Leq, Geq, Lss, Gss, Eq, AddE, SubE, MulE, DivE, Noteq, Add, Sub, Mul, Div, Mod, Rand, Neg, Inc, Dec, Dot, Bracl, EEq*/
+		case Add:
+			flag = 0;
+			if(curNode->children[0]->type != IntType) {
+				requiredOpLhsError(curNode->linenum, "+", typeToChar(IntType), typeToChar(curNode->children[0]->type));
+				flag++;
+			} 
+			if (curNode->children[1]->type != IntType) {
+				requiredOpRhsError(curNode->linenum, "+", typeToChar(IntType), typeToChar(curNode->children[1]->type));
+				flag++;
+			}
+			if (flag) {
+				curNode->type = UndefinedType;
+			} else {
+				curNode->type = IntType;
+			}	
+			break;
+		case Sub:
+			flag = 0;
+			if(curNode->children[0]->type != IntType) {
+				requiredOpLhsError(curNode->linenum, "-", typeToChar(IntType), typeToChar(curNode->children[0]->type));
+				flag++;
+			} 
+			if (curNode->children[1]->type != IntType) {
+				requiredOpRhsError(curNode->linenum, "-", typeToChar(IntType), typeToChar(curNode->children[1]->type));
+				flag++;
+			}
+			if (flag) {
+				curNode->type = UndefinedType;
+			} else {
+				curNode->type = IntType;
+			}	
+			break;
+		case AddE:
+			flag = 0;
+			if(curNode->children[0]->type != IntType) {
+				requiredOpLhsError(curNode->linenum, "+=", typeToChar(IntType), typeToChar(curNode->children[0]->type));
+				flag++;
+			} 
+			if (curNode->children[1]->type != IntType) {
+				requiredOpRhsError(curNode->linenum, "+=", typeToChar(IntType), typeToChar(curNode->children[1]->type));
+				flag++;
+			}
+			if (flag) {
+				curNode->type = UndefinedType;
+			} else {
+				curNode->type = IntType;
+			}	
+			break;
+		case SubE:
+			flag = 0;
+			if(curNode->children[0]->type != IntType) {
+				requiredOpLhsError(curNode->linenum, "-=", typeToChar(IntType), typeToChar(curNode->children[0]->type));
+				flag++;
+			} 
+			if (curNode->children[1]->type != IntType) {
+				requiredOpRhsError(curNode->linenum, "-=", typeToChar(IntType), typeToChar(curNode->children[1]->type));
+				flag++;
+			}
+			if (flag) {
+				curNode->type = UndefinedType;
+			} else {
+				curNode->type = IntType;
+			}	
+			break;
+		case MulE:
+			flag = 0;
+			if(curNode->children[0]->type != IntType) {
+				requiredOpLhsError(curNode->linenum, "*=", typeToChar(IntType), typeToChar(curNode->children[0]->type));
+				flag++;
+			} 
+			if (curNode->children[1]->type != IntType) {
+				requiredOpRhsError(curNode->linenum, "*=", typeToChar(IntType), typeToChar(curNode->children[1]->type));
+				flag++;
+			}
+			if (flag) {
+				curNode->type = UndefinedType;
+			} else {
+				curNode->type = IntType;
+			}	
+			break;
+		case Div:
+			flag = 0;
+			if(curNode->children[0]->type != IntType) {
+				requiredOpLhsError(curNode->linenum, "/", typeToChar(IntType), typeToChar(curNode->children[0]->type));
+				flag++;
+			} 
+			if (curNode->children[1]->type != IntType) {
+				requiredOpRhsError(curNode->linenum, "/", typeToChar(IntType), typeToChar(curNode->children[1]->type));
+				flag++;
+			}
+			if (flag) {
+				curNode->type = UndefinedType;
+			} else {
+				curNode->type = IntType;
+			}	
+			break;
+		case DivE:
+			flag = 0;
+			if(curNode->children[0]->type != IntType) {
+				requiredOpLhsError(curNode->linenum, "/=", typeToChar(IntType), typeToChar(curNode->children[0]->type));
+				flag++;
+			} 
+			if (curNode->children[1]->type != IntType) {
+				requiredOpRhsError(curNode->linenum, "/=", typeToChar(IntType), typeToChar(curNode->children[1]->type));
+				flag++;
+			}
+			if (flag) {
+				curNode->type = UndefinedType;
+			} else {
+				curNode->type = IntType;
+			}	
+			break;
+		case Mod:
+			flag = 0;
+			if(curNode->children[0]->type != IntType) {
+				requiredOpLhsError(curNode->linenum, "%", typeToChar(IntType), typeToChar(curNode->children[0]->type));
+				flag++;
+			} 
+			if (curNode->children[1]->type != IntType) {
+				requiredOpRhsError(curNode->linenum, "%", typeToChar(IntType), typeToChar(curNode->children[1]->type));
+				flag++;
+			}
+			if (flag) {
+				curNode->type = UndefinedType;
+			} else {
+				curNode->type = IntType;
+			}	
+			break;
+		case Inc:
+			if(curNode->children[0]->type != IntType) {
+				invalidUnaryOpError(curNode->linenum, "++", typeToChar(IntType), typeToChar(curNode->children[0]->type));
+				curNode->type = UndefinedType;
+				break;
+			} 
+			curNode->type = IntType;	
+			break;
+		case Dec:
+			if(curNode->children[0]->type != IntType) {
+				invalidUnaryOpError(curNode->linenum, "--", typeToChar(IntType), typeToChar(curNode->children[0]->type));
+				curNode->type = UndefinedType;
+				break;
+			} 
+			curNode->type = IntType;
+			break;
+		case Rand:
+			if(curNode->children[0]->type != IntType) {
+				invalidUnaryOpError(curNode->linenum, "?", typeToChar(IntType), typeToChar(curNode->children[0]->type));
+				curNode->type = UndefinedType;
+				break;
+			} 
+			curNode->type = IntType;
+			break;
+		
+		}
+	
 		default:
 			break;
 		}
-
-
 		
 	if (curNode->sibling != NULL) {
 		treeTraverse(curNode->sibling);
@@ -408,5 +717,32 @@ void printErrors()
 {
 	for (std::string& error: errorVector) {
 		std::cout << error;
+	}
+}
+
+const char* typeToChar(enum typeEnum t, char* c) {
+	/*IntType, VoidType, CharType, BoolType, RecordType, UndefinedType*/
+	switch(t) {
+	case IntType:
+		return "Int";
+		break;
+	case VoidType:
+		return "Void";
+		break;
+	case CharType:
+		return "Char";
+		break;
+	case BoolType:
+		return "Bool";
+		break;
+	case RecordType:
+		return "Record";
+		break;
+	case UndefinedType:
+		return "Undefined";
+		break;
+	default:
+		return " ";
+		break;
 	}
 }

@@ -39,4 +39,6 @@ void printErrors();
 void printEntry(std::string name, enum typeEnum type, enum kindEnum kind, bool isStatic, bool isArray, bool isRecord, int linenum);
 const char* getKind(int kind);
 
+const char* typeToChar(enum typeEnum t, char* c);
+
 #endif /* ANNOTATED_H */
