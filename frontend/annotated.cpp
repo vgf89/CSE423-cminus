@@ -90,6 +90,9 @@ void treeTraverse(treeNode *curNode) {
 		if (e == NULL) {
 			printSymbolNotDefinedError(curNode->linenum, curNode->val.id);
 		}
+		else {
+			curNode->type = e->type;
+		}
 		break;
 	
 	case Param:
