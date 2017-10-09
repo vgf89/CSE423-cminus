@@ -3,8 +3,15 @@
  * Group: _Za_Worldo_
  */
 #include <string>
+#include <sstream>
+#include <iostream>
+#include <vector>
 #include "symbolTable.h"
 #include "annotated.h"
+//TODO add printVector that iterates over errorVector and prints error messages
+//TODO change printError functions to return error message formated string
+
+std::vector<std::string> errorVector;
 
 SymbolTable st = new SymbolTable(true);
 
@@ -35,7 +42,7 @@ void treeTraverse(treeNode *curNode) {
 			curNode->linenum
 		);
 		if (e != NULL) {
-			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
+			errorVector.push_back(printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum));
 		}
 		break;
 
@@ -120,11 +127,17 @@ void treeTraverse(treeNode *curNode) {
 		st.pop();
 		break;
 	}
+	for (std::string error : errorVector) {
+		std::cout << error;
+	}
 }
 
-void printSymbolAlreadyDefinedError(int linenum1, char* symbol, int linenum2)
+std::string printSymbolAlreadyDefinedError(int linenum1, char* symbol, int linenum2)
 {
-	printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", linenum1, symbol, linenum2);
+	std::ostringstream s;
+	s << "ERROR(" << linenum1 << "): Symbol '" << symbol 
+		<< "' is already defined at line " << linenum2 << ".\n"; 
+	return s.str();
 }
 
 void printSymbolNotDefinedError(int linenum, char* symbol)

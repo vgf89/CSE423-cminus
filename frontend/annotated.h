@@ -18,7 +18,7 @@ void treeTraverse(treeNode *curTree);
 
 
 // Error printing functions
-void printSymbolAlreadyDefinedError(int linenum1, char* symbol, int linenum2);
+std::string printSymbolAlreadyDefinedError(int linenum1, char* symbol, int linenum2);
 void printSymbolNotDefinedError(int linenum, char* symbol);
 void simpleVarCalledError(int linenum, char* var); 
 void requiredOpLhsError(int linenum, char* reqType, char* givenType);
@@ -33,5 +33,5 @@ void functionAsVariableError(int linenum, char* func);
 void invalidArrayOperationError(int linenum, char* op);
 void opOnlyForArraysError(int linenum, char* op);
 void invalidUnaryOpError(int linenum, char* reqOp, char* givenOp);
-
+void printErrors(std::vector<std::string> errorVector);
 #endif /* ANNOTATED_H */
