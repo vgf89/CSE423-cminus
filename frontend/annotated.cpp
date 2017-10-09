@@ -16,7 +16,7 @@ extern int numerror;
 SymbolTable st(true); //init single symbol table object
 
 static bool funcflag = false;
-
+int flag;
 void scopeAndType(treeNode *parseTree) {
 	treeTraverse(parseTree);
 }
@@ -200,6 +200,11 @@ void treeTraverse(treeNode *curNode) {
 		switch (curNode->opType) {
 		case And:
 			flag = 0;
+			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
+				invalidArrayOperationError(curNode->linenum, "and");
+				curNode->type = UndefinedType;
+				break;
+			}
 			if(curNode->children[0]->type != BoolType) {
 				requiredOpLhsError(curNode->linenum, "and", typeToChar(BoolType), typeToChar(curNode->children[0]->type));
 				curNode->type = UndefinedType;
@@ -218,6 +223,11 @@ void treeTraverse(treeNode *curNode) {
 			break;
 		case Or:
 			flag = 0;
+			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
+				invalidArrayOperationError(curNode->linenum, "or");
+				curNode->type = UndefinedType;
+				break;
+			}
 			if(curNode->children[0]->type != BoolType) {
 				requiredOpLhsError(curNode->linenum, "or", typeToChar(BoolType), typeToChar(curNode->children[0]->type));
 				curNode->type = UndefinedType;
@@ -259,6 +269,11 @@ void treeTraverse(treeNode *curNode) {
 			}
 			break;
 		case Lss:
+			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
+				invalidArrayOperationError(curNode->linenum, "and");
+				curNode->type = UndefinedType;
+				break;
+			}
 			if(curNode->children[0]->type != curNode->children[1]->type) {
 				operandTypeMistmatchError(curNode->linenum, "<", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[0]->type));
 				curNode->type = UndefinedType;
@@ -267,6 +282,11 @@ void treeTraverse(treeNode *curNode) {
 			}
 			break;
 		case Gss:
+			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
+				invalidArrayOperationError(curNode->linenum, "and");
+				curNode->type = UndefinedType;
+				break;
+			}
 			if(curNode->children[0]->type != curNode->children[1]->type) {
 				operandTypeMistmatchError(curNode->linenum, ">", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[0]->type));
 				curNode->type = UndefinedType;
@@ -275,6 +295,11 @@ void treeTraverse(treeNode *curNode) {
 			}
 			break;
 		case Leq:
+			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
+				invalidArrayOperationError(curNode->linenum, "and");
+				curNode->type = UndefinedType;
+				break;
+			}
 			if(curNode->children[0]->type != curNode->children[1]->type) {
 				operandTypeMistmatchError(curNode->linenum, "<=", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[0]->type));
 				curNode->type = UndefinedType;
@@ -283,6 +308,11 @@ void treeTraverse(treeNode *curNode) {
 			}
 			break;
 		case Geq:
+			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
+				invalidArrayOperationError(curNode->linenum, "and");
+				curNode->type = UndefinedType;
+				break;
+			}
 			if(curNode->children[0]->type != curNode->children[1]->type) {
 				operandTypeMistmatchError(curNode->linenum, ">=", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[0]->type));
 				curNode->type = UndefinedType;
