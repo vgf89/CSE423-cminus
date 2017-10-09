@@ -7,6 +7,8 @@
 #include "treenode.h"
 
 
+extern int yydebug;
+
 //enum class kind_enum {Var, Func};
 
 class Entry {

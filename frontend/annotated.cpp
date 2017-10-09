@@ -11,7 +11,7 @@
 
 std::vector<std::string> errorVector;
 
-SymbolTable st = new SymbolTable(true);
+SymbolTable st(true);
 
 void scopeAndType(treeNode *parseTree) {
 	treeTraverse(parseTree);
@@ -20,15 +20,21 @@ void scopeAndType(treeNode *parseTree) {
 void treeTraverse(treeNode *curNode) {
 	Entry* e = NULL;
 	Entry* previous = st.getParentLast();
+	static bool funcflag = false;
 	switch (curNode->kind) {
 	case Compound:
 		// Create new scope
-		if(previous != NULL && previous->kind != Func)
+		if(previous != NULL && previous->kind != Func && funcflag) {
 			st.newScope();
+			if(yydebug) printf("New Compound scope\n");
+		} else if (previous != NULL && previous->kind && !funcflag) {
+			//if(yydebug) printf("Compound immediately in function, don't make new scope\n");
+			funcflag = true;
+		}
 		break;
 
 	case Var:
-		//printf("new Var: %s\n",curNode->val.id );
+		//if(yydebug) printf("new Var: %s\n",curNode->val.id );
 		// Declare Variable
 		e = st.insertSymbol(
 			curNode->val.id,
@@ -49,7 +55,6 @@ void treeTraverse(treeNode *curNode) {
 		break;
 
 	case Func:
-		printf("new Func: %s\n", curNode->val.id);
 		// Declare new Function
 		e = st.insertSymbol(
 			curNode->val.id,
@@ -96,6 +101,9 @@ void treeTraverse(treeNode *curNode) {
 		if (e == NULL) {
 			printSymbolNotDefinedError(curNode->linenum, curNode->val.id);
 		}
+		else {
+			curNode->type = e->type;
+		}
 		break;
 	
 	case Param:
@@ -126,20 +134,26 @@ void treeTraverse(treeNode *curNode) {
 			treeTraverse(curNode->children[i]);
 		i++;
 	}
+
+
+
+
+	// After analyzing children
+	switch (curNode->kind) {
+		case Compound:
+			if(previous != NULL && previous->kind != Func)
+				st.pop();
+			break;
+		case Func:
+			st.pop();
+			funcflag = false;
+			break;
+		}
+
+
+		
 	if (curNode->sibling != NULL) {
 		treeTraverse(curNode->sibling);
-	}
-
-
-	// This was a compound node, need to pop the top the symbol table when exiting
-	switch (curNode->kind) {
-	case Compound:
-		if(previous != NULL && previous->kind != Func)
-			st.pop();
-		break;
-	case Func:
-		st.pop();
-		break;
 	}
 }
 
