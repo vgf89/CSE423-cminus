@@ -34,4 +34,8 @@ void invalidArrayOperationError(int linenum, char* op);
 void opOnlyForArraysError(int linenum, char* op);
 void invalidUnaryOpError(int linenum, char* reqOp, char* givenOp);
 
+//symbol table printing for debug
+void printEntry(std::string name, enum typeEnum type, enum kindEnum kind, bool isStatic, bool isArray, bool isRecord, int linenum);
+const char* getKind(int kind);
+
 #endif /* ANNOTATED_H */
