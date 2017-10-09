@@ -12,7 +12,9 @@ SymbolTable::SymbolTable(bool debug) {
 
 //pushed new scope onto stack
 void SymbolTable::newScope() {
-	this->stack.push_back(new Scope);
+    Scope *s = new Scope();
+    s->symbols = new std::map<std::string, Entry*>();
+	this->stack.push_back(s);
     //if(yydebug) printf("New Scope: %d\n", this->getDepth());
 }
 
@@ -23,13 +25,14 @@ Entry* SymbolTable::insertSymbol(std::string name, enum typeEnum type, enum kind
         return NULL;
     }
 
-        return this->searchCurrent(name);
+    return this->searchCurrent(name);
 }
 
 //pops current scope off stack
 int SymbolTable::pop() {
     //printf("Popping scope\n");
-    //if(yydebug) printf("Remove Scope: %d\n", this->getDepth());
+    
+    printf("Remove Scope: %d\n", this->getDepth());
 	if (!this->stack.empty()) {
 		this->stack.pop_back();
 		return 0;
@@ -45,6 +48,7 @@ int SymbolTable::getDepth() {
 
 // Returns the symbol found in the current scope
 Entry* SymbolTable::searchCurrent(std::string name) {
+    
 	return this->stack.back()->search(name);
 }
 
@@ -77,8 +81,10 @@ Entry* SymbolTable::getParentLast() {
     }
     auto test = this->stack[stack.size()-2];
     auto test2 = test->symbols;
-    auto test3 = test2.rbegin();
+    auto test3 = test2->rbegin();
     //if (yydebug) printf("stack size: %d\n", this->getDepth());
+    if (test3 == test2->rend())
+        return NULL;
     auto test4 = test3->second;
 	return test4; 
 }
@@ -94,18 +100,22 @@ Entry* Scope::insertSymbol(std::string name, enum typeEnum type, enum kindEnum k
     e->isRecord = isRecord;
     e->linenum = linenum;
 
-    if(this->symbols.find(name) != this->symbols.end())
-        return this->symbols.find(name)->second;
+    if(this->symbols->find(name) != this->symbols->end())
+        return this->symbols->find(name)->second;
     
     //if (yydebug) printf("Adding symbol: %s\n", name.c_str());
-    this->symbols[name] = e;
+    this->symbols->insert(std::pair<std::string, Entry*>(name, e));
     return NULL;
 
 }
 //searches current scope for entry with key 'name'
 Entry* Scope::search(std::string name) {
-    auto e = this->symbols.find(name);
-	if(e == this->symbols.end()) {
+    Scope *s = this;
+    //printf("scope in search: %p\n", this);
+    auto test1 = this->symbols;
+    auto test2 = test1->find(name);
+    auto e = this->symbols->find(name);
+	if(e == this->symbols->end()) {
 		return NULL;
 	} else {
 		return e->second;

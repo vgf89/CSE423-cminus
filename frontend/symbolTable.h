@@ -38,7 +38,7 @@ public:
     */
     Entry* search(std::string name); //Tries to get string name from symbols map. If found, return true, otherwise false
 
-    std::map<std::string, Entry*> symbols; //string is name of the symtable entry
+    std::map<std::string, Entry*> *symbols; //string is name of the symtable entry
 private:
 };
 

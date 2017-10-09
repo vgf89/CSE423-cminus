@@ -15,6 +15,8 @@ extern int numerror;
 
 SymbolTable st(true); //init single symbol table object
 
+static bool funcflag = false;
+int flag;
 void scopeAndType(treeNode *parseTree) {
 	treeTraverse(parseTree);
 }
@@ -25,155 +27,155 @@ void treeTraverse(treeNode *curNode) {
 	Entry* previous = st.getParentLast();
 	int flag;
 	static bool funcflag = false;
+	bool dontkill = false;
 	switch (curNode->kind) {
-		case Compound:
-			// Create new scope
-			if(previous != NULL && previous->kind != Func && funcflag) {
-				st.newScope();
-				if(yydebug) printf("New Compound scope\n");
-			} else if (previous != NULL && previous->kind && !funcflag) {
-				//if(yydebug) printf("Compound immediately in function, don't make new scope\n");
-				funcflag = true;
-			}
-			break;
-
-		case Var:
-			//if(yydebug) printf("new Var: %s\n",curNode->val.id );
-			// Declare Variable
-			e = st.insertSymbol(
-				curNode->val.id,
-				curNode->type,
-				Var,
-				curNode->isStatic,
-				curNode->isArray,
-				curNode->isRecord,
-				curNode->linenum
-			);
-			if (e != NULL)
-				errorVector.push_back(printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum));
-			else {
-				if(yydebug)
-					printEntry(curNode->val.id, curNode->type, Var, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
-			}
-			break;
-
-		case Func:
-			// Declare new Function
-			e = st.insertSymbol(
-				curNode->val.id,
-				curNode->type,
-				Func,
-				curNode->isStatic,
-				curNode->isArray,
-				curNode->isRecord,
-				curNode->linenum
-			);
-			if (e != NULL) {
-				errorVector.push_back(printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum));
-			}
-			else {
-				if(yydebug)
-					printEntry(curNode->val.id, curNode->type, Func, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
-			}
+	case Compound:
+		// Create new scope
+		if(previous != NULL && previous->kind == Func && funcflag) {
+			dontkill = true;
+			funcflag = false;
+		} else {
 			st.newScope();
-			break;
-		
-		case Rec:
-			// Declare new Record
-			e = st.insertSymbol(
-				curNode->val.id,
-				curNode->type,
-				Rec,
-				curNode->isStatic,
-				curNode->isArray,
-				curNode->isRecord,
-				curNode->linenum
-			);
-			if (e != NULL) {
-				errorVector.push_back(printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum));
-			}
-			else {
-				if(yydebug)
-					printEntry(curNode->val.id, curNode->type, Rec, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
-			}
-			break;
+		}
+		break;
 
-		case Id:
-			//process ID symbol
-			e = st.searchAll(std::string(curNode->val.id));
-			if (e == NULL) {
-				errorVector.push_back(printSymbolNotDefinedError(curNode->linenum, curNode->val.id));
-			}
-			else {
+	case Var:
+		{
+		//if(yydebug) printf("new Var: %s\n",curNode->val.id );
+		// Declare Variable
+		e = st.insertSymbol(
+			curNode->val.id,
+			curNode->type,
+			Var,
+			curNode->isStatic,
+			curNode->isArray,
+			curNode->isRecord,
+			curNode->linenum
+		);
+		if (e != NULL)
+			errorVector.push_back(printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum));
+
+		else {
+			if(yydebug)
+				printEntry(curNode->val.id, curNode->type, Var, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
+		}
+		break;
+		}
+	case Func:
+		{
+		// Declare new Function
+		e = st.insertSymbol(
+			curNode->val.id,
+			curNode->type,
+			Func,
+			curNode->isStatic,
+			curNode->isArray,
+			curNode->isRecord,
+			curNode->linenum
+		);
+		if (e != NULL) {
+			errorVector.push_back(printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum));
+		}
+		else {
+			if(yydebug)
+				printEntry(curNode->val.id, curNode->type, Func, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
+		}
+		st.newScope();
+		break;
+		}
+	case Rec:
+		{
+		// Declare new Record
+		e = st.insertSymbol(
+			curNode->val.id,
+			curNode->type,
+			Rec,
+			curNode->isStatic,
+			curNode->isArray,
+			curNode->isRecord,
+			curNode->linenum
+		);
+		if (e != NULL) {
+			errorVector.push_back(printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum));
+		}
+		else {
+			if(yydebug)
+				printEntry(curNode->val.id, curNode->type, Rec, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
+		}
+		break;
+		}
+	case Id:
+		{
+		//process ID symbol
+		e = st.searchAll(std::string(curNode->val.id));
+		if (e == NULL) {
+			errorVector.push_back(printSymbolNotDefinedError(curNode->linenum, curNode->val.id));
+		}
+		else {
+			curNode->type = e->type;
+		}
+		break;
+		}
+	case Param:
+		{
+		//Declare Parameter
+		e = st.insertSymbol(
+			curNode->val.id,
+			curNode->type,
+			Param,
+			curNode->isStatic,
+			curNode->isArray,
+			curNode->isRecord,
+			curNode->linenum
+		);
+		if (e != NULL) {
+			errorVector.push_back(printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum));
+		}
+		else {
+			if(yydebug)
+				printEntry(curNode->val.id, curNode->type, Param, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
+		}
+		break;
+		}
+	case Assign:
+		{
+		//assign type for assignment
+		char *lh_type = (char *) getType(curNode->children[0]->type);
+		const char *assign = "assignment";
+		const char *notnull = "not NULL";
+		const char *null = "NULL";
+		if(curNode->children[1] == NULL) {
+			if(curNode->opType != Dec && curNode->opType != Inc)
+				errorVector.push_back(requiredOpRhsError(curNode->linenum, "=", (char*) notnull, (char *) null));
+		}
+		else if(curNode->children[0]->type != curNode->children[1]->type) {
+			char *rh_type = (char *) getType(curNode->children[1]->type);
+			errorVector.push_back(operandTypeMistmatchError(curNode->linenum, (char *)assign, lh_type, rh_type));
+		}
+		else if(curNode->children[0]->opType == Bracl) {
+			curNode->type = curNode->children[0]->type;
+		}
+		else {
+			Entry *tmp = st.searchAll(std::string(curNode->children[0]->val.id));
+			curNode->type = tmp->type;
+		}
+		break;
+		}
+	case Call:
+		{
+		e = st.searchAll(curNode->val.id);
+		if (e != NULL) {
+			if(e->kind != Func) {
+				errorVector.push_back(simpleVarCalledError(e->linenum, curNode->val.id));
+			} else {
 				curNode->type = e->type;
 			}
-			break;
-		
-		case Param:
-			//Declare Parameter
-			e = st.insertSymbol(
-				curNode->val.id,
-				curNode->type,
-				Param,
-				curNode->isStatic,
-				curNode->isArray,
-				curNode->isRecord,
-				curNode->linenum
-			);
-			if (e != NULL) {
-				errorVector.push_back(printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum));
-			}
-			else {
-				if(yydebug)
-					printEntry(curNode->val.id, curNode->type, Param, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
-			}
-			break;
-
-		case Call:
-			e = st.searchAll(curNode->val.id);
-			if (e != NULL) {
-				if(e->kind != Func) {
-					errorVector.push_back(simpleVarCalledError(e->linenum, curNode->val.id));
-				} else {
-					curNode->type = e->type;
-				}
-			} else {
-				errorVector.push_back(printSymbolNotDefinedError(e->linenum, curNode->val.id));
-			}
-			break;
-
-		case Assign:
-			//assign type for assignment
-			const char *lh_type = (const char *) getType(curNode->children[0]->type);
-			const char *rh_type = (const char *) getType(curNode->children[1]->type);
-			if(curNode->children[0]->type != curNode->children[1]->type) {
-				//operandTypeMistmatchError(curNode->linenum, "assignment", lh_type, rh_type);
-			}
-			else {
-				curNode->type = curNode->children[0]->type;
-			}
-			break;
-		/*
-		case If:
-			break;
-
-		case While:
-			break;
-
-		case Break:
-			break;
-
-		case Call:
-			break;
-
-		case Return:
-			break;
-
-		default:
-			break;
-			*/
+		} else {
+			errorVector.push_back(printSymbolNotDefinedError(curNode->linenum, curNode->val.id));
+		}
+		break;
+		}
 	}
-	
 	//Evaluate Children
 	int i = 0;
 	while (i < 3 || curNode->children[i] != NULL) {
@@ -185,7 +187,7 @@ void treeTraverse(treeNode *curNode) {
 	// After analyzing children
 	switch (curNode->kind) {
 	case Compound:
-		if(previous != NULL && previous->kind != Func)
+		if(!dontkill)
 			st.pop();
 		break;
 	case Func:
@@ -195,13 +197,18 @@ void treeTraverse(treeNode *curNode) {
 		switch (curNode->opType) {
 		case And:
 			flag = 0;
+			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
+				errorVector.push_back(invalidArrayOperationError(curNode->linenum, "and"));
+				curNode->type = UndefinedType;
+				break;
+			}
 			if(curNode->children[0]->type != BoolType) {
-				errorVector.push_back(requiredOpLhsError(curNode->linenum, typeToChar(BoolType), typeToChar(curNode->children[0]->type)));
+				errorVector.push_back(requiredOpLhsError(curNode->linenum, "and", typeToChar(BoolType), typeToChar(curNode->children[0]->type)));
 				curNode->type = UndefinedType;
 				flag++;
 			} 
 			if (curNode->children[1]->type != BoolType) {
-				errorVector.push_back(requiredOpRhsError(curNode->linenum, typeToChar(BoolType), typeToChar(curNode->children[1]->type)));
+				errorVector.push_back(requiredOpRhsError(curNode->linenum, "and", typeToChar(BoolType), typeToChar(curNode->children[1]->type)));
 				curNode->type = UndefinedType;
 				flag++;
 			}
@@ -213,13 +220,18 @@ void treeTraverse(treeNode *curNode) {
 			break;
 		case Or:
 			flag = 0;
+			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
+				errorVector.push_back(invalidArrayOperationError(curNode->linenum, "or"));
+				curNode->type = UndefinedType;
+				break;
+			}
 			if(curNode->children[0]->type != BoolType) {
-				errorVector.push_back(requiredOpLhsError(curNode->linenum, typeToChar(BoolType), typeToChar(curNode->children[0]->type)));
+				errorVector.push_back(requiredOpLhsError(curNode->linenum, "or", typeToChar(BoolType), typeToChar(curNode->children[0]->type)));
 				curNode->type = UndefinedType;
 				flag++;
 			} 
 			if (curNode->children[1]->type != BoolType) {
-				errorVector.push_back(requiredOpRhsError(curNode->linenum, typeToChar(BoolType), typeToChar(curNode->children[1]->type)));
+				errorVector.push_back(requiredOpRhsError(curNode->linenum, "or", typeToChar(BoolType), typeToChar(curNode->children[1]->type)));
 				curNode->type = UndefinedType;
 				flag++;
 			}
@@ -254,6 +266,11 @@ void treeTraverse(treeNode *curNode) {
 			}
 			break;
 		case Lss:
+			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
+				errorVector.push_back(invalidArrayOperationError(curNode->linenum, "and"));
+				curNode->type = UndefinedType;
+				break;
+			}
 			if(curNode->children[0]->type != curNode->children[1]->type) {
 				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "<", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[0]->type)));
 				curNode->type = UndefinedType;
@@ -262,6 +279,11 @@ void treeTraverse(treeNode *curNode) {
 			}
 			break;
 		case Gss:
+			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
+				errorVector.push_back(invalidArrayOperationError(curNode->linenum, "and"));
+				curNode->type = UndefinedType;
+				break;
+			}
 			if(curNode->children[0]->type != curNode->children[1]->type) {
 				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, ">", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[0]->type)));
 				curNode->type = UndefinedType;
@@ -270,6 +292,11 @@ void treeTraverse(treeNode *curNode) {
 			}
 			break;
 		case Leq:
+			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
+				errorVector.push_back(invalidArrayOperationError(curNode->linenum, "and"));
+				curNode->type = UndefinedType;
+				break;
+			}
 			if(curNode->children[0]->type != curNode->children[1]->type) {
 				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "<=", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[0]->type)));
 				curNode->type = UndefinedType;
@@ -278,6 +305,11 @@ void treeTraverse(treeNode *curNode) {
 			}
 			break;
 		case Geq:
+			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
+				errorVector.push_back(invalidArrayOperationError(curNode->linenum, "and"));
+				curNode->type = UndefinedType;
+				break;
+			}
 			if(curNode->children[0]->type != curNode->children[1]->type) {
 				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, ">=", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[0]->type)));
 				curNode->type = UndefinedType;
@@ -299,7 +331,7 @@ void treeTraverse(treeNode *curNode) {
 		case Mul:
 			if (curNode->children[1] == NULL && curNode->children[0] != NULL) {
 				if (curNode->children[0]->isArray == 0) {
-					errorVector.push_back(opOnlyForArraysError(curNode->linenum, "["));
+					errorVector.push_back(opOnlyForArraysError(curNode->linenum, "*"));
 					break;
 				} else {
 					curNode->type = IntType;
@@ -308,11 +340,11 @@ void treeTraverse(treeNode *curNode) {
 			} else {
 				int flag = 0;
 				if(curNode->children[0]->type != IntType) {
-					errorVector.push_back(requiredOpLhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[0]->type)));
+					errorVector.push_back(requiredOpLhsError(curNode->linenum, "*", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
 					flag++;
 				} 
 				if (curNode->children[1]->type != IntType) {
-					errorVector.push_back(requiredOpRhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[1]->type)));
+					errorVector.push_back(requiredOpRhsError(curNode->linenum, "*", typeToChar(IntType), typeToChar(curNode->children[1]->type)));
 					flag++;
 				}
 				if (flag) {
@@ -326,11 +358,11 @@ void treeTraverse(treeNode *curNode) {
 		case Add:
 			flag = 0;
 			if(curNode->children[0]->type != IntType) {
-				errorVector.push_back(requiredOpLhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[0]->type)));
+				errorVector.push_back(requiredOpLhsError(curNode->linenum, "+", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
 				flag++;
 			} 
 			if (curNode->children[1]->type != IntType) {
-				errorVector.push_back(requiredOpRhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[1]->type)));
+				errorVector.push_back(requiredOpRhsError(curNode->linenum, "+", typeToChar(IntType), typeToChar(curNode->children[1]->type)));
 				flag++;
 			}
 			if (flag) {
@@ -342,11 +374,13 @@ void treeTraverse(treeNode *curNode) {
 		case Sub:
 			flag = 0;
 			if(curNode->children[0]->type != IntType) {
-				errorVector.push_back(requiredOpLhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[0]->type)));
+				errorVector.push_back(requiredOpLhsError(curNode->linenum, "-", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
 				flag++;
 			} 
-			if (curNode->children[1]->type != IntType) {
-				errorVector.push_back(requiredOpRhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[1]->type)));
+			if (curNode->children[1] == NULL) {
+				curNode->type = curNode->children[0]->type;
+			} else if (curNode->children[1]->type != IntType) {
+				errorVector.push_back(requiredOpRhsError(curNode->linenum, "-", typeToChar(IntType), typeToChar(curNode->children[1]->type)));
 				flag++;
 			}
 			if (flag) {
@@ -358,11 +392,11 @@ void treeTraverse(treeNode *curNode) {
 		case AddE:
 			flag = 0;
 			if(curNode->children[0]->type != IntType) {
-				errorVector.push_back(requiredOpLhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[0]->type)));
+				errorVector.push_back(requiredOpLhsError(curNode->linenum, "+=", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
 				flag++;
 			} 
 			if (curNode->children[1]->type != IntType) {
-				errorVector.push_back(requiredOpRhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[1]->type)));
+				errorVector.push_back(requiredOpRhsError(curNode->linenum, "+=", typeToChar(IntType), typeToChar(curNode->children[1]->type)));
 				flag++;
 			}
 			if (flag) {
@@ -374,11 +408,11 @@ void treeTraverse(treeNode *curNode) {
 		case SubE:
 			flag = 0;
 			if(curNode->children[0]->type != IntType) {
-				errorVector.push_back(requiredOpLhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[0]->type)));
+				errorVector.push_back(requiredOpLhsError(curNode->linenum, "-=", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
 				flag++;
 			} 
 			if (curNode->children[1]->type != IntType) {
-				errorVector.push_back(requiredOpRhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[1]->type)));
+				errorVector.push_back(requiredOpRhsError(curNode->linenum, "-=", typeToChar(IntType), typeToChar(curNode->children[1]->type)));
 				flag++;
 			}
 			if (flag) {
@@ -390,11 +424,11 @@ void treeTraverse(treeNode *curNode) {
 		case MulE:
 			flag = 0;
 			if(curNode->children[0]->type != IntType) {
-				errorVector.push_back(requiredOpLhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[0]->type)));
+				errorVector.push_back(requiredOpLhsError(curNode->linenum, "*=", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
 				flag++;
 			} 
 			if (curNode->children[1]->type != IntType) {
-				errorVector.push_back(requiredOpRhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[1]->type)));
+				errorVector.push_back(requiredOpRhsError(curNode->linenum, "*=", typeToChar(IntType), typeToChar(curNode->children[1]->type)));
 				flag++;
 			}
 			if (flag) {
@@ -406,11 +440,11 @@ void treeTraverse(treeNode *curNode) {
 		case Div:
 			flag = 0;
 			if(curNode->children[0]->type != IntType) {
-				errorVector.push_back(requiredOpLhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[0]->type)));
+				errorVector.push_back(requiredOpLhsError(curNode->linenum, "/", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
 				flag++;
 			} 
 			if (curNode->children[1]->type != IntType) {
-				errorVector.push_back(requiredOpRhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[1]->type)));
+				errorVector.push_back(requiredOpRhsError(curNode->linenum, "/", typeToChar(IntType), typeToChar(curNode->children[1]->type)));
 				flag++;
 			}
 			if (flag) {
@@ -422,11 +456,11 @@ void treeTraverse(treeNode *curNode) {
 		case DivE:
 			flag = 0;
 			if(curNode->children[0]->type != IntType) {
-				errorVector.push_back(requiredOpLhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[0]->type)));
+				errorVector.push_back(requiredOpLhsError(curNode->linenum, "/=", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
 				flag++;
 			} 
 			if (curNode->children[1]->type != IntType) {
-				errorVector.push_back(requiredOpRhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[1]->type)));
+				errorVector.push_back(requiredOpRhsError(curNode->linenum, "/=", typeToChar(IntType), typeToChar(curNode->children[1]->type)));
 				flag++;
 			}
 			if (flag) {
@@ -438,11 +472,11 @@ void treeTraverse(treeNode *curNode) {
 		case Mod:
 			flag = 0;
 			if(curNode->children[0]->type != IntType) {
-				errorVector.push_back(requiredOpLhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[0]->type)));
+				errorVector.push_back(requiredOpLhsError(curNode->linenum, "%", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
 				flag++;
 			} 
 			if (curNode->children[1]->type != IntType) {
-				errorVector.push_back(requiredOpRhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[1]->type)));
+				errorVector.push_back(requiredOpRhsError(curNode->linenum, "%", typeToChar(IntType), typeToChar(curNode->children[1]->type)));
 				flag++;
 			}
 			if (flag) {
@@ -453,7 +487,7 @@ void treeTraverse(treeNode *curNode) {
 			break;
 		case Inc:
 			if(curNode->children[0]->type != IntType) {
-				errorVector.push_back(invalidUnaryOpError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[0]->type)));
+				errorVector.push_back(invalidUnaryOpError(curNode->linenum, "++", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
 				curNode->type = UndefinedType;
 				break;
 			} 
@@ -461,7 +495,7 @@ void treeTraverse(treeNode *curNode) {
 			break;
 		case Dec:
 			if(curNode->children[0]->type != IntType) {
-				errorVector.push_back(invalidUnaryOpError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[0]->type)));
+				errorVector.push_back(invalidUnaryOpError(curNode->linenum, "--", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
 				curNode->type = UndefinedType;
 				break;
 			} 
@@ -469,7 +503,7 @@ void treeTraverse(treeNode *curNode) {
 			break;
 		case Rand:
 			if(curNode->children[0]->type != IntType) {
-				errorVector.push_back(invalidUnaryOpError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[0]->type)));
+				errorVector.push_back(invalidUnaryOpError(curNode->linenum, "?", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
 				curNode->type = UndefinedType;
 				break;
 			} 
@@ -579,21 +613,21 @@ std::string simpleVarCalledError(int linenum, std::string var)
 	return s.str();
 }
 
-std::string requiredOpLhsError(int linenum, std::string reqType, std::string givenType)
+std::string requiredOpLhsError(int linenum, std::string op, std::string reqType, std::string givenType)
 {
 	numerror++;
 	std::ostringstream s;
-	s << "ERROR(" << linenum << "): '" << reqType
+	s << "ERROR(" << linenum << "): '" << op
 		<< "' requires operands of " << reqType
 		<< " but lhs is of " << givenType << ".\n";
 	return s.str();
 }
 	
-std::string requiredOpRhsError(int linenum, std::string reqType, std::string givenType)
+std::string requiredOpRhsError(int linenum, std::string op, std::string reqType, std::string givenType)
 {
 	numerror++;
 	std::ostringstream s;
-	s << "ERROR(" << linenum << "): '" << reqType
+	s << "ERROR(" << linenum << "): '" << op
 		<< "' requires operands of " << reqType
 		<< " but rhs is of " << givenType << ".\n";
 	return s.str();
@@ -679,11 +713,11 @@ std::string opOnlyForArraysError(int linenum, std::string op)
 	return s.str();
 }
 	
-std::string invalidUnaryOpError(int linenum, std::string reqOp, std::string givenOp)
+std::string invalidUnaryOpError(int linenum, std::string op, std::string reqOp, std::string givenOp)
 {
 	numerror++;
 	std::ostringstream s;
-	s << "ERROR(" << linenum << "): Unary '" << reqOp
+	s << "ERROR(" << linenum << "): Unary '" << op
 		<< "' requires an operand of type " << reqOp
 		<< " but was given " << givenOp << ".\n";
 	return s.str();
