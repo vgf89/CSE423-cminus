@@ -449,7 +449,6 @@ treeNode *getTokenType(SPT token)
 			n->type = CharType;
 			break;
 		case SPT::BoolType:
-			printf("bool token type\n");
 			n->type = BoolType;
 			break;
 		case SPT::RecordType:

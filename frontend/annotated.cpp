@@ -14,10 +14,12 @@ void scopeAndType(treeNode *parseTree) {
 
 void treeTraverse(treeNode *curNode) {
 	Entry* e = NULL;
+	Entry* previous = st.getParentLast();
 	switch (curNode->kind) {
 	case Compound:
 		// Create new scope
-		st.newScope();
+		if(previous != NULL && previous->kind != Func)
+			st.newScope();
 		break;
 
 	case Var:
@@ -59,6 +61,7 @@ void treeTraverse(treeNode *curNode) {
 			if(yydebug)
 				printEntry(curNode->val.id, curNode->type, Func, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
 		}
+		st.newScope();
 		break;
 	
 	case Rec:
@@ -125,6 +128,10 @@ void treeTraverse(treeNode *curNode) {
 	// This was a compound node, need to pop the top the symbol table when exiting
 	switch (curNode->kind) {
 	case Compound:
+		if(previous != NULL && previous->kind != Func)
+			st.pop();
+		break;
+	case Func:
 		st.pop();
 		break;
 	}
@@ -203,7 +210,7 @@ void printSymbolNotDefinedError(int linenum, char* symbol)
 	printf("ERROR(%d): Symbol '%s' is not defined.\n", linenum, symbol);
 }
 
-void simpleVarCalledError(int linenum, char* var) 
+void simpleVarCalledError(int linenum, char* var)
 {
 	printf("ERROR(%d): '%s' is a simple variable and cannot be called.\n", linenum, var);
 }
