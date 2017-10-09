@@ -25,6 +25,7 @@ void scopeAndType(treeNode *parseTree) {
 void treeTraverse(treeNode *curNode) {
 	Entry* e = NULL;
 	Entry* previous = st.getParentLast();
+	int flag;
 
 	bool dontkill = false;
 	switch (curNode->kind) {
@@ -193,9 +194,6 @@ void treeTraverse(treeNode *curNode) {
 	case Func:
 		st.pop();
 		break;
-	case Func:
-		st.pop();
-		break;
 	case Op:
 		switch (curNode->opType) {
 		case And:
@@ -321,12 +319,12 @@ void treeTraverse(treeNode *curNode) {
 			}
 			break;
 		case Bracl:
-			if(curNode->children[0].isArray == 0) {
+			if(curNode->children[0]->isArray == 0) {
 				opOnlyForArraysError(curNode->linenum, "[");
 				break;
 			}
-			if(curNode->children[1].type != IntType) {
-				arrayIndexTypeError(curNode->linenum, curNode->children[0]->id, curNode->children[1]->type);
+			if(curNode->children[1]->type != IntType) {
+				arrayIndexTypeError(curNode->linenum, curNode->children[0]->val.id, curNode->children[1]->type);
 				break;
 			}
 			curNode->type = curNode->children[0]->type;
@@ -334,7 +332,7 @@ void treeTraverse(treeNode *curNode) {
 		case Mul:
 			if (curNode->children[1] == NULL && curNode->children[0] != NULL) {
 				if (curNode->children[0].isArray == 0) {
-					opOnlyForArraysError(curNode->linenum, "*")
+					opOnlyForArraysError(curNode->linenum, "*");
 					break;
 				} else {
 					curNode->type = IntType;
