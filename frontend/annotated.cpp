@@ -196,12 +196,12 @@ void treeTraverse(treeNode *curNode) {
 		case And:
 			flag = 0;
 			if(curNode->children[0]->type != BoolType) {
-				requiredOpLhsError(curNode->linenum, typeToChar(BoolType), typeToChar(curNode->children[0]->type));
+				requiredOpLhsError(curNode->linenum, "and", typeToChar(BoolType), typeToChar(curNode->children[0]->type));
 				curNode->type = UndefinedType;
 				flag++;
 			} 
 			if (curNode->children[1]->type != BoolType) {
-				requiredOpRhsError(curNode->linenum, typeToChar(BoolType), typeToChar(curNode->children[1]->type));
+				requiredOpRhsError(curNode->linenum, "and", typeToChar(BoolType), typeToChar(curNode->children[1]->type));
 				curNode->type = UndefinedType;
 				flag++;
 			}
@@ -214,12 +214,12 @@ void treeTraverse(treeNode *curNode) {
 		case Or:
 			flag = 0;
 			if(curNode->children[0]->type != BoolType) {
-				requiredOpLhsError(curNode->linenum, typeToChar(BoolType), typeToChar(curNode->children[0]->type));
+				requiredOpLhsError(curNode->linenum, "or", typeToChar(BoolType), typeToChar(curNode->children[0]->type));
 				curNode->type = UndefinedType;
 				flag++;
 			} 
 			if (curNode->children[1]->type != BoolType) {
-				requiredOpRhsError(curNode->linenum, typeToChar(BoolType), typeToChar(curNode->children[1]->type));
+				requiredOpRhsError(curNode->linenum, "or", typeToChar(BoolType), typeToChar(curNode->children[1]->type));
 				curNode->type = UndefinedType;
 				flag++;
 			}
@@ -299,7 +299,7 @@ void treeTraverse(treeNode *curNode) {
 		case Mul:
 			if (curNode->children[1] == NULL && curNode->children[0] != NULL) {
 				if (curNode->children[0].isArray == 0) {
-					opOnlyForArraysError(curNode->linenum, "[")
+					opOnlyForArraysError(curNode->linenum, "*")
 					break;
 				} else {
 					curNode->type = IntType;
@@ -308,11 +308,11 @@ void treeTraverse(treeNode *curNode) {
 			} else {
 				int flag = 0;
 				if(curNode->children[0]->type != IntType) {
-					requiredOpLhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[0]->type));
+					requiredOpLhsError(curNode->linenum, "*", typeToChar(IntType), typeToChar(curNode->children[0]->type));
 					flag++;
 				} 
 				if (curNode->children[1]->type != IntType) {
-					requiredOpRhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[1]->type));
+					requiredOpRhsError(curNode->linenum, "*", typeToChar(IntType), typeToChar(curNode->children[1]->type));
 					flag++;
 				}
 				if (flag) {
@@ -326,11 +326,11 @@ void treeTraverse(treeNode *curNode) {
 		case Add:
 			flag = 0;
 			if(curNode->children[0]->type != IntType) {
-				requiredOpLhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[0]->type));
+				requiredOpLhsError(curNode->linenum, "+", typeToChar(IntType), typeToChar(curNode->children[0]->type));
 				flag++;
 			} 
 			if (curNode->children[1]->type != IntType) {
-				requiredOpRhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[1]->type));
+				requiredOpRhsError(curNode->linenum, "+", typeToChar(IntType), typeToChar(curNode->children[1]->type));
 				flag++;
 			}
 			if (flag) {
@@ -342,11 +342,11 @@ void treeTraverse(treeNode *curNode) {
 		case Sub:
 			flag = 0;
 			if(curNode->children[0]->type != IntType) {
-				requiredOpLhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[0]->type));
+				requiredOpLhsError(curNode->linenum, "-", typeToChar(IntType), typeToChar(curNode->children[0]->type));
 				flag++;
 			} 
 			if (curNode->children[1]->type != IntType) {
-				requiredOpRhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[1]->type));
+				requiredOpRhsError(curNode->linenum, "-", typeToChar(IntType), typeToChar(curNode->children[1]->type));
 				flag++;
 			}
 			if (flag) {
@@ -358,11 +358,11 @@ void treeTraverse(treeNode *curNode) {
 		case AddE:
 			flag = 0;
 			if(curNode->children[0]->type != IntType) {
-				requiredOpLhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[0]->type));
+				requiredOpLhsError(curNode->linenum, "+=", typeToChar(IntType), typeToChar(curNode->children[0]->type));
 				flag++;
 			} 
 			if (curNode->children[1]->type != IntType) {
-				requiredOpRhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[1]->type));
+				requiredOpRhsError(curNode->linenum, "+=", typeToChar(IntType), typeToChar(curNode->children[1]->type));
 				flag++;
 			}
 			if (flag) {
@@ -374,11 +374,11 @@ void treeTraverse(treeNode *curNode) {
 		case SubE:
 			flag = 0;
 			if(curNode->children[0]->type != IntType) {
-				requiredOpLhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[0]->type));
+				requiredOpLhsError(curNode->linenum, "-=", typeToChar(IntType), typeToChar(curNode->children[0]->type));
 				flag++;
 			} 
 			if (curNode->children[1]->type != IntType) {
-				requiredOpRhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[1]->type));
+				requiredOpRhsError(curNode->linenum, "-=", typeToChar(IntType), typeToChar(curNode->children[1]->type));
 				flag++;
 			}
 			if (flag) {
@@ -390,11 +390,11 @@ void treeTraverse(treeNode *curNode) {
 		case MulE:
 			flag = 0;
 			if(curNode->children[0]->type != IntType) {
-				requiredOpLhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[0]->type));
+				requiredOpLhsError(curNode->linenum, "*=", typeToChar(IntType), typeToChar(curNode->children[0]->type));
 				flag++;
 			} 
 			if (curNode->children[1]->type != IntType) {
-				requiredOpRhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[1]->type));
+				requiredOpRhsError(curNode->linenum, "*=", typeToChar(IntType), typeToChar(curNode->children[1]->type));
 				flag++;
 			}
 			if (flag) {
@@ -406,11 +406,11 @@ void treeTraverse(treeNode *curNode) {
 		case Div:
 			flag = 0;
 			if(curNode->children[0]->type != IntType) {
-				requiredOpLhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[0]->type));
+				requiredOpLhsError(curNode->linenum, "/", typeToChar(IntType), typeToChar(curNode->children[0]->type));
 				flag++;
 			} 
 			if (curNode->children[1]->type != IntType) {
-				requiredOpRhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[1]->type));
+				requiredOpRhsError(curNode->linenum, "/", typeToChar(IntType), typeToChar(curNode->children[1]->type));
 				flag++;
 			}
 			if (flag) {
@@ -422,11 +422,11 @@ void treeTraverse(treeNode *curNode) {
 		case DivE:
 			flag = 0;
 			if(curNode->children[0]->type != IntType) {
-				requiredOpLhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[0]->type));
+				requiredOpLhsError(curNode->linenum, "/=", typeToChar(IntType), typeToChar(curNode->children[0]->type));
 				flag++;
 			} 
 			if (curNode->children[1]->type != IntType) {
-				requiredOpRhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[1]->type));
+				requiredOpRhsError(curNode->linenum, "/=", typeToChar(IntType), typeToChar(curNode->children[1]->type));
 				flag++;
 			}
 			if (flag) {
@@ -438,11 +438,11 @@ void treeTraverse(treeNode *curNode) {
 		case Mod:
 			flag = 0;
 			if(curNode->children[0]->type != IntType) {
-				requiredOpLhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[0]->type));
+				requiredOpLhsError(curNode->linenum, "%", typeToChar(IntType), typeToChar(curNode->children[0]->type));
 				flag++;
 			} 
 			if (curNode->children[1]->type != IntType) {
-				requiredOpRhsError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[1]->type));
+				requiredOpRhsError(curNode->linenum, "%", typeToChar(IntType), typeToChar(curNode->children[1]->type));
 				flag++;
 			}
 			if (flag) {
@@ -453,7 +453,7 @@ void treeTraverse(treeNode *curNode) {
 			break;
 		case Inc:
 			if(curNode->children[0]->type != IntType) {
-				invalidUnaryOpError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[0]->type));
+				invalidUnaryOpError(curNode->linenum, "++", typeToChar(IntType), typeToChar(curNode->children[0]->type));
 				curNode->type = UndefinedType;
 				break;
 			} 
@@ -461,7 +461,7 @@ void treeTraverse(treeNode *curNode) {
 			break;
 		case Dec:
 			if(curNode->children[0]->type != IntType) {
-				invalidUnaryOpError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[0]->type));
+				invalidUnaryOpError(curNode->linenum, "--", typeToChar(IntType), typeToChar(curNode->children[0]->type));
 				curNode->type = UndefinedType;
 				break;
 			} 
@@ -469,7 +469,7 @@ void treeTraverse(treeNode *curNode) {
 			break;
 		case Rand:
 			if(curNode->children[0]->type != IntType) {
-				invalidUnaryOpError(curNode->linenum, typeToChar(IntType), typeToChar(curNode->children[0]->type));
+				invalidUnaryOpError(curNode->linenum, "?", typeToChar(IntType), typeToChar(curNode->children[0]->type));
 				curNode->type = UndefinedType;
 				break;
 			} 
