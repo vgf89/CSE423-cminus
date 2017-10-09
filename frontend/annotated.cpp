@@ -147,9 +147,6 @@ void treeTraverse(treeNode *curNode) {
 	}
 }
 
-<<<<<<< HEAD
-std::string printSymbolAlreadyDefinedError(int linenum1, char* symbol, int linenum2)
-=======
 void printEntry(std::string name, enum typeEnum type, enum kindEnum kind, bool isStatic, bool isArray, bool isRecord, int linenum)
 {
 	int depth = st.getDepth();
@@ -214,7 +211,6 @@ const char* getKind(int kind)
 }
 
 void printSymbolAlreadyDefinedError(int linenum1, char* symbol, int linenum2)
->>>>>>> a5fb7273835dc8fcd08bdb9d83948857f654314c
 {
 	std::ostringstream s;
 	s << "ERROR(" << linenum1 << "): Symbol '" << symbol 
