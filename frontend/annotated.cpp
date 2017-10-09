@@ -140,7 +140,7 @@ void treeTraverse(treeNode *curNode) {
 	case Assign:
 		{
 		//assign type for assignment
-		char *lh_type = (char *) getType(curNode->children[0]->type);
+		std::string lh_type = typeToChar(curNode->children[0]->type);
 		const char *assign = "assignment";
 		const char *notnull = "not NULL";
 		const char *null = "NULL";
@@ -148,16 +148,16 @@ void treeTraverse(treeNode *curNode) {
 			if(curNode->opType != Dec && curNode->opType != Inc)
 				errorVector.push_back(requiredOpRhsError(curNode->linenum, "=", (char*) notnull, (char *) null));
 		}
-		else if(curNode->children[0]->type != curNode->children[1]->type) {
-			char *rh_type = (char *) getType(curNode->children[1]->type);
+		else if(curNode->children[0]->type != curNode->children[1]->type && curNode->children[1]->kind != Op) {
+			std::string rh_type = typeToChar(curNode->children[1]->type);
 			errorVector.push_back(operandTypeMistmatchError(curNode->linenum, (char *)assign, lh_type, rh_type));
 		}
 		else if(curNode->children[0]->opType == Bracl) {
 			curNode->type = curNode->children[0]->type;
 		}
 		else {
-			Entry *tmp = st.searchAll(std::string(curNode->children[0]->val.id));
-			curNode->type = tmp->type;
+			e = st.searchAll(std::string(curNode->children[0]->val.id));
+			curNode->type = e->type;
 		}
 		break;
 		}
