@@ -490,6 +490,7 @@ int main (int argc, char** argv)
         printTree(root, p);
     }
 
+    printErrors();
     printf("Number of warnings: %d\n", numwarn);
     printf("Number of errors: %d\n", numerror);
 }

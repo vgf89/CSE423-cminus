@@ -6,7 +6,8 @@
 #include "scanType.h"
 #include "treenode.h"
 #include <stdlib.h>
-
+//TODO add addVector calls to making the tree
+//global vector that contains error strings
 
 
 /*

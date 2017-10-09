@@ -3,128 +3,186 @@
  * Group: _Za_Worldo_
  */
 #include <string>
+#include <sstream>
+#include <iostream>
+#include <vector>
 #include "symbolTable.h"
 #include "annotated.h"
 
-SymbolTable st = new SymbolTable(true);
+std::vector<std::string> errorVector;
+extern int numwarn;
+extern int numerror;
+
+SymbolTable st(true); //init single symbol table object
 
 void scopeAndType(treeNode *parseTree) {
 	treeTraverse(parseTree);
 }
 
+//Builds symbol table, semantic erro list, and (optionally) prints symbol table
 void treeTraverse(treeNode *curNode) {
 	Entry* e = NULL;
 	Entry* previous = st.getParentLast();
 	int flag;
+	static bool funcflag = false;
 	switch (curNode->kind) {
-	case Compound:
-		// Create new scope
-		if(previous != NULL && previous->kind != Func)
+		case Compound:
+			// Create new scope
+			if(previous != NULL && previous->kind != Func && funcflag) {
+				st.newScope();
+				if(yydebug) printf("New Compound scope\n");
+			} else if (previous != NULL && previous->kind && !funcflag) {
+				//if(yydebug) printf("Compound immediately in function, don't make new scope\n");
+				funcflag = true;
+			}
+			break;
+
+		case Var:
+			//if(yydebug) printf("new Var: %s\n",curNode->val.id );
+			// Declare Variable
+			e = st.insertSymbol(
+				curNode->val.id,
+				curNode->type,
+				Var,
+				curNode->isStatic,
+				curNode->isArray,
+				curNode->isRecord,
+				curNode->linenum
+			);
+			if (e != NULL)
+				printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
+			else {
+				if(yydebug)
+					printEntry(curNode->val.id, curNode->type, Var, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
+			}
+			break;
+
+		case Func:
+			// Declare new Function
+			e = st.insertSymbol(
+				curNode->val.id,
+				curNode->type,
+				Func,
+				curNode->isStatic,
+				curNode->isArray,
+				curNode->isRecord,
+				curNode->linenum
+			);
+			if (e != NULL) {
+				printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
+			}
+			else {
+				if(yydebug)
+					printEntry(curNode->val.id, curNode->type, Func, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
+			}
 			st.newScope();
-		break;
+			break;
+		
+		case Rec:
+			// Declare new Record
+			e = st.insertSymbol(
+				curNode->val.id,
+				curNode->type,
+				Rec,
+				curNode->isStatic,
+				curNode->isArray,
+				curNode->isRecord,
+				curNode->linenum
+			);
+			if (e != NULL) {
+				printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
+			}
+			else {
+				if(yydebug)
+					printEntry(curNode->val.id, curNode->type, Rec, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
+			}
+			break;
 
-	case Var:
-		//printf("new Var: %s\n",curNode->val.id );
-		// Declare Variable
-		e = st.insertSymbol(
-			curNode->val.id,
-			curNode->type,
-			Var,
-			curNode->isStatic,
-			curNode->isArray,
-			curNode->isRecord,
-			curNode->linenum
-		);
-		if (e != NULL) {
-			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
-		}
-		break;
-
-	case Func:
-		printf("new Func: %s\n", curNode->val.id);
-		// Declare new Function
-		e = st.insertSymbol(
-			curNode->val.id,
-			curNode->type,
-			Func,
-			curNode->isStatic,
-			curNode->isArray,
-			curNode->isRecord,
-			curNode->linenum
-		);
-		if (e != NULL) {
-			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
-		}
-		st.newScope();
-		break;
-	
-	case Rec:
-		// Declare new Record
-		e = st.insertSymbol(
-			curNode->val.id,
-			curNode->type,
-			Rec,
-			curNode->isStatic,
-			curNode->isArray,
-			curNode->isRecord,
-			curNode->linenum
-		);
-		if (e != NULL) {
-			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
-		}
-		break;
-
-	case Id:
-		//printf("check %s\n", curNode->val.id);
-		e = st.searchAll(std::string(curNode->val.id));
-		if (e == NULL) {
-			printSymbolNotDefinedError(curNode->linenum, curNode->val.id);
-		}
-		break;
-	
-	case Param:
-		// Declare Variable
-		e = st.insertSymbol(
-			curNode->val.id,
-			curNode->type,
-			Var,
-			curNode->isStatic,
-			curNode->isArray,
-			curNode->isRecord,
-			curNode->linenum
-		);
-		if (e != NULL) {
-			printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
-		}
-		break;
-
-	case Call:
-		e = st.searchAll(curNode->val.id);
-		if (e != NULL) {
-			if(e->kind != Func) {
-				simpleVarCalledError(e->linenum, curNode->val.id);
-			} else {
+		case Id:
+			//process ID symbol
+			e = st.searchAll(std::string(curNode->val.id));
+			if (e == NULL) {
+				printSymbolNotDefinedError(curNode->linenum, curNode->val.id);
+			}
+			else {
 				curNode->type = e->type;
 			}
-		} else {
-			printSymbolNotDefinedError(e->linenum, curNode->val.id);
-		}
-		break;
+			break;
+		
+		case Param:
+			//Declare Parameter
+			e = st.insertSymbol(
+				curNode->val.id,
+				curNode->type,
+				Param,
+				curNode->isStatic,
+				curNode->isArray,
+				curNode->isRecord,
+				curNode->linenum
+			);
+			if (e != NULL) {
+				printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum);
+			}
+			else {
+				if(yydebug)
+					printEntry(curNode->val.id, curNode->type, Param, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
+			}
+			break;
+
+		case Call:
+			e = st.searchAll(curNode->val.id);
+			if (e != NULL) {
+				if(e->kind != Func) {
+					simpleVarCalledError(e->linenum, curNode->val.id);
+				} else {
+					curNode->type = e->type;
+				}
+			} else {
+				printSymbolNotDefinedError(e->linenum, curNode->val.id);
+			}
+			break;
+
+		case Assign:
+			//assign type for assignment
+			const char *lh_type = (const char *) getType(curNode->children[0]->type);
+			const char *rh_type = (const char *) getType(curNode->children[1]->type);
+			if(curNode->children[0]->type != curNode->children[1]->type) {
+				//operandTypeMistmatchError(curNode->linenum, "assignment", lh_type, rh_type);
+			}
+			else {
+				curNode->type = curNode->children[0]->type;
+			}
+			break;
+		/*
+		case If:
+			break;
+
+		case While:
+			break;
+
+		case Break:
+			break;
+
+		case Call:
+			break;
+
+		case Return:
+			break;
+
+		default:
+			break;
+			*/
 	}
 	
-	//Evvaluate Children
+	//Evaluate Children
 	int i = 0;
 	while (i < 3 || curNode->children[i] != NULL) {
 		if (curNode->children[i] != NULL)
 			treeTraverse(curNode->children[i]);
 		i++;
 	}
-	if (curNode->sibling != NULL) {
-		treeTraverse(curNode->sibling);
-	}
 
-
-	// This was a compound node, need to pop the top the symbol table when exiting
+	// After analyzing children
 	switch (curNode->kind) {
 	case Compound:
 		if(previous != NULL && previous->kind != Func)
@@ -133,7 +191,6 @@ void treeTraverse(treeNode *curNode) {
 	case Func:
 		st.pop();
 		break;
-	
 	case Op:
 		switch (curNode->opType) {
 		case And:
@@ -420,84 +477,223 @@ void treeTraverse(treeNode *curNode) {
 			break;
 		
 		}
+	
+		default:
+			break;
+		}
+		
+	if (curNode->sibling != NULL) {
+		treeTraverse(curNode->sibling);
 	}
 }
 
-
-
-void printSymbolAlreadyDefinedError(int linenum1, char* symbol, int linenum2)
+//prints one entry for symbol table printing
+void printEntry(std::string name, enum typeEnum type, enum kindEnum kind, bool isStatic, bool isArray, bool isRecord, int linenum)
 {
-	printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", linenum1, symbol, linenum2);
-}
+	int depth = st.getDepth();
 
-void printSymbolNotDefinedError(int linenum, char* symbol)
-{
-	printf("ERROR(%d): Symbol '%s' is not defined.\n", linenum, symbol);
-}
+	for (int i = 0; i < depth; ++i)
+		printf("   ");
 
-void simpleVarCalledError(int linenum, char* var)
-{
-	printf("ERROR(%d): '%s' is a simple variable and cannot be called.\n", linenum, var);
+	printf("[%d] name: %10s | %10s | kind: %10s | isStatic: %d | isArray: %d | isRecord: %d |\n", linenum, name.c_str(), getType(type), getKind(kind), isStatic, isArray, isRecord);
 }
 
-void requiredOpLhsError(int linenum, char* reqType, char* givenType)
+//gets kind string for printEntry
+const char* getKind(int kind)
 {
-	printf("ERROR(%d): '%s' requires operands of %s but lhs is of %s.\n", linenum, reqType, givenType);
+	const char *finalString;
+
+	switch(kind){
+		case Var:
+			finalString = "variable";
+			break;
+		case Func:
+			finalString = "function";
+			break;
+		case Rec:
+			finalString = "record";
+			break;
+		case Param:
+			finalString = "parameter";
+			break;
+		case Compound:
+			finalString = "compound";
+			break;
+		case Const:
+			finalString = "constant";
+			break;
+		case Id:
+			finalString = "id";
+			break;
+		case Op:
+			finalString = "operator";
+			break;
+		case Assign:
+			finalString = "assignment";
+			break;
+		case If:
+			finalString = "if";
+			break;
+		case Break:
+			finalString = "break";
+			break;
+		case Call:
+			finalString = "call";
+			break;
+		case Return:
+			finalString = "return";
+			break;
+		case While:
+			finalString = "while";
+			break;
+		default:
+			return finalString;
+	}
+	return finalString;
+}
+
+std::string printSymbolAlreadyDefinedError(int linenum1, char* symbol, int linenum2)
+{
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum1 << "): Symbol '" << symbol 
+		<< "' is already defined at line " << linenum2 << ".\n"; 
+	return s.str();
+}
+
+std::string printSymbolNotDefinedError(int linenum, char* symbol)
+{
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): Symbol '" << symbol
+		<< "' is not defined.\n";
+	return s.str();
+}
+
+std::string simpleVarCalledError(int linenum, char* var)
+{
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): '" << var
+		<< "' is a simple variable and cannot be called.\n";
+	return s.str();
+}
+
+std::string requiredOpLhsError(int linenum, char* reqType, char* givenType)
+{
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): '" << reqType
+		<< "' requires operands of " << reqType
+		<< " but lhs is of " << givenType << ".\n";
+	return s.str();
 }
 	
-void requiredOpRhsError(int linenum, char* reqType, char* givenType)
+std::string requiredOpRhsError(int linenum, char* reqType, char* givenType)
 {
-	printf("ERROR(%d): '%s' requires operands of %s but rhs is of %s.\n", linenum, reqType, givenType);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): '" << reqType
+		<< "' requires operands of " << reqType
+		<< " but rhs is of " << givenType << ".\n";
+	return s.str();
 }
 	
-void operandTypeMistmatchError(int linenum, char* givenType, char *lhType, char *rhType)
+std::string operandTypeMistmatchError(int linenum, char* givenType, char *lhType, char *rhType)
 {
-	printf("ERROR(%d): '%s' requires operands of the same type but lhs is %s and rhs is %s.\n", linenum, givenType, lhType, rhType);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): '" << givenType
+		<< "' requires operands of the same type but lhs is " << lhType
+		<< "and rhs is " << rhType << ".\n";
+	return s.str();
 }
 	
-void arrayIndexTypeError(int linenum, char* reqType, char* givenType)
+std::string arrayIndexTypeError(int linenum, char* reqType, char* givenType)
 {
-	printf("ERROR(%d): Array '%s' should be indexed by type int but got %s.\n", linenum, reqType, givenType);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): Array '" << reqType
+		<< "' should be indexed by type int but got " << givenType << ".\n";
+	return s.str();
 }
 	
-void unindexedArrayError(int linenum, char* array)
+std::string unindexedArrayError(int linenum, char* array)
 {
-	printf("ERROR(%d): Array index is the unindexed array '%s'.\n", linenum, array);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): Array index is the unindexed array '"
+		<< array << "'.\n";
+	return s.str();
 }
 	
-void indexingNamedNonArrayError(int linenum, char* array)
+std::string indexingNamedNonArrayError(int linenum, char* array)
 {
-	printf("ERROR(%d): Cannot index nonarray '%s'.\n", linenum, array);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): Cannot index nonarray '"
+		<< array << "'.\n";
+	return s.str();
 }
 	
-void indexingUnamedNonArrayError(int linenum)
+std::string indexingUnamedNonArrayError(int linenum)
 {
-	printf("ERROR(%d): Cannot index nonarray.\n", linenum);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): Cannot index nonarray.\n";
+	return s.str();
 }
 	
-void returnArrayError(int linenum)
+std::string returnArrayError(int linenum)
 {
-	printf("ERROR(%d): Cannot return an array.\n", linenum);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): Cannot return an array.\n";
+	return s.str();
 }
 	
-void functionAsVariableError(int linenum, char* func)
+std::string functionAsVariableError(int linenum, char* func)
 {
-	printf("ERROR(%d): Cannot use function '%s' as a variable.\n", linenum, func);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): Cannot use function '"
+		<< func << "' as a variable.\n";
+	return s.str();
 }
 	
-void invalidArrayOperationError(int linenum, char* op)
+std::string invalidArrayOperationError(int linenum, char* op)
 {
-	printf("ERROR(%d): The operation '%s' does not work with arrays.\n", linenum, op);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): The operation '" << op
+		<< "' does not work with arrays.\n";
+	return s.str();
 }
 	
-void opOnlyForArraysError(int linenum, char* op)
+std::string opOnlyForArraysError(int linenum, char* op)
 {
-	printf("ERROR(%d): The operation '%s' only works with arrays.\n", linenum, op);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): The operation '" << op
+		<< "' only works with arrays.\n";
+	return s.str();
 }
 	
-void invalidUnaryOpError(int linenum, char* reqOp, char* givenOp)
+std::string invalidUnaryOpError(int linenum, char* reqOp, char* givenOp)
 {
-	printf("ERROR(%d): Unary '%s' requires an operand of type %s but was given %s.\n", linenum, reqOp, givenOp);
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): Unary '" << reqOp
+		<< "' requires an operand of type " << reqOp
+		<< " but was given " << givenOp << ".\n";
+	return s.str();
+}
+
+void printErrors()
+{
+	for (std::string& error: errorVector) {
+		std::cout << error;
+	}
 }
 
 const char* typeToChar(enum typeEnum t, char* c) {
@@ -526,4 +722,3 @@ const char* typeToChar(enum typeEnum t, char* c) {
 		break;
 	}
 }
-	
