@@ -34,4 +34,6 @@ void invalidArrayOperationError(int linenum, char* op);
 void opOnlyForArraysError(int linenum, char* op);
 void invalidUnaryOpError(int linenum, char* reqOp, char* givenOp);
 
+const char* typeToChar(enum typeEnum t, char* c);
+
 #endif /* ANNOTATED_H */
