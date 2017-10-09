@@ -6,8 +6,6 @@
 #include "scanType.h"
 #include "treenode.h"
 #include <stdlib.h>
-//TODO add addVector calls to making the tree
-//global vector that contains error strings
 
 
 /*
@@ -604,7 +602,6 @@ treeNode *makeId(char* id, int isArray, int linenum)
 	n->kind = Id;
 	n->val.id = id;
 	n->isArray = isArray;
-	//TODO type?
 	return n;
 }
 
@@ -794,7 +791,6 @@ treeNode* makeRelExpression(treeNode *sumExpressionl, treeNode *relop, treeNode 
 	treeNode *n = relop;
 	n->children[0] = sumExpressionl;
 	n->children[1] = sumExpressionr;
-	//TODO type?
 	return n;
 }
 
@@ -1038,7 +1034,6 @@ treeNode *makeCall(char *id, treeNode *args, int linenum)
 	n->kind = Call;
 	n->val.id = id;
 	n->children[0] = args;
-	//TODO need return type from call
 	return n;
 }
 
@@ -1059,7 +1054,6 @@ treeNode *addStatementList(treeNode *statementList, treeNode *statement)
 	} else {
 		return statement;
 	}
-	//TODO type?
 }
 
 /*
@@ -1145,7 +1139,6 @@ treeNode *makeMutableBracketExpression(treeNode* Mutable, treeNode* expression, 
 	n->children[0] = Mutable;
 	n->children[1] = expression;
 	//Mutable->isArray = 1;
-	//TODO type?
 	return n; 
 }
 
@@ -1156,7 +1149,6 @@ treeNode *makeMutableDotId(treeNode* Mutable, char *id, int linenum)
 	n->opType = Dot;
 	n->children[0] = Mutable;
 	n->children[1] = makeId(id, 0, linenum);
-	//TODO type?
 	return n;
 }
 
@@ -1204,7 +1196,6 @@ treeNode *makeTerm(treeNode* term, treeNode* mulop, treeNode* unaryExpression)
 	treeNode* t = mulop;
 	t->children[0] = term;
 	t->children[1] = unaryExpression;
-	//TODO type?
 	return t;	
 }
 

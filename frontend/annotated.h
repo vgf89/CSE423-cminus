@@ -18,27 +18,27 @@ void treeTraverse(treeNode *curTree);
 
 
 // Error printing functions
-std::string printSymbolAlreadyDefinedError(int linenum1, char* symbol, int linenum2);
-std::string printSymbolNotDefinedError(int linenum, char* symbol);
-std::string simpleVarCalledError(int linenum, char* var); 
-std::string requiredOpLhsError(int linenum, char* reqType, char* givenType);
-std::string requiredOpRhsError(int linenum, char* reqType, char* givenType);
-std::string operandTypeMistmatchError(int linenum, char* givenType, char *lhType, char *rhType);
-std::string arrayIndexTypeError(int linenum, char* reqType, char* givenType);
-std::string unindexedArrayError(int linenum, char* array);
-std::string indexingNamedNonArrayError(int linenum, char* array);
+std::string printSymbolAlreadyDefinedError(int linenum1, std::string symbol, int linenum2);
+std::string printSymbolNotDefinedError(int linenum, std::string symbol);
+std::string simpleVarCalledError(int linenum, std::string var); 
+std::string requiredOpLhsError(int linenum, std::string reqType, std::string givenType);
+std::string requiredOpRhsError(int linenum, std::string reqType, std::string givenType);
+std::string operandTypeMistmatchError(int linenum, std::string givenType, std::string lhType, std::string rhType);
+std::string arrayIndexTypeError(int linenum, std::string reqType, std::string givenType);
+std::string unindexedArrayError(int linenum, std::string array);
+std::string indexingNamedNonArrayError(int linenum, std::string array);
 std::string indexingUnamedNonArrayError(int linenum);
 std::string returnArrayError(int linenum);
-std::string functionAsVariableError(int linenum, char* func);
-std::string invalidArrayOperationError(int linenum, char* op);
-std::string opOnlyForArraysError(int linenum, char* op);
-std::string invalidUnaryOpError(int linenum, char* reqOp, char* givenOp);
+std::string functionAsVariableError(int linenum, std::string func);
+std::string invalidArrayOperationError(int linenum, std::string op);
+std::string opOnlyForArraysError(int linenum, std::string op);
+std::string invalidUnaryOpError(int linenum, std::string reqOp, std::string givenOp);
 void printErrors();
 
 //symbol table printing for debug
 void printEntry(std::string name, enum typeEnum type, enum kindEnum kind, bool isStatic, bool isArray, bool isRecord, int linenum);
 const char* getKind(int kind);
 
-const char* typeToChar(enum typeEnum t, char* c);
+std::string typeToChar(enum typeEnum t);
 
 #endif /* ANNOTATED_H */
