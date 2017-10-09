@@ -120,6 +120,29 @@ void treeTraverse(treeNode *curNode) {
 				printEntry(curNode->val.id, curNode->type, Param, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
 		}
 		break;
+
+
+
+	case Assign:
+		break;
+
+	case If:
+		break;
+
+	case While:
+		break;
+
+	case Break:
+		break;
+
+	case Call:
+		break;
+
+	case Return:
+		break;
+
+	default:
+		break;
 	}
 	
 	//Evvaluate Children
