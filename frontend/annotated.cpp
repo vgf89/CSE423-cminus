@@ -3,6 +3,7 @@
  * Group: _Za_Worldo_
  */
 #include <string>
+#include <cstring>
 #include <sstream>
 #include <iostream>
 #include <vector>
@@ -20,7 +21,7 @@ void scopeAndType(treeNode *parseTree) {
 	treeTraverse(parseTree);
 }
 
-
+int main_defined = false;
 
 //Builds symbol table, semantic erro list, and (optionally) prints symbol table
 void treeTraverse(treeNode *curNode) {
@@ -62,6 +63,13 @@ void treeTraverse(treeNode *curNode) {
 		}
 		st.newScope();
 		funcflag = true; // Special Case: Prevent new scope immediately after function declaration
+
+		if (main_defined && strcmp(curNode->val.id, "main") == 0) {
+			// TODO: Add main redefined print option
+		}
+		else if (strcmp(curNode->val.id, "main") == 0) {
+			main_defined = true;
+		}
 		break;
 	}
 	case Rec:

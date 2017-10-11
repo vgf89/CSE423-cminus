@@ -23,6 +23,8 @@ static treeNode *root;
 
 int numwarn = 0;
 int numerror = 0;
+
+extern int main_defined;
 %}
 
 // The union will figure out the yystype void pointer stuff
@@ -479,6 +481,11 @@ int main (int argc, char** argv)
     scopeAndType(root);
 
     printErrors();
+
+    if (!main_defined) {
+	    numerror++;
+        printf("ERROR(LINKER): Procedure main is not defined.\n");
+    }
 
     if(canPrint == 1) {
         p = SIMPLE;
