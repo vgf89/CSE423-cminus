@@ -309,12 +309,12 @@ void treeTraverse(treeNode *curNode) {
 			break;
 		case EEq:
 			if(curNode->children[0]->type != curNode->children[1]->type) {
-				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "==", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[0]->type)));
+				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "==", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[1]->type)));
 			}
 			break;
 		case Noteq:
 			if(curNode->children[0]->type != curNode->children[1]->type) {
-				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "!=", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[0]->type)));
+				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "!=", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[1]->type)));
 			}
 
 			break;
@@ -324,7 +324,7 @@ void treeTraverse(treeNode *curNode) {
 				break;
 			}
 			if(curNode->children[0]->type != curNode->children[1]->type) {
-				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "<", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[0]->type)));
+				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "<", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[1]->type)));
 			}
 
 			break;
@@ -334,7 +334,7 @@ void treeTraverse(treeNode *curNode) {
 				break;
 			}
 			if(curNode->children[0]->type != curNode->children[1]->type) {
-				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, ">", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[0]->type)));
+				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, ">", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[1]->type)));
 			}
 
 			break;
@@ -344,7 +344,7 @@ void treeTraverse(treeNode *curNode) {
 				break;
 			}
 			if(curNode->children[0]->type != curNode->children[1]->type) {
-				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "<=", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[0]->type)));
+				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "<=", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[1]->type)));
 				break;
 			}
 			break;
@@ -354,7 +354,7 @@ void treeTraverse(treeNode *curNode) {
 				break;
 			}
 			if(curNode->children[0]->type != curNode->children[1]->type) {
-				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, ">=", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[0]->type)));
+				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, ">=", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[1]->type)));
 			}
 			break;
 		case Bracl:
