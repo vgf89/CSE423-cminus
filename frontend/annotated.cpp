@@ -517,6 +517,20 @@ void treeTraverse(treeNode *curNode) {
 				}
 			}
 			break;
+		/* dot needs to be fixed */
+		case Dot:
+			if (curNode->children[0]->kind != Id) {
+				curNode->type = UndefinedType;
+			} else {
+				Entry *e;
+				e = st.searchAll(curNode->children[0].valId);
+				if (e.isRecord == 0) {
+					curNode->type = UndefinedType;
+				} else {
+					curNode->type = UndefinedType;					
+				}
+			}
+			break;
 		default:
 			printf("hit the default OpType\n");
 			break;
