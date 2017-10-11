@@ -525,9 +525,9 @@ void treeTraverse(treeNode *curNode) {
 				Entry *e;
 				e = st.searchAll(curNode->children[0]->val.id);
 				if (e->isRecord == 0) {
-					curNode->type = UndefinedType;
+					curNode->type = IntType;
 				} else {
-					curNode->type = UndefinedType;					
+					curNode->type = IntType;					
 				}
 			}
 			break;
