@@ -17,7 +17,6 @@ do
         echo "$DIFF"
         printf "\n"
         fail=1
-        exit 1 # Remove once we have small diffs
     fi
 
     # -P
@@ -31,7 +30,6 @@ do
         echo "$DIFF"
         printf "\n"
         fail=1
-        exit 1 # Remove once we have small diffs
     fi
 done
 
