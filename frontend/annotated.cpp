@@ -409,15 +409,13 @@ void treeTraverse(treeNode *curNode) {
 		case Or:
 			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
 				errorVector.push_back(invalidArrayOperationError(curNode->linenum, "or"));
-				break;
 			}
 			if(curNode->children[0]->type != BoolType && curNode->children[0]->type != UndefinedType) {
 				errorVector.push_back(requiredOpLhsError(curNode->linenum, "or", typeToChar(BoolType), typeToChar(curNode->children[0]->type)));
-				break;
 			} 
 			if (curNode->children[1]->type != BoolType && curNode->children[1]->type != UndefinedType) {
 				errorVector.push_back(requiredOpRhsError(curNode->linenum, "or", typeToChar(BoolType), typeToChar(curNode->children[1]->type)));
-				break;
+
 			}
 			break;
 		case Not:
