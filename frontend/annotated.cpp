@@ -41,29 +41,6 @@ void treeTraverse(treeNode *curNode) {
 		}
 		break;
 	}
-
-	case Var:
-	{
-		//printf("new Var: %s, %d, %p\n", curNode->val.id, curNode->type, previous);
-		// Declare Variable
-		e = st.insertSymbol(
-			curNode->val.id,
-			curNode->type,
-			Var,
-			curNode->isStatic,
-			curNode->isArray,
-			curNode->isRecord,
-			curNode->linenum
-		);
-		if (e != NULL)
-			errorVector.push_back(printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum));
-
-		else {
-			if(yydebug)
-				printEntry(curNode->val.id, curNode->type, Var, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
-		}
-		break;
-	}
 	case Func:
 	{
 		// Declare new Function
@@ -157,6 +134,7 @@ void treeTraverse(treeNode *curNode) {
 			}
 		} else {
 			errorVector.push_back(printSymbolNotDefinedError(curNode->linenum, curNode->val.id));
+			curNode->type = UndefinedType;
 		}
 		break;
 	}
@@ -190,6 +168,28 @@ void treeTraverse(treeNode *curNode) {
 	case Rec:
 	{
 		st.pop();
+		break;
+	}
+	case Var:
+	{
+		//printf("new Var: %s, %d, %p\n", curNode->val.id, curNode->type, previous);
+		// Declare Variable
+		e = st.insertSymbol(
+			curNode->val.id,
+			curNode->type,
+			Var,
+			curNode->isStatic,
+			curNode->isArray,
+			curNode->isRecord,
+			curNode->linenum
+		);
+		if (e != NULL)
+			errorVector.push_back(printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum));
+
+		else {
+			if(yydebug)
+				printEntry(curNode->val.id, curNode->type, Var, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
+		}
 		break;
 	}
 	case Assign:
