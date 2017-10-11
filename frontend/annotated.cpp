@@ -412,6 +412,14 @@ void treeTraverse(treeNode *curNode) {
 				&& (curNode->children[0]->type != UndefinedType && curNode->children[1]->type != UndefinedType )) {
 				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, ">", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[1]->type)));
 			}
+			if (curNode->children[0]->type != IntType && curNode->children[0]->type != CharType
+				&& (curNode->children[0]->type != UndefinedType)) {
+				errorVector.push_back(opLhsOnlyForIntAndCharError(curNode->linenum, ">", typeToChar(curNode->children[0]->type)));
+			}
+			if (curNode->children[1]->type != IntType && curNode->children[1]->type != CharType
+				&& (curNode->children[1]->type != UndefinedType)) {
+				errorVector.push_back(opRhsOnlyForIntAndCharError(curNode->linenum, ">", typeToChar(curNode->children[1]->type)));
+			}
 
 			break;
 		case Leq:
@@ -424,6 +432,15 @@ void treeTraverse(treeNode *curNode) {
 				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "<=", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[1]->type)));
 				break;
 			}
+			if (curNode->children[0]->type != IntType && curNode->children[0]->type != CharType
+				&& (curNode->children[0]->type != UndefinedType)) {
+				errorVector.push_back(opLhsOnlyForIntAndCharError(curNode->linenum, "<=", typeToChar(curNode->children[0]->type)));
+			}
+			if (curNode->children[1]->type != IntType && curNode->children[1]->type != CharType
+				&& (curNode->children[1]->type != UndefinedType)) {
+				errorVector.push_back(opRhsOnlyForIntAndCharError(curNode->linenum, "<=", typeToChar(curNode->children[1]->type)));
+			}
+
 			break;
 		case Geq:
 			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
@@ -434,6 +451,16 @@ void treeTraverse(treeNode *curNode) {
 				&& (curNode->children[0]->type != UndefinedType && curNode->children[1]->type != UndefinedType )) {
 				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, ">=", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[1]->type)));
 			}
+			if (curNode->children[0]->type != IntType && curNode->children[0]->type != CharType
+				&& (curNode->children[0]->type != UndefinedType)) {
+				errorVector.push_back(opLhsOnlyForIntAndCharError(curNode->linenum, "<=", typeToChar(curNode->children[0]->type)));
+			}
+			if (curNode->children[1]->type != IntType && curNode->children[1]->type != CharType
+				&& (curNode->children[1]->type != UndefinedType)) {
+				errorVector.push_back(opRhsOnlyForIntAndCharError(curNode->linenum, "<=", typeToChar(curNode->children[1]->type)));
+			}
+
+
 			break;
 		case Bracl:
 				if(curNode->children[0] != NULL) {
