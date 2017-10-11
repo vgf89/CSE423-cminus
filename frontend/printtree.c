@@ -471,7 +471,7 @@ treeNode *makeRecordDeclaration(char* id, treeNode* localDeclarations, int linen
 	n->kind = Rec;
 	n->val.id = id;
 	n->children[0] = localDeclarations;
-	n->type = RecordType;
+	n->type = UndefinedType;
 	return n;
 }
 
