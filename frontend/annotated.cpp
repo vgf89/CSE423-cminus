@@ -532,7 +532,6 @@ void treeTraverse(treeNode *curNode) {
 			}
 			break;
 		default:
-			printf("hit the default OpType\n");
 			break;
 		}
 		
