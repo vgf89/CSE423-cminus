@@ -462,9 +462,8 @@ void treeTraverse(treeNode *curNode) {
 						curNode->type = curNode->children[0]->type;
 				}
 			if(curNode->children[0]->kind == Id && curNode->children[0]->isArray == 0) {
-				errorVector.push_back(indexingNamedNonArrayError(curNode->linenum, curNode->children[0]->val.id)); 
+				errorVector.push_back(indexingNamedNonArrayError(curNode->linenum, curNode->children[0]->val.id));
 				//errorVector.push_back(opOnlyForArraysError(curNode->linenum, "["));
-				break;
 			} else if (curNode->children[0]->kind != Id && curNode->children[0]->isArray == 0) {
 				errorVector.push_back(indexingUnamedNonArrayError(curNode->linenum)); 
 			}
