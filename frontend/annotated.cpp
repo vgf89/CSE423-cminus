@@ -268,6 +268,7 @@ void treeTraverse(treeNode *curNode) {
 				std::string rh_type = typeToChar(curNode->children[1]->type);
 				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "=", lh_type, rh_type));
 			}
+			//need to check type = constant type
 			else {
 				curNode->type = curNode->children[0]->type;
 			}
@@ -396,6 +397,9 @@ void treeTraverse(treeNode *curNode) {
 			}
 			if(curNode->children[1]->type != IntType && curNode->children[1]->type != UndefinedType) {
 				errorVector.push_back(arrayIndexTypeError(curNode->linenum, curNode->children[0]->val.id, typeToChar(curNode->children[1]->type)));
+			}
+			if(curNode->children[1]->isArray) {
+				errorVector.push_back(unindexedArrayError(curNode->linenum, curNode->children[1]->val.id));
 			}
 			curNode->type = curNode->children[0]->type;
 			break;
