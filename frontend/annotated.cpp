@@ -166,6 +166,13 @@ void treeTraverse(treeNode *curNode) {
 
 	// After analyzing children
 	switch (curNode->kind) {
+	case Id:
+		e = st.searchAll(curNode->val.id);
+		if(e != NULL && e->kind == Func) {
+			errorVector.push_back(functionAsVariableError(curNode->linenum, curNode->val.id));
+			break;
+		}
+		break;
 	case Compound:
 		if(!dontkill)
 			st.pop();
@@ -211,7 +218,6 @@ void treeTraverse(treeNode *curNode) {
 		{
 		//assign type for assignment
 		//first check +=, -=, /=, *=
-		Entry* e = NULL;
 		switch(curNode->opType) {
 		case AddE:
 			if(curNode->children[0]->type == VoidType) {
@@ -298,20 +304,6 @@ void treeTraverse(treeNode *curNode) {
 
 	//resolves our ops and
 	case Op:
-		if (curNode->children[0]->kind == Id) {
-			e = st.searchAll(curNode->children[0]->val.id);
-			if(e != NULL && e->kind == Func) {
-				errorVector.push_back(functionAsVariableError(curNode->linenum, curNode->children[0]->val.id));
-				break;
-			}
-		}
-		if (curNode->opType != Mul && curNode->opType != Sub && curNode->opType != Rand && curNode->opType != Not && curNode->opType != Neg && curNode->children[1] != NULL && curNode->children[1]->kind == Id) {
-			e = st.searchAll(curNode->children[1]->val.id);
-			if(e != NULL && e->kind == Func) {
-				errorVector.push_back(functionAsVariableError(curNode->linenum, curNode->children[1]->val.id));
-				break;
-			}
-		}
 		switch (curNode->opType) {
 		case And:
 			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
