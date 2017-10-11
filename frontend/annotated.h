@@ -35,6 +35,8 @@ std::string functionAsVariableError(int linenum, std::string func);
 std::string invalidArrayOperationError(int linenum, std::string op);
 std::string opOnlyForArraysError(int linenum, std::string op);
 std::string invalidUnaryOpError(int linenum, std::string op, std::string reqOp, std::string givenOp);
+std::string opLhsOnlyForIntAndCharError(int linenum, std::string op, std::string givenType);
+std::string opRhsOnlyForIntAndCharError(int linenum, std::string op, std::string givenType);
 void printErrors();
 
 //symbol table printing for debug

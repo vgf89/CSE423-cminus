@@ -432,8 +432,18 @@ void treeTraverse(treeNode *curNode) {
 				break;
 			}
 			if(curNode->children[0]->type != curNode->children[1]->type 
-				&& (curNode->children[0]->type != UndefinedType && curNode->children[1]->type != UndefinedType )) {
+				&& (curNode->children[0]->type != UndefinedType && curNode->children[1]->type != UndefinedType )
+				&& (curNode->children[0]->type == IntType || curNode->children[0]->type == CharType)
+				&& (curNode->children[1]->type == IntType || curNode->children[1]->type == CharType)) {
 				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "<", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[1]->type)));
+			}
+			if (curNode->children[0]->type != IntType && curNode->children[0]->type != CharType
+				&& (curNode->children[0]->type != UndefinedType)) {
+				errorVector.push_back(opLhsOnlyForIntAndCharError(curNode->linenum, "<", typeToChar(curNode->children[0]->type)));
+			}
+			if (curNode->children[1]->type != IntType && curNode->children[1]->type != CharType
+				&& (curNode->children[1]->type != UndefinedType)) {
+				errorVector.push_back(opRhsOnlyForIntAndCharError(curNode->linenum, "<", typeToChar(curNode->children[1]->type)));
 			}
 
 			break;
@@ -823,6 +833,26 @@ std::string invalidUnaryOpError(int linenum, std::string op, std::string reqOp, 
 		<< " but was given type " << givenOp << ".\n";
 
 		
+	return s.str();
+}
+
+std::string opLhsOnlyForIntAndCharError(int linenum, std::string op, std::string givenType)
+{
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): '" << op 
+		<< "' requires operands of type char or type int but lhs is of type "
+		<< givenType << ".\n";
+	return s.str();
+}
+
+std::string opRhsOnlyForIntAndCharError(int linenum, std::string op, std::string givenType)
+{
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): '" << op
+		<< "' requires operands of type char or type int but rhs is of type "
+		<< givenType << ".\n";
 	return s.str();
 }
 
