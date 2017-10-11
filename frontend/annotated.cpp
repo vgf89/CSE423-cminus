@@ -281,7 +281,7 @@ void treeTraverse(treeNode *curNode) {
 			}
 			else if(curNode->children[0]->type != curNode->children[1]->type
 					&& (curNode->children[1]->kind != Op || curNode->children[0]->kind != Op)
-					&& curNode->children[1]->kind != Const) {
+			       ) {//&& curNode->children[1]->kind != Const) {
 				std::string rh_type = typeToChar(curNode->children[1]->type);
 				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "=", lh_type, rh_type));
 			}
