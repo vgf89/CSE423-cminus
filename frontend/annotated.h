@@ -23,6 +23,8 @@ std::string printSymbolNotDefinedError(int linenum, std::string symbol);
 std::string simpleVarCalledError(int linenum, std::string var); 
 std::string requiredOpLhsError(int linenum, std::string op, std::string reqType, std::string givenType);
 std::string requiredOpRhsError(int linenum, std::string op, std::string reqType, std::string givenType);
+std::string voidOpLhsError(int linenum, std::string op);
+std::string voidOpRhsError(int linenum, std::string op);
 std::string operandTypeMistmatchError(int linenum, std::string givenType, std::string lhType, std::string rhType);
 std::string arrayIndexTypeError(int linenum, std::string reqType, std::string givenType);
 std::string unindexedArrayError(int linenum, std::string array);

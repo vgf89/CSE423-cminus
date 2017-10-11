@@ -213,24 +213,48 @@ void treeTraverse(treeNode *curNode) {
 		//first check +=, -=, /=, *=
 		switch(curNode->opType) {
 		case AddE:
+			if(curNode->children[0]->type == VoidType) {
+				errorVector.push_back(voidOpLhsError(curNode->linenum, "+="));
+			}
+			if(curNode->children[1]->type == VoidType) {
+				errorVector.push_back(voidOpRhsError(curNode->linenum, "+="));
+			}
 			if(curNode->children[0]->type != curNode->children[1]->type 
 				&& (curNode->children[0]->type != UndefinedType && curNode->children[1]->type != UndefinedType )) {
 				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "+=", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[1]->type)));
 			}	
 			break;
 		case SubE:
+			if(curNode->children[0]->type == VoidType) {
+				errorVector.push_back(voidOpLhsError(curNode->linenum, "-="));
+			}
+			if(curNode->children[1]->type == VoidType) {
+				errorVector.push_back(voidOpRhsError(curNode->linenum, "-="));
+			}
 			if(curNode->children[0]->type != curNode->children[1]->type
 				&& (curNode->children[0]->type != UndefinedType && curNode->children[1]->type != UndefinedType )) {
 				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "-=", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[1]->type)));
 			}
 			break;
 		case MulE:
+			if(curNode->children[0]->type == VoidType) {
+				errorVector.push_back(voidOpLhsError(curNode->linenum, "*="));
+			}
+			if(curNode->children[1]->type == VoidType) {
+				errorVector.push_back(voidOpRhsError(curNode->linenum, "*="));
+			}
 			if(curNode->children[0]->type != curNode->children[1]->type
 				&& (curNode->children[0]->type != UndefinedType && curNode->children[1]->type != UndefinedType )) {
 				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "*=", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[1]->type)));
 			}	
 			break;
 		case DivE:
+			if(curNode->children[0]->type == VoidType) {
+				errorVector.push_back(voidOpLhsError(curNode->linenum, "/="));
+			}
+			if(curNode->children[1]->type == VoidType) {
+				errorVector.push_back(voidOpRhsError(curNode->linenum, "/="));
+			}
 			if(curNode->children[0]->type != curNode->children[1]->type
 				&& (curNode->children[0]->type != UndefinedType && curNode->children[1]->type != UndefinedType )) {
 				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "/=", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[1]->type)));
@@ -256,11 +280,17 @@ void treeTraverse(treeNode *curNode) {
 
 		default: //=
 			std::string lh_type = typeToChar(curNode->children[0]->type);
-			const char *notnull = "not NULL";
-			const char *null = "NULL";
+			const char *notnull = "THIS SHOULDN'T BE HERE, CHANGE DEC/INC HANDLING IN ASSIGN DEFAULT CASE";
+			const char *null = "THIS SHOULDN'T BE HERE, CHANGE DEC/INC HANDLING IN ASSIGN DEFAULT CASE";
 			if(curNode->children[1] == NULL) {
 				if(curNode->opType != Dec && curNode->opType != Inc)
 					errorVector.push_back(requiredOpRhsError(curNode->linenum, "=", (char*) notnull, (char *) null));
+			}
+			else if(curNode->children[0]->type == VoidType) {
+				errorVector.push_back(voidOpLhsError(curNode->linenum, "="));
+			}
+			else if(curNode->children[1]->type == VoidType) {
+				errorVector.push_back(voidOpRhsError(curNode->linenum, "="));
 			}
 			else if(curNode->children[0]->type != curNode->children[1]->type
 					&& (curNode->children[1]->kind != Op && curNode->children[0]->kind != Op)
@@ -325,12 +355,24 @@ void treeTraverse(treeNode *curNode) {
 			//curNode->type = BoolType;
 			break;
 		case EEq:
+			if(curNode->children[0]->type == VoidType) {
+				errorVector.push_back(voidOpLhsError(curNode->linenum, "=="));
+			}
+			if(curNode->children[1]->type == VoidType) {
+				errorVector.push_back(voidOpRhsError(curNode->linenum, "=="));
+			}
 			if(curNode->children[0]->type != curNode->children[1]->type 
 				&& (curNode->children[0]->type != UndefinedType && curNode->children[1]->type != UndefinedType )) {
 				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "==", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[1]->type)));
 			}
 			break;
 		case Noteq:
+			if(curNode->children[0]->type == VoidType) {
+				errorVector.push_back(voidOpLhsError(curNode->linenum, "!="));
+			}
+			if(curNode->children[1]->type == VoidType) {
+				errorVector.push_back(voidOpRhsError(curNode->linenum, "!="));
+			}
 			if(curNode->children[0]->type != curNode->children[1]->type 
 				&& (curNode->children[0]->type != UndefinedType && curNode->children[1]->type != UndefinedType )) {
 				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "!=", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[1]->type)));
@@ -622,6 +664,22 @@ std::string requiredOpRhsError(int linenum, std::string op, std::string reqType,
 	s << "ERROR(" << linenum << "): '" << op
 		<< "' requires operands of type " << reqType
 		<< " but rhs is of type " << givenType << ".\n";
+	return s.str();
+}
+
+std::string voidOpLhsError(int linenum, std::string op)
+{
+	numerror++;
+	std::ostringstream s;
+	s << "ERROR(" << linenum << "): '" << op << "' requires operands of NONVOID but lhs is of type void.\n";
+	return s.str();
+}
+	
+std::string voidOpRhsError(int linenum, std::string op)
+{
+	numerror++;
+	std::ostringstream s;
+		s << "ERROR(" << linenum << "): '" << op << "' requires operands of NONVOID but rhs is of type void.\n";
 	return s.str();
 }
 	
