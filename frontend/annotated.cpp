@@ -464,16 +464,16 @@ void treeTraverse(treeNode *curNode) {
 			break;	
 			/*Or, And, Not, Leq, Geq, Lss, Gss, Eq, AddE, SubE, MulE, DivE, Noteq, Add, Sub, Mul, Div, Mod, Rand, Neg, Inc, Dec, Dot, Bracl, EEq*/
 		case Add:
+			if(curNode->children[0]->type != IntType && curNode->children[0]->type != UndefinedType) {
+				errorVector.push_back(requiredOpLhsError(curNode->linenum, "+", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
+			} 
+			if (curNode->children[1]->type != IntType && curNode->children[1]->type != UndefinedType) {
+				errorVector.push_back(requiredOpRhsError(curNode->linenum, "+", typeToChar(IntType), typeToChar(curNode->children[1]->type)));
+			}
 			if (curNode->children[0]->isArray || curNode->children[1]->isArray) {
 				errorVector.push_back(invalidArrayOperationError(curNode->linenum, "+"));
-			} else {
-				if(curNode->children[0]->type != IntType && curNode->children[0]->type != UndefinedType) {
-					errorVector.push_back(requiredOpLhsError(curNode->linenum, "+", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
-				} 
-				if (curNode->children[1]->type != IntType && curNode->children[1]->type != UndefinedType) {
-					errorVector.push_back(requiredOpRhsError(curNode->linenum, "+", typeToChar(IntType), typeToChar(curNode->children[1]->type)));
-				}
 			}
+			
 			break;
 		case Sub:
 			if (curNode->children[0]->isArray) {
