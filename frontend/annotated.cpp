@@ -565,6 +565,9 @@ void treeTraverse(treeNode *curNode) {
 			break;
 		/* dot needs to be fixed */
 		case Dot:
+			if (curNode->children[0]->type != IntType) {
+				errorVector.push_back(requiredOpLhsError(curNode->linenum, ".", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
+			}
 			if (curNode->children[0]->kind != Id) {
 				if(curNode->children[0]->opType != Dot)
 					curNode->type = UndefinedType;
