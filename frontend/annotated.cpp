@@ -21,15 +21,17 @@ void scopeAndType(treeNode *parseTree) {
 	treeTraverse(parseTree);
 }
 
+
+
 //Builds symbol table, semantic erro list, and (optionally) prints symbol table
 void treeTraverse(treeNode *curNode) {
 	Entry* e = NULL;
 	Entry* previous = st.getParentLast();
 	int flag;
-	static bool funcflag = false;
 	bool dontkill = false;
 	switch (curNode->kind) {
 	case Compound:
+		//printf("COMPOUND\n");
 		// Create new scope
 		if(previous != NULL && previous->kind == Func && funcflag) {
 			dontkill = true;
@@ -41,7 +43,7 @@ void treeTraverse(treeNode *curNode) {
 
 	case Var:
 		{
-		if(yydebug) printf("new Var: %s, %d\n", curNode->val.id, curNode->type);
+		//printf("new Var: %s, %d, %p\n", curNode->val.id, curNode->type, previous);
 		// Declare Variable
 		e = st.insertSymbol(
 			curNode->val.id,
@@ -81,6 +83,7 @@ void treeTraverse(treeNode *curNode) {
 				printEntry(curNode->val.id, curNode->type, Func, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
 		}
 		st.newScope();
+		funcflag = true; // Special Case: Prevent new scope immediately after function declaration
 		break;
 		}
 	case Rec:
@@ -158,6 +161,9 @@ void treeTraverse(treeNode *curNode) {
 		break;
 		}
 	}
+
+
+
 	//Evaluate Children
 	int i = 0;
 	while (i < 3 || curNode->children[i] != NULL) {
@@ -165,6 +171,8 @@ void treeTraverse(treeNode *curNode) {
 			treeTraverse(curNode->children[i]);
 		i++;
 	}
+
+
 
 	// After analyzing children
 	switch (curNode->kind) {
@@ -174,6 +182,7 @@ void treeTraverse(treeNode *curNode) {
 		break;
 	case Func:
 		st.pop();
+		funcflag = true;
 		break;
 	case Assign:
 		{
