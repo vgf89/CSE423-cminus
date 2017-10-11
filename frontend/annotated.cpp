@@ -109,6 +109,12 @@ void treeTraverse(treeNode *curNode) {
 			curNode->isArray = e->isArray;
 			curNode->isRecord = e->isRecord;
 		}
+		/* Used to check to make sure ID is not a function */
+		e = st.searchAll(curNode->val.id);
+		if(e != NULL && e->kind == Func) {
+			errorVector.push_back(functionAsVariableError(curNode->linenum, curNode->val.id));
+			break;
+		}
 		break;
 	}
 	case Param:
@@ -166,13 +172,6 @@ void treeTraverse(treeNode *curNode) {
 
 	// After analyzing children
 	switch (curNode->kind) {
-	case Id:
-		e = st.searchAll(curNode->val.id);
-		if(e != NULL && e->kind == Func) {
-			errorVector.push_back(functionAsVariableError(curNode->linenum, curNode->val.id));
-			break;
-		}
-		break;
 	case Compound:
 		if(!dontkill)
 			st.pop();
