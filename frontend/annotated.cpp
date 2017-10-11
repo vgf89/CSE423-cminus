@@ -376,8 +376,6 @@ void treeTraverse(treeNode *curNode) {
 			break;
 		case Bracl:
 			if(curNode->children[0]->kind == Id && curNode->children[0]->isArray == 0) {
-				printf("LINENUM: %d", curNode->linenum);
-				printf("ID: %s\n", curNode->children[0]->val.id);
 				errorVector.push_back(indexingNamedNonArrayError(curNode->linenum, curNode->children[0]->val.id)); 
 				//errorVector.push_back(opOnlyForArraysError(curNode->linenum, "["));
 				break;
