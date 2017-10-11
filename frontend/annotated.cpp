@@ -380,6 +380,20 @@ void treeTraverse(treeNode *curNode) {
 		}
 	}
 	case Op:
+		if (curNode->children[0]->kind == Id) {
+			e = st.searchAll(curNode->children[0]->val.id);
+			if(e != NULL && e->kind == Func) {
+				errorVector.push_back(functionAsVariableError(curNode->linenum, curNode->children[0]->val.id));
+				break;
+			}
+		}
+		if (curNode->opType != Mul && curNode->opType != Sub && curNode->opType != Rand && curNode->opType != Not && curNode->opType != Neg && curNode->children[1]->kind == Id) {
+			e = st.searchAll(curNode->children[1]->val.id);
+			if(e != NULL && e->kind == Func) {
+				errorVector.push_back(functionAsVariableError(curNode->linenum, curNode->children[1]->val.id));
+				break;
+			}
+		}
 		switch (curNode->opType) {
 		case And:
 			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
