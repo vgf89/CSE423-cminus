@@ -523,8 +523,8 @@ void treeTraverse(treeNode *curNode) {
 				curNode->type = UndefinedType;
 			} else {
 				Entry *e;
-				e = st.searchAll(curNode->children[0].valId);
-				if (e.isRecord == 0) {
+				e = st.searchAll(curNode->children[0]->val.id);
+				if (e->isRecord == 0) {
 					curNode->type = UndefinedType;
 				} else {
 					curNode->type = UndefinedType;					
