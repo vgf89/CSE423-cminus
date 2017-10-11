@@ -554,7 +554,6 @@ void treeTraverse(treeNode *curNode) {
 					break;
 				} else if(curNode->children[0]->type != IntType) {
 					errorVector.push_back(invalidUnaryOpError(curNode->linenum, "?", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
-					curNode->type = UndefinedType;
 					break;
 				} else{
 					curNode->type = IntType;
