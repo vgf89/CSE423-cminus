@@ -268,9 +268,6 @@ void treeTraverse(treeNode *curNode) {
 				std::string rh_type = typeToChar(curNode->children[1]->type);
 				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "=", lh_type, rh_type));
 			}
-			else if(curNode->children[0]->opType == Bracl) {
-				curNode->type = curNode->children[0]->type;
-			}
 			else {
 				curNode->type = curNode->children[0]->type;
 			}
@@ -384,6 +381,12 @@ void treeTraverse(treeNode *curNode) {
 			}
 			break;
 		case Bracl:
+				if(curNode->children[0] != NULL) {
+					if(curNode->children[0]->opType == Bracl)
+						curNode->type = UndefinedType;
+					else
+						curNode->type = curNode->children[0]->type;
+				}
 			if(curNode->children[0]->kind == Id && curNode->children[0]->isArray == 0) {
 				errorVector.push_back(indexingNamedNonArrayError(curNode->linenum, curNode->children[0]->val.id)); 
 				//errorVector.push_back(opOnlyForArraysError(curNode->linenum, "["));
@@ -484,7 +487,8 @@ void treeTraverse(treeNode *curNode) {
 		/* dot needs to be fixed */
 		case Dot:
 			if (curNode->children[0]->kind != Id) {
-				curNode->type = UndefinedType;
+				if(curNode->children[0]->opType != Dot)
+					curNode->type = UndefinedType;
 			} else {
 				Entry *e;
 				e = st.searchAll(curNode->children[0]->val.id);
