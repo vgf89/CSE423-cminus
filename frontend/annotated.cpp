@@ -27,8 +27,10 @@ void treeTraverse(treeNode *curNode) {
 	Entry* e = NULL;
 	Entry* previous = st.getParentLast();
 	bool dontkill = false;
-	switch (curNode->kind) {
+	switch (curNode->kind)
+	{
 	case Compound:
+	{
 		//printf("COMPOUND\n");
 		// Create new scope
 		if(previous != NULL && previous->kind == Func && funcflag) {
@@ -38,9 +40,10 @@ void treeTraverse(treeNode *curNode) {
 			st.newScope();
 		}
 		break;
+	}
 
 	case Var:
-		{
+	{
 		//printf("new Var: %s, %d, %p\n", curNode->val.id, curNode->type, previous);
 		// Declare Variable
 		e = st.insertSymbol(
@@ -60,9 +63,9 @@ void treeTraverse(treeNode *curNode) {
 				printEntry(curNode->val.id, curNode->type, Var, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
 		}
 		break;
-		}
+	}
 	case Func:
-		{
+	{
 		// Declare new Function
 		e = st.insertSymbol(
 			curNode->val.id,
@@ -83,9 +86,9 @@ void treeTraverse(treeNode *curNode) {
 		st.newScope();
 		funcflag = true; // Special Case: Prevent new scope immediately after function declaration
 		break;
-		}
+	}
 	case Rec:
-		{
+	{
 		// Declare new Record
 		e = st.insertSymbol(
 			curNode->val.id,
@@ -103,14 +106,16 @@ void treeTraverse(treeNode *curNode) {
 			if(yydebug)
 				printEntry(curNode->val.id, curNode->type, Rec, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
 		}
+		st.newScope();
 		break;
-		}
+	}
 	case Id:
-		{
+	{
 		//process ID symbol
 		e = st.searchAll(std::string(curNode->val.id));
 		if (e == NULL) {
 			errorVector.push_back(printSymbolNotDefinedError(curNode->linenum, curNode->val.id));
+			curNode->type = UndefinedType;
 		}
 		else {
 			curNode->type = e->type;
@@ -119,9 +124,9 @@ void treeTraverse(treeNode *curNode) {
 			curNode->isRecord = e->isRecord;
 		}
 		break;
-		}
+	}
 	case Param:
-		{
+	{
 		//Declare Parameter
 		e = st.insertSymbol(
 			curNode->val.id,
@@ -140,9 +145,9 @@ void treeTraverse(treeNode *curNode) {
 				printEntry(curNode->val.id, curNode->type, Param, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
 		}
 		break;
-		}
+	}
 	case Call:
-		{
+	{
 		e = st.searchAll(curNode->val.id);
 		if (e != NULL) {
 			if(e->kind != Func) {
@@ -154,10 +159,10 @@ void treeTraverse(treeNode *curNode) {
 			errorVector.push_back(printSymbolNotDefinedError(curNode->linenum, curNode->val.id));
 		}
 		break;
+	}
 	default:
 		//printf("hit default 2\n");
 		break;
-		}
 	}
 
 
@@ -182,10 +187,15 @@ void treeTraverse(treeNode *curNode) {
 		st.pop();
 		funcflag = true;
 		break;
+	case Rec:
+	{
+		st.pop();
+		break;
+	}
 	case Assign:
 		{
 		//assign type for assignment
-		//first check +=, -=, /=, *=, %=
+		//first check +=, -=, /=, *=
 		switch(curNode->opType) {
 		case AddE:
 			if(curNode->children[0]->type != IntType) {
@@ -240,28 +250,29 @@ void treeTraverse(treeNode *curNode) {
 			curNode->type = IntType;
 			break;
 
-		}
-		std::string lh_type = typeToChar(curNode->children[0]->type);
+		default: //=
+			std::string lh_type = typeToChar(curNode->children[0]->type);
 
-		const char *notnull = "not NULL";
-		const char *null = "NULL";
-		if(curNode->children[1] == NULL) {
-			if(curNode->opType != Dec && curNode->opType != Inc)
-				errorVector.push_back(requiredOpRhsError(curNode->linenum, "=", (char*) notnull, (char *) null));
-		}
-		else if(curNode->children[0]->type != curNode->children[1]->type
-				&& (curNode->children[1]->kind != Op || curNode->children[0]->kind != Op)
-				&& curNode->children[1]->kind != Const) {
-			std::string rh_type = typeToChar(curNode->children[1]->type);
-			errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "=", lh_type, rh_type));
-		}
-		else if(curNode->children[0]->opType == Bracl) {
-			curNode->type = curNode->children[0]->type;
-		}
-		else {
-			curNode->type = curNode->children[0]->type;
-		}
-		break;
+			const char *notnull = "not NULL";
+			const char *null = "NULL";
+			if(curNode->children[1] == NULL) {
+				if(curNode->opType != Dec && curNode->opType != Inc)
+					errorVector.push_back(requiredOpRhsError(curNode->linenum, "=", (char*) notnull, (char *) null));
+			}
+			else if(curNode->children[0]->type != curNode->children[1]->type
+					&& (curNode->children[1]->kind != Op || curNode->children[0]->kind != Op)
+					&& curNode->children[1]->kind != Const) {
+				std::string rh_type = typeToChar(curNode->children[1]->type);
+				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "=", lh_type, rh_type));
+			}
+			else if(curNode->children[0]->opType == Bracl) {
+				curNode->type = curNode->children[0]->type;
+			}
+			else {
+				curNode->type = curNode->children[0]->type;
+			}
+			break;
+			}
 		}
 	case Op:
 		switch (curNode->opType) {
@@ -312,14 +323,6 @@ void treeTraverse(treeNode *curNode) {
 				break;
 			} 
 			curNode->type = BoolType;
-			break;
-		case Eq:
-			if(curNode->children[0]->type != curNode->children[1]->type) {
-				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "=", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[0]->type)));
-				curNode->type = UndefinedType;
-			} else {
-				curNode->type = curNode->children[0]->type;
-			}
 			break;
 		case EEq:
 			if(curNode->children[0]->type != curNode->children[1]->type) {
