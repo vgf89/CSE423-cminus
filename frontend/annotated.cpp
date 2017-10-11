@@ -144,6 +144,7 @@ void treeTraverse(treeNode *curNode) {
 		if (e != NULL) {
 			if(e->kind != Func) {
 				errorVector.push_back(simpleVarCalledError(curNode->linenum, curNode->val.id));
+				curNode->type = e->type;
 			} else {
 				curNode->type = e->type;
 			}
@@ -444,11 +445,11 @@ void treeTraverse(treeNode *curNode) {
 			}
 			if (curNode->children[0]->type != IntType && curNode->children[0]->type != CharType
 				&& (curNode->children[0]->type != UndefinedType)) {
-				errorVector.push_back(opLhsOnlyForIntAndCharError(curNode->linenum, "<=", typeToChar(curNode->children[0]->type)));
+				errorVector.push_back(opLhsOnlyForIntAndCharError(curNode->linenum, ">=", typeToChar(curNode->children[0]->type)));
 			}
 			if (curNode->children[1]->type != IntType && curNode->children[1]->type != CharType
 				&& (curNode->children[1]->type != UndefinedType)) {
-				errorVector.push_back(opRhsOnlyForIntAndCharError(curNode->linenum, "<=", typeToChar(curNode->children[1]->type)));
+				errorVector.push_back(opRhsOnlyForIntAndCharError(curNode->linenum, ">=", typeToChar(curNode->children[1]->type)));
 			}
 
 
@@ -510,13 +511,14 @@ void treeTraverse(treeNode *curNode) {
 				       curNode->children[1]->isArray) {
 				errorVector.push_back(invalidArrayOperationError(curNode->linenum, "-"));
 			} else {
+				if (curNode->children[1] == NULL && curNode->children[0]->type != IntType) {
+					errorVector.push_back(invalidUnaryOpError(curNode->linenum, "-", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
+					break;
+				} else if (curNode->children[1] != NULL && curNode->children[1]->type != IntType && curNode->children[1]->type != UndefinedType) {
+					errorVector.push_back(requiredOpRhsError(curNode->linenum, "-", typeToChar(IntType), typeToChar(curNode->children[1]->type)));
+				}
 				if(curNode->children[0]->type != IntType && curNode->children[0]->type != UndefinedType) {
 					errorVector.push_back(requiredOpLhsError(curNode->linenum, "-", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
-				} 
-				if (curNode->children[1] == NULL) {
-					curNode->type = curNode->children[0]->type;
-				} else if (curNode->children[1]->type != IntType && curNode->children[1]->type != UndefinedType) {
-					errorVector.push_back(requiredOpRhsError(curNode->linenum, "-", typeToChar(IntType), typeToChar(curNode->children[1]->type)));
 				}
 			}
 			break;
