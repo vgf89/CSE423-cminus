@@ -700,9 +700,12 @@ std::string invalidUnaryOpError(int linenum, std::string op, std::string reqOp, 
 {
 	numerror++;
 	std::ostringstream s;
+	// TODO: This has a typo 'type type' but the test files have the same problem.
 	s << "ERROR(" << linenum << "): Unary '" << op
-		<< "' requires an operand of type " << reqOp
-		<< " but was given " << givenOp << ".\n";
+		<< "' requires an operand of type type " << reqOp
+		<< " but was given type " << givenOp << ".\n";
+
+		
 	return s.str();
 }
 
