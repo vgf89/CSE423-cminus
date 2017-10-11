@@ -478,6 +478,8 @@ int main (int argc, char** argv)
 
     scopeAndType(root);
 
+    printErrors();
+
     if(canPrint == 1) {
         p = SIMPLE;
         //print AST
@@ -489,8 +491,6 @@ int main (int argc, char** argv)
         p = DETAILED;
         printTree(root, p);
     }
-
-    printErrors();
     printf("Number of warnings: %d\n", numwarn);
     printf("Number of errors: %d\n", numerror);
 }
