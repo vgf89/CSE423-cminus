@@ -1021,7 +1021,7 @@ treeNode *makeCharType(int linenum)
 treeNode *makeRecordType(int linenum)
 {
 	treeNode *n = newNode(linenum);
-	n->type = UndefinedType;
+	n->type = RecordType;
 	return n;
 }
 
