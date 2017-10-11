@@ -8,34 +8,39 @@ for f in $FILES
 do
     # default
     compare=${f/.c-/.out}
-    echo ${f/.c-/}
+    command="diff <(cat $compare) <(./c- "$f")"
+    printf "$command"
     DIFF="$(diff <(cat $compare) <(./c- "$f"))"
 
     if [ "$DIFF" != "" ]
     then
-        echo "ERROR: mismatch in \"DIFF ($compare) (./c- $f)\":"
+        echo -e "\tFAILED:"
         echo "$DIFF"
-        printf "\n"
-        fail=1
+        fail=$((fail+1))
     fi
+
+    printf "\n"
 
     # -P
     compare=${f/.c-/.Pout}
-    echo ${f/.c-/}
+    command="diff <(cat $compare) <(./c- -P "$f")"
+    printf "$command"
     DIFF="$(diff <(cat $compare) <(./c- -P "$f"))"
 
     if [ "$DIFF" != "" ]
     then
-        echo "ERROR: mismatch in \"DIFF ($compare) (./c- -P $f)\":"
+        echo -e "\tFAILED:"
         echo "$DIFF"
-        printf "\n"
-        fail=1
+        fail=$((fail+1))
     fi
+
+    printf "\n"
 done
 
 
-if [ "$fail" == "1" ]
+if ((fail>0)) 
 then
+    echo "TESTS FAILED: $fail"
     exit 1
 fi
 
