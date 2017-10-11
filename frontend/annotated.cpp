@@ -16,7 +16,6 @@ extern int numerror;
 SymbolTable st(true); //init single symbol table object
 
 static bool funcflag = false;
-int flag;
 void scopeAndType(treeNode *parseTree) {
 	treeTraverse(parseTree);
 }
@@ -27,10 +26,11 @@ void scopeAndType(treeNode *parseTree) {
 void treeTraverse(treeNode *curNode) {
 	Entry* e = NULL;
 	Entry* previous = st.getParentLast();
-	int flag;
 	bool dontkill = false;
-	switch (curNode->kind) {
+	switch (curNode->kind)
+	{
 	case Compound:
+	{
 		//printf("COMPOUND\n");
 		// Create new scope
 		if(previous != NULL && previous->kind == Func && funcflag) {
@@ -40,9 +40,10 @@ void treeTraverse(treeNode *curNode) {
 			st.newScope();
 		}
 		break;
+	}
 
 	case Var:
-		{
+	{
 		//printf("new Var: %s, %d, %p\n", curNode->val.id, curNode->type, previous);
 		// Declare Variable
 		e = st.insertSymbol(
@@ -62,9 +63,9 @@ void treeTraverse(treeNode *curNode) {
 				printEntry(curNode->val.id, curNode->type, Var, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
 		}
 		break;
-		}
+	}
 	case Func:
-		{
+	{
 		// Declare new Function
 		e = st.insertSymbol(
 			curNode->val.id,
@@ -85,9 +86,9 @@ void treeTraverse(treeNode *curNode) {
 		st.newScope();
 		funcflag = true; // Special Case: Prevent new scope immediately after function declaration
 		break;
-		}
+	}
 	case Rec:
-		{
+	{
 		// Declare new Record
 		e = st.insertSymbol(
 			curNode->val.id,
@@ -105,14 +106,16 @@ void treeTraverse(treeNode *curNode) {
 			if(yydebug)
 				printEntry(curNode->val.id, curNode->type, Rec, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
 		}
+		st.newScope();
 		break;
-		}
+	}
 	case Id:
-		{
+	{
 		//process ID symbol
 		e = st.searchAll(std::string(curNode->val.id));
 		if (e == NULL) {
 			errorVector.push_back(printSymbolNotDefinedError(curNode->linenum, curNode->val.id));
+			curNode->type = UndefinedType;
 		}
 		else {
 			curNode->type = e->type;
@@ -121,9 +124,9 @@ void treeTraverse(treeNode *curNode) {
 			curNode->isRecord = e->isRecord;
 		}
 		break;
-		}
+	}
 	case Param:
-		{
+	{
 		//Declare Parameter
 		e = st.insertSymbol(
 			curNode->val.id,
@@ -142,9 +145,9 @@ void treeTraverse(treeNode *curNode) {
 				printEntry(curNode->val.id, curNode->type, Param, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
 		}
 		break;
-		}
+	}
 	case Call:
-		{
+	{
 		e = st.searchAll(curNode->val.id);
 		if (e != NULL) {
 			if(e->kind != Func) {
@@ -156,10 +159,10 @@ void treeTraverse(treeNode *curNode) {
 			errorVector.push_back(printSymbolNotDefinedError(curNode->linenum, curNode->val.id));
 		}
 		break;
+	}
 	default:
 		//printf("hit default 2\n");
 		break;
-		}
 	}
 
 
@@ -184,74 +187,51 @@ void treeTraverse(treeNode *curNode) {
 		st.pop();
 		funcflag = true;
 		break;
+	case Rec:
+	{
+		st.pop();
+		break;
+	}
 	case Assign:
 		{
 		//assign type for assignment
 		//first check +=, -=, /=, *=
 		switch(curNode->opType) {
 		case AddE:
-			flag = 0;
 			if(curNode->children[0]->type != IntType) {
 				errorVector.push_back(requiredOpLhsError(curNode->linenum, "+=", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
-				flag++;
 			} 
 			if (curNode->children[1]->type != IntType) {
 				errorVector.push_back(requiredOpRhsError(curNode->linenum, "+=", typeToChar(IntType), typeToChar(curNode->children[1]->type)));
-				flag++;
 			}
-			if (flag) {
-				curNode->type = UndefinedType;
-			} else {
-				curNode->type = IntType;
-			}	
+			curNode->type = IntType;
 			break;
 		case SubE:
-			flag = 0;
 			if(curNode->children[0]->type != IntType) {
 				errorVector.push_back(requiredOpLhsError(curNode->linenum, "-=", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
-				flag++;
 			} 
 			if (curNode->children[1]->type != IntType) {
 				errorVector.push_back(requiredOpRhsError(curNode->linenum, "-=", typeToChar(IntType), typeToChar(curNode->children[1]->type)));
-				flag++;
 			}
-			if (flag) {
-				curNode->type = UndefinedType;
-			} else {
-				curNode->type = IntType;
-			}	
+			curNode->type = IntType;
 			break;
 		case MulE:
-			flag = 0;
 			if(curNode->children[0]->type != IntType) {
 				errorVector.push_back(requiredOpLhsError(curNode->linenum, "*=", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
-				flag++;
 			} 
 			if (curNode->children[1]->type != IntType) {
 				errorVector.push_back(requiredOpRhsError(curNode->linenum, "*=", typeToChar(IntType), typeToChar(curNode->children[1]->type)));
-				flag++;
 			}
-			if (flag) {
-				curNode->type = UndefinedType;
-			} else {
-				curNode->type = IntType;
-			}	
+			curNode->type = IntType;
 			break;
 		case DivE:
-			flag = 0;
 			if(curNode->children[0]->type != IntType) {
 				errorVector.push_back(requiredOpLhsError(curNode->linenum, "/=", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
-				flag++;
 			} 
 			if (curNode->children[1]->type != IntType) {
 				errorVector.push_back(requiredOpRhsError(curNode->linenum, "/=", typeToChar(IntType), typeToChar(curNode->children[1]->type)));
-				flag++;
 			}
-			if (flag) {
-				curNode->type = UndefinedType;
-			} else {
-				curNode->type = IntType;
-			}	
+			curNode->type = IntType;
 			break;
 		case Inc:
 			if(curNode->children[0]->type != IntType) {
@@ -395,10 +375,12 @@ void treeTraverse(treeNode *curNode) {
 			}
 			break;
 		case Bracl:
-			if(curNode->children[0]->isArray == 0) {
-				errorVector.push_back(indexingNamedNonArrayError(curNode->linenum, curNode->children[0]->val.id));
+			if(curNode->children[0]->kind == Id && curNode->children[0]->isArray == 0) {
+				errorVector.push_back(indexingNamedNonArrayError(curNode->linenum, curNode->children[0]->val.id)); 
 				//errorVector.push_back(opOnlyForArraysError(curNode->linenum, "["));
 				break;
+			} else if (curNode->children[0]->kind != Id && curNode->children[0]->isArray == 0) {
+				errorVector.push_back(indexingUnamedNonArrayError(curNode->linenum)); 
 			}
 			if(curNode->children[1]->type != IntType) {
 				errorVector.push_back(arrayIndexTypeError(curNode->linenum, curNode->children[0]->val.id, typeToChar(curNode->children[1]->type)));
@@ -412,7 +394,6 @@ void treeTraverse(treeNode *curNode) {
 					break;
 				}
 			} else {
-				int flag = 0;
 				if(curNode->children[0]->type != IntType) {
 					errorVector.push_back(requiredOpLhsError(curNode->linenum, "*", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
 				} 
@@ -423,7 +404,6 @@ void treeTraverse(treeNode *curNode) {
 			break;	
 			/*Or, And, Not, Leq, Geq, Lss, Gss, Eq, AddE, SubE, MulE, DivE, Noteq, Add, Sub, Mul, Div, Mod, Rand, Neg, Inc, Dec, Dot, Bracl, EEq*/
 		case Add:
-			flag = 0;
 			if(curNode->children[0]->type != IntType) {
 				errorVector.push_back(requiredOpLhsError(curNode->linenum, "+", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
 			} 
@@ -432,7 +412,6 @@ void treeTraverse(treeNode *curNode) {
 			}
 			break;
 		case Sub:
-			flag = 0;
 			if(curNode->children[0]->type != IntType) {
 				errorVector.push_back(requiredOpLhsError(curNode->linenum, "-", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
 			} 
@@ -443,7 +422,6 @@ void treeTraverse(treeNode *curNode) {
 			}
 			break;
 		case Div:
-			flag = 0;
 			if(curNode->children[0]->type != IntType) {
 				errorVector.push_back(requiredOpLhsError(curNode->linenum, "/", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
 			} 
@@ -452,7 +430,6 @@ void treeTraverse(treeNode *curNode) {
 			}
 			break;
 		case Mod:
-			flag = 0;
 			if(curNode->children[0]->type != IntType) {
 				errorVector.push_back(requiredOpLhsError(curNode->linenum, "%", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
 			} 
