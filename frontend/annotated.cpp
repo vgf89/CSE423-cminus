@@ -298,15 +298,15 @@ void treeTraverse(treeNode *curNode) {
 		case Neg:
 			if(curNode->children[0]->isArray) {
 				errorVector.push_back(invalidArrayOperationError(curNode->linenum, "!"));
-				curNode->type = UndefinedType;
+				//curNode->type = UndefinedType;
 				break;
 			}
 			if(curNode->children[0]->type != BoolType) {
 				errorVector.push_back(invalidUnaryOpError(curNode->linenum, "!", typeToChar(BoolType), typeToChar(curNode->children[0]->type)));
-				curNode->type = UndefinedType;
+				//curNode->type = UndefinedType;
 				break;
 			} 
-			curNode->type = BoolType;
+			//curNode->type = BoolType;
 			break;
 		case EEq:
 			if(curNode->children[0]->type != curNode->children[1]->type) {
