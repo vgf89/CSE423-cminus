@@ -136,7 +136,7 @@ void treeTraverse(treeNode *curNode) {
 		e = st.searchAll(curNode->val.id);
 		if (e != NULL) {
 			if(e->kind != Func) {
-				errorVector.push_back(simpleVarCalledError(e->linenum, curNode->val.id));
+				errorVector.push_back(simpleVarCalledError(curNode->linenum, curNode->val.id));
 			} else {
 				curNode->type = e->type;
 			}
@@ -232,7 +232,7 @@ void treeTraverse(treeNode *curNode) {
 			}
 			if(curNode->children[0]->type != curNode->children[1]->type 
 				&& (curNode->children[0]->type != UndefinedType && curNode->children[1]->type != UndefinedType )) {
-				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "+=", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[1]->type)));
+				errorVector.push_back(requiredOpLhsError(curNode->linenum, "+=", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
 			}	
 			break;
 		case SubE:
@@ -254,7 +254,7 @@ void treeTraverse(treeNode *curNode) {
 			}
 			if(curNode->children[0]->type != curNode->children[1]->type
 				&& (curNode->children[0]->type != UndefinedType && curNode->children[1]->type != UndefinedType )) {
-				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "-=", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[1]->type)));
+				errorVector.push_back(requiredOpRhsError(curNode->linenum, "-=", typeToChar(IntType), typeToChar(curNode->children[1]->type)));
 			}
 			break;
 		case MulE:
@@ -341,16 +341,13 @@ void treeTraverse(treeNode *curNode) {
 			}
 			else if(curNode->children[1]->type == VoidType) {
 				errorVector.push_back(voidOpRhsError(curNode->linenum, "="));
-			}
-			else if(curNode->children[0]->type != curNode->children[1]->type
-					&& (curNode->children[1]->kind != Op && curNode->children[0]->kind != Op)
-					&& curNode->children[1]->kind != Const) {
+			} else if(curNode->children[0]->type != curNode->children[1]->type
+				&& curNode->children[0]->type != UndefinedType
+				&& curNode->children[1]->type != UndefinedType ) {
 				std::string rh_type = typeToChar(curNode->children[1]->type);
 				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "=", lh_type, rh_type));
 			}
-			else {
-				curNode->type = curNode->children[0]->type;
-			}
+			curNode->type = curNode->children[0]->type;
 			break;
 			}
 		}
@@ -488,6 +485,9 @@ void treeTraverse(treeNode *curNode) {
 			}
 			if(curNode->children[1]->type != IntType && curNode->children[1]->type != UndefinedType) {
 				errorVector.push_back(arrayIndexTypeError(curNode->linenum, curNode->children[0]->val.id, typeToChar(curNode->children[1]->type)));
+			}
+			if(curNode->children[1]->isArray) {
+				errorVector.push_back(unindexedArrayError(curNode->linenum, curNode->children[1]->val.id));
 			}
 			curNode->type = curNode->children[0]->type;
 			break;
