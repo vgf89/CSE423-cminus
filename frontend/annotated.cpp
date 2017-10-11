@@ -16,7 +16,6 @@ extern int numerror;
 SymbolTable st(true); //init single symbol table object
 
 static bool funcflag = false;
-int flag;
 void scopeAndType(treeNode *parseTree) {
 	treeTraverse(parseTree);
 }
@@ -27,7 +26,6 @@ void scopeAndType(treeNode *parseTree) {
 void treeTraverse(treeNode *curNode) {
 	Entry* e = NULL;
 	Entry* previous = st.getParentLast();
-	int flag;
 	bool dontkill = false;
 	switch (curNode->kind) {
 	case Compound:
@@ -190,68 +188,40 @@ void treeTraverse(treeNode *curNode) {
 		//first check +=, -=, /=, *=, %=
 		switch(curNode->opType) {
 		case AddE:
-			flag = 0;
 			if(curNode->children[0]->type != IntType) {
 				errorVector.push_back(requiredOpLhsError(curNode->linenum, "+=", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
-				flag++;
 			} 
 			if (curNode->children[1]->type != IntType) {
 				errorVector.push_back(requiredOpRhsError(curNode->linenum, "+=", typeToChar(IntType), typeToChar(curNode->children[1]->type)));
-				flag++;
 			}
-			if (flag) {
-				curNode->type = UndefinedType;
-			} else {
-				curNode->type = IntType;
-			}	
+			curNode->type = IntType;
 			break;
 		case SubE:
-			flag = 0;
 			if(curNode->children[0]->type != IntType) {
 				errorVector.push_back(requiredOpLhsError(curNode->linenum, "-=", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
-				flag++;
 			} 
 			if (curNode->children[1]->type != IntType) {
 				errorVector.push_back(requiredOpRhsError(curNode->linenum, "-=", typeToChar(IntType), typeToChar(curNode->children[1]->type)));
-				flag++;
 			}
-			if (flag) {
-				curNode->type = UndefinedType;
-			} else {
-				curNode->type = IntType;
-			}	
+			curNode->type = IntType;
 			break;
 		case MulE:
-			flag = 0;
 			if(curNode->children[0]->type != IntType) {
 				errorVector.push_back(requiredOpLhsError(curNode->linenum, "*=", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
-				flag++;
 			} 
 			if (curNode->children[1]->type != IntType) {
 				errorVector.push_back(requiredOpRhsError(curNode->linenum, "*=", typeToChar(IntType), typeToChar(curNode->children[1]->type)));
-				flag++;
 			}
-			if (flag) {
-				curNode->type = UndefinedType;
-			} else {
-				curNode->type = IntType;
-			}	
+			curNode->type = IntType;
 			break;
 		case DivE:
-			flag = 0;
 			if(curNode->children[0]->type != IntType) {
 				errorVector.push_back(requiredOpLhsError(curNode->linenum, "/=", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
-				flag++;
 			} 
 			if (curNode->children[1]->type != IntType) {
 				errorVector.push_back(requiredOpRhsError(curNode->linenum, "/=", typeToChar(IntType), typeToChar(curNode->children[1]->type)));
-				flag++;
 			}
-			if (flag) {
-				curNode->type = UndefinedType;
-			} else {
-				curNode->type = IntType;
-			}	
+			curNode->type = IntType;
 			break;
 		case Inc:
 			if(curNode->children[0]->type != IntType) {
@@ -419,7 +389,6 @@ void treeTraverse(treeNode *curNode) {
 					break;
 				}
 			} else {
-				int flag = 0;
 				if(curNode->children[0]->type != IntType) {
 					errorVector.push_back(requiredOpLhsError(curNode->linenum, "*", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
 				} 
@@ -430,7 +399,6 @@ void treeTraverse(treeNode *curNode) {
 			break;	
 			/*Or, And, Not, Leq, Geq, Lss, Gss, Eq, AddE, SubE, MulE, DivE, Noteq, Add, Sub, Mul, Div, Mod, Rand, Neg, Inc, Dec, Dot, Bracl, EEq*/
 		case Add:
-			flag = 0;
 			if(curNode->children[0]->type != IntType) {
 				errorVector.push_back(requiredOpLhsError(curNode->linenum, "+", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
 			} 
@@ -439,7 +407,6 @@ void treeTraverse(treeNode *curNode) {
 			}
 			break;
 		case Sub:
-			flag = 0;
 			if(curNode->children[0]->type != IntType) {
 				errorVector.push_back(requiredOpLhsError(curNode->linenum, "-", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
 			} 
@@ -450,7 +417,6 @@ void treeTraverse(treeNode *curNode) {
 			}
 			break;
 		case Div:
-			flag = 0;
 			if(curNode->children[0]->type != IntType) {
 				errorVector.push_back(requiredOpLhsError(curNode->linenum, "/", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
 			} 
@@ -459,7 +425,6 @@ void treeTraverse(treeNode *curNode) {
 			}
 			break;
 		case Mod:
-			flag = 0;
 			if(curNode->children[0]->type != IntType) {
 				errorVector.push_back(requiredOpLhsError(curNode->linenum, "%", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
 			} 
