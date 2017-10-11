@@ -73,17 +73,6 @@ void SymbolTable::setDebug(bool d) {
 	this->debug = d;
 }
 
-//gets last parent for when we have new scope after function decleration
-Entry* SymbolTable::getParentLast() {
-	if (stack.size() < 2) {
-		return NULL;
-    }
-
-    if (this->stack[stack.size()-2]->symbols->rbegin() == this->stack[stack.size()-2]->symbols->rend())
-        return NULL;
-	return this->stack[stack.size()-2]->symbols->rbegin()->second; 
-}
-
 //creates new entry for current scope
 Entry* Scope::insertSymbol(std::string name, enum typeEnum type, enum kindEnum kind, bool isStatic, bool isArray, bool isRecord, int linenum) {
 	Entry *e = new Entry();

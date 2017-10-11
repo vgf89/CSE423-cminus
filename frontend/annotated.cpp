@@ -26,16 +26,15 @@ int main_defined = false;
 //Builds symbol table, semantic erro list, and (optionally) prints symbol table
 void treeTraverse(treeNode *curNode) {
 	Entry* e = NULL;
-	Entry* previous = st.getParentLast();
-	bool dontkill = false;
+	//Entry* previous = st.getParentLast();
+	bool dontpop = false;
 	switch (curNode->kind)
 	{
 	case Compound:
 	{
-		//printf("COMPOUND\n");
 		// Create new scope
-		if(previous != NULL && previous->kind == Func && funcflag) {
-			dontkill = true;
+		if(funcflag) {
+			dontpop = true;
 			funcflag = false;
 		} else {
 			st.newScope();
@@ -174,7 +173,7 @@ void treeTraverse(treeNode *curNode) {
 	// After analyzing children
 	switch (curNode->kind) {
 	case Compound:
-		if(!dontkill)
+		if(!dontpop)
 			st.pop();
 		break;
 	case Func:
