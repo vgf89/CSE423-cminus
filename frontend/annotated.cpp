@@ -178,6 +178,13 @@ void treeTraverse(treeNode *curNode) {
 		st.pop();
 		break;
 	}
+	case Return:
+	{
+		if (curNode->children[0] != NULL && curNode->children[0]->isArray == 1) {
+			errorVector.push_back(returnArrayError(curNode->linenum));
+		}
+		break;
+	}
 	case Var:
 	{
 		//printf("new Var: %s, %d, %p\n", curNode->val.id, curNode->type, previous);
