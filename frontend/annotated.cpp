@@ -29,8 +29,10 @@ void treeTraverse(treeNode *curNode) {
 	Entry* previous = st.getParentLast();
 	int flag;
 	bool dontkill = false;
-	switch (curNode->kind) {
+	switch (curNode->kind)
+	{
 	case Compound:
+	{
 		//printf("COMPOUND\n");
 		// Create new scope
 		if(previous != NULL && previous->kind == Func && funcflag) {
@@ -40,9 +42,10 @@ void treeTraverse(treeNode *curNode) {
 			st.newScope();
 		}
 		break;
+	}
 
 	case Var:
-		{
+	{
 		//printf("new Var: %s, %d, %p\n", curNode->val.id, curNode->type, previous);
 		// Declare Variable
 		e = st.insertSymbol(
@@ -62,9 +65,9 @@ void treeTraverse(treeNode *curNode) {
 				printEntry(curNode->val.id, curNode->type, Var, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
 		}
 		break;
-		}
+	}
 	case Func:
-		{
+	{
 		// Declare new Function
 		e = st.insertSymbol(
 			curNode->val.id,
@@ -85,9 +88,9 @@ void treeTraverse(treeNode *curNode) {
 		st.newScope();
 		funcflag = true; // Special Case: Prevent new scope immediately after function declaration
 		break;
-		}
+	}
 	case Rec:
-		{
+	{
 		// Declare new Record
 		e = st.insertSymbol(
 			curNode->val.id,
@@ -105,14 +108,16 @@ void treeTraverse(treeNode *curNode) {
 			if(yydebug)
 				printEntry(curNode->val.id, curNode->type, Rec, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
 		}
+		st.newScope();
 		break;
-		}
+	}
 	case Id:
-		{
+	{
 		//process ID symbol
 		e = st.searchAll(std::string(curNode->val.id));
 		if (e == NULL) {
 			errorVector.push_back(printSymbolNotDefinedError(curNode->linenum, curNode->val.id));
+			curNode->type = UndefinedType;
 		}
 		else {
 			curNode->type = e->type;
@@ -121,9 +126,9 @@ void treeTraverse(treeNode *curNode) {
 			curNode->isRecord = e->isRecord;
 		}
 		break;
-		}
+	}
 	case Param:
-		{
+	{
 		//Declare Parameter
 		e = st.insertSymbol(
 			curNode->val.id,
@@ -142,9 +147,9 @@ void treeTraverse(treeNode *curNode) {
 				printEntry(curNode->val.id, curNode->type, Param, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
 		}
 		break;
-		}
+	}
 	case Call:
-		{
+	{
 		e = st.searchAll(curNode->val.id);
 		if (e != NULL) {
 			if(e->kind != Func) {
@@ -156,10 +161,10 @@ void treeTraverse(treeNode *curNode) {
 			errorVector.push_back(printSymbolNotDefinedError(curNode->linenum, curNode->val.id));
 		}
 		break;
+	}
 	default:
 		//printf("hit default 2\n");
 		break;
-		}
 	}
 
 
@@ -184,6 +189,11 @@ void treeTraverse(treeNode *curNode) {
 		st.pop();
 		funcflag = true;
 		break;
+	case Rec:
+	{
+		st.pop();
+		break;
+	}
 	case Assign:
 		{
 		//assign type for assignment
