@@ -138,6 +138,7 @@ void treeTraverse(treeNode *curNode) {
 		if (e != NULL) {
 			if(e->kind != Func) {
 				errorVector.push_back(simpleVarCalledError(curNode->linenum, curNode->val.id));
+				curNode->type = e->type;
 			} else {
 				curNode->type = e->type;
 			}
