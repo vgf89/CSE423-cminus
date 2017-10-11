@@ -445,11 +445,11 @@ void treeTraverse(treeNode *curNode) {
 			}
 			if (curNode->children[0]->type != IntType && curNode->children[0]->type != CharType
 				&& (curNode->children[0]->type != UndefinedType)) {
-				errorVector.push_back(opLhsOnlyForIntAndCharError(curNode->linenum, "<=", typeToChar(curNode->children[0]->type)));
+				errorVector.push_back(opLhsOnlyForIntAndCharError(curNode->linenum, ">=", typeToChar(curNode->children[0]->type)));
 			}
 			if (curNode->children[1]->type != IntType && curNode->children[1]->type != CharType
 				&& (curNode->children[1]->type != UndefinedType)) {
-				errorVector.push_back(opRhsOnlyForIntAndCharError(curNode->linenum, "<=", typeToChar(curNode->children[1]->type)));
+				errorVector.push_back(opRhsOnlyForIntAndCharError(curNode->linenum, ">=", typeToChar(curNode->children[1]->type)));
 			}
 
 
