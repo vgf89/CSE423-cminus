@@ -187,7 +187,7 @@ void treeTraverse(treeNode *curNode) {
 	case Assign:
 		{
 		//assign type for assignment
-		//first check +=, -=, /=, *=, %=
+		//first check +=, -=, /=, *=
 		switch(curNode->opType) {
 		case AddE:
 			flag = 0;
@@ -270,28 +270,29 @@ void treeTraverse(treeNode *curNode) {
 			curNode->type = IntType;
 			break;
 
-		}
-		std::string lh_type = typeToChar(curNode->children[0]->type);
+		default: //=
+			std::string lh_type = typeToChar(curNode->children[0]->type);
 
-		const char *notnull = "not NULL";
-		const char *null = "NULL";
-		if(curNode->children[1] == NULL) {
-			if(curNode->opType != Dec && curNode->opType != Inc)
-				errorVector.push_back(requiredOpRhsError(curNode->linenum, "=", (char*) notnull, (char *) null));
-		}
-		else if(curNode->children[0]->type != curNode->children[1]->type
-				&& (curNode->children[1]->kind != Op || curNode->children[0]->kind != Op)
-				&& curNode->children[1]->kind != Const) {
-			std::string rh_type = typeToChar(curNode->children[1]->type);
-			errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "=", lh_type, rh_type));
-		}
-		else if(curNode->children[0]->opType == Bracl) {
-			curNode->type = curNode->children[0]->type;
-		}
-		else {
-			curNode->type = curNode->children[0]->type;
-		}
-		break;
+			const char *notnull = "not NULL";
+			const char *null = "NULL";
+			if(curNode->children[1] == NULL) {
+				if(curNode->opType != Dec && curNode->opType != Inc)
+					errorVector.push_back(requiredOpRhsError(curNode->linenum, "=", (char*) notnull, (char *) null));
+			}
+			else if(curNode->children[0]->type != curNode->children[1]->type
+					&& (curNode->children[1]->kind != Op || curNode->children[0]->kind != Op)
+					&& curNode->children[1]->kind != Const) {
+				std::string rh_type = typeToChar(curNode->children[1]->type);
+				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "=", lh_type, rh_type));
+			}
+			else if(curNode->children[0]->opType == Bracl) {
+				curNode->type = curNode->children[0]->type;
+			}
+			else {
+				curNode->type = curNode->children[0]->type;
+			}
+			break;
+			}
 		}
 	case Op:
 		switch (curNode->opType) {
@@ -342,14 +343,6 @@ void treeTraverse(treeNode *curNode) {
 				break;
 			} 
 			curNode->type = BoolType;
-			break;
-		case Eq:
-			if(curNode->children[0]->type != curNode->children[1]->type) {
-				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "=", typeToChar(curNode->children[0]->type), typeToChar(curNode->children[0]->type)));
-				curNode->type = UndefinedType;
-			} else {
-				curNode->type = curNode->children[0]->type;
-			}
 			break;
 		case EEq:
 			if(curNode->children[0]->type != curNode->children[1]->type) {
