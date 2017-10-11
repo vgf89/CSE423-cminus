@@ -78,14 +78,10 @@ Entry* SymbolTable::getParentLast() {
 	if (stack.size() < 2) {
 		return NULL;
     }
-    auto test = this->stack[stack.size()-2];
-    auto test2 = test->symbols;
-    auto test3 = test2->rbegin();
-    //if (yydebug) printf("stack size: %d\n", this->getDepth());
-    if (test3 == test2->rend())
+
+    if (this->stack[stack.size()-2]->symbols->rbegin() == this->stack[stack.size()-2]->symbols->rend())
         return NULL;
-    auto test4 = test3->second;
-	return test4; 
+	return this->stack[stack.size()-2]->symbols->rbegin()->second; 
 }
 
 //creates new entry for current scope
