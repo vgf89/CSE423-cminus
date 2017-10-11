@@ -322,18 +322,13 @@ void treeTraverse(treeNode *curNode) {
 			}
 			else if(curNode->children[1]->type == VoidType) {
 				errorVector.push_back(voidOpRhsError(curNode->linenum, "="));
-			}
-			else if(curNode->children[0]->type != curNode->children[1]->type
-					&& (curNode->children[1]->kind != Op && curNode->children[0]->kind != Op)
-					&& curNode->children[1]->kind != Const
-					&& curNode->children[1]->kind != Call) {
+			} else if(curNode->children[0]->type != curNode->children[1]->type
+				&& curNode->children[0]->type != UndefinedType
+				&& curNode->children[1]->type != UndefinedType ) {
 				std::string rh_type = typeToChar(curNode->children[1]->type);
 				errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "=", lh_type, rh_type));
 			}
-			//need to check type = constant type
-			else {
-				curNode->type = curNode->children[0]->type;
-			}
+			curNode->type = curNode->children[0]->type;
 			break;
 			}
 		}
