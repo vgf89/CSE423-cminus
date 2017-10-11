@@ -195,7 +195,9 @@ void treeTraverse(treeNode *curNode) {
 			if(curNode->opType != Dec && curNode->opType != Inc)
 				errorVector.push_back(requiredOpRhsError(curNode->linenum, "=", (char*) notnull, (char *) null));
 		}
-		else if(curNode->children[0]->type != curNode->children[1]->type) {
+		else if(curNode->children[0]->type != curNode->children[1]->type
+				&& (curNode->children[1]->kind != Op || curNode->children[0]->kind != Op)
+				&& curNode->children[1]->kind != Const) {
 			std::string rh_type = typeToChar(curNode->children[1]->type);
 			errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "=", lh_type, rh_type));
 		}
