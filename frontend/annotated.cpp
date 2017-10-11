@@ -465,12 +465,12 @@ void treeTraverse(treeNode *curNode) {
 				errorVector.push_back(invalidArrayOperationError(curNode->linenum, "-"));
 			} else {
 				if(curNode->children[0]->type != IntType && curNode->children[0]->type != UndefinedType) {
-					errorVector.push_back(requiredOpLhsError(curNode->linenum, "-", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
+					errorVector.push_back(invalidUnaryOpError(curNode->linenum, "-", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
 				} 
 				if (curNode->children[1] == NULL) {
 					curNode->type = curNode->children[0]->type;
 				} else if (curNode->children[1]->type != IntType && curNode->children[1]->type != UndefinedType) {
-					errorVector.push_back(requiredOpRhsError(curNode->linenum, "-", typeToChar(IntType), typeToChar(curNode->children[1]->type)));
+					errorVector.push_back(invalidUnaryOpError(curNode->linenum, "-", typeToChar(IntType), typeToChar(curNode->children[1]->type)));
 				}
 			}
 			break;
