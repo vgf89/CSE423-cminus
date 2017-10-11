@@ -13,7 +13,7 @@ do
 
     if [ "$DIFF" != "" ]
     then
-        echo "Output Mismatch ($compare):\n"
+        echo "ERROR: mismatch in \"DIFF ($compare) (./c- $f)\":"
         echo "$DIFF"
         printf "\n"
         fail=1
@@ -27,7 +27,7 @@ do
 
     if [ "$DIFF" != "" ]
     then
-        echo "Output Mismatch ($compare):\n"
+        echo "ERROR: mismatch in \"DIFF ($compare) (./c- -P $f)\":"
         echo "$DIFF"
         printf "\n"
         fail=1

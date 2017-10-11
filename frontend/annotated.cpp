@@ -41,7 +41,7 @@ void treeTraverse(treeNode *curNode) {
 
 	case Var:
 		{
-		//if(yydebug) printf("new Var: %s\n",curNode->val.id );
+		if(yydebug) printf("new Var: %s, %d\n", curNode->val.id, curNode->type);
 		// Declare Variable
 		e = st.insertSymbol(
 			curNode->val.id,
@@ -113,6 +113,9 @@ void treeTraverse(treeNode *curNode) {
 		}
 		else {
 			curNode->type = e->type;
+			curNode->isStatic = e->isStatic;
+			curNode->isArray = e->isArray;
+			curNode->isRecord = e->isRecord;
 		}
 		break;
 		}
@@ -137,31 +140,6 @@ void treeTraverse(treeNode *curNode) {
 		}
 		break;
 		}
-	case Assign:
-		{
-		//assign type for assignment
-		std::string lh_type = typeToChar(curNode->children[0]->type);
-		const char *notnull = "not NULL";
-		const char *null = "NULL";
-		if(curNode->children[1] == NULL) {
-			if(curNode->opType != Dec && curNode->opType != Inc)
-				errorVector.push_back(requiredOpRhsError(curNode->linenum, "=", (char*) notnull, (char *) null));
-		}
-		else if(curNode->children[0]->type != curNode->children[1]->type 
-				&& curNode->children[1]->kind != Op
-				&& curNode->children[1]->kind != Const) {
-			std::string rh_type = typeToChar(curNode->children[1]->type);
-			errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "=", lh_type, rh_type));
-		}
-		else if(curNode->children[0]->opType == Bracl) {
-			curNode->type = curNode->children[0]->type;
-		}
-		else {
-			e = st.searchAll(std::string(curNode->children[0]->val.id));
-			curNode->type = e->type;
-		}
-		break;
-		}
 	case Call:
 		{
 		e = st.searchAll(curNode->val.id);
@@ -176,7 +154,7 @@ void treeTraverse(treeNode *curNode) {
 		}
 		break;
 	default:
-		printf("hit default 2\n");
+		//printf("hit default 2\n");
 		break;
 		}
 	}
@@ -197,9 +175,33 @@ void treeTraverse(treeNode *curNode) {
 	case Func:
 		st.pop();
 		break;
+	case Assign:
+		{
+		//assign type for assignment
+		std::string lh_type = typeToChar(curNode->children[0]->type);
+
+		const char *notnull = "not NULL";
+		const char *null = "NULL";
+		if(curNode->children[1] == NULL) {
+			if(curNode->opType != Dec && curNode->opType != Inc)
+				errorVector.push_back(requiredOpRhsError(curNode->linenum, "=", (char*) notnull, (char *) null));
+		}
+		else if(curNode->children[0]->type != curNode->children[1]->type) {
+			std::string rh_type = typeToChar(curNode->children[1]->type);
+			errorVector.push_back(operandTypeMistmatchError(curNode->linenum, "=", lh_type, rh_type));
+		}
+		else if(curNode->children[0]->opType == Bracl) {
+			curNode->type = curNode->children[0]->type;
+		}
+		else {
+			curNode->type = curNode->children[0]->type;
+		}
+		break;
+		}
 	case Op:
 		switch (curNode->opType) {
 		case And:
+			printf("AND");
 			flag = 0;
 			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
 				errorVector.push_back(invalidArrayOperationError(curNode->linenum, "and"));
@@ -297,7 +299,7 @@ void treeTraverse(treeNode *curNode) {
 			break;
 		case Lss:
 			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
-				errorVector.push_back(invalidArrayOperationError(curNode->linenum, "and"));
+				errorVector.push_back(invalidArrayOperationError(curNode->linenum, "<"));
 				curNode->type = UndefinedType;
 				break;
 			}
@@ -310,7 +312,7 @@ void treeTraverse(treeNode *curNode) {
 			break;
 		case Gss:
 			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
-				errorVector.push_back(invalidArrayOperationError(curNode->linenum, "and"));
+				errorVector.push_back(invalidArrayOperationError(curNode->linenum, ">"));
 				curNode->type = UndefinedType;
 				break;
 			}
@@ -323,7 +325,7 @@ void treeTraverse(treeNode *curNode) {
 			break;
 		case Leq:
 			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
-				errorVector.push_back(invalidArrayOperationError(curNode->linenum, "and"));
+				errorVector.push_back(invalidArrayOperationError(curNode->linenum, "<="));
 				curNode->type = UndefinedType;
 				break;
 			}
@@ -336,7 +338,7 @@ void treeTraverse(treeNode *curNode) {
 			break;
 		case Geq:
 			if(curNode->children[0]->isArray || curNode->children[1]->isArray) {
-				errorVector.push_back(invalidArrayOperationError(curNode->linenum, "and"));
+				errorVector.push_back(invalidArrayOperationError(curNode->linenum, ">="));
 				curNode->type = UndefinedType;
 				break;
 			}
@@ -349,7 +351,8 @@ void treeTraverse(treeNode *curNode) {
 			break;
 		case Bracl:
 			if(curNode->children[0]->isArray == 0) {
-				errorVector.push_back(opOnlyForArraysError(curNode->linenum, "["));
+				errorVector.push_back(indexingNamedNonArrayError(curNode->linenum, curNode->children[0]->val.id));
+				//errorVector.push_back(opOnlyForArraysError(curNode->linenum, "["));
 				curNode->type = UndefinedType;
 				break;
 			}
@@ -532,19 +535,26 @@ void treeTraverse(treeNode *curNode) {
 			curNode->type = IntType;
 			break;
 		case Rand:
-			if(curNode->children[0]->type != IntType) {
-				errorVector.push_back(invalidUnaryOpError(curNode->linenum, "?", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
-				curNode->type = UndefinedType;
-				break;
-			} 
-			curNode->type = IntType;
+			if (curNode->children[1] == NULL && curNode->children[0] != NULL) {
+				if (curNode->children[0]->isArray == 1) {
+					errorVector.push_back(invalidArrayOperationError(curNode->linenum, "?"));
+					break;
+				} else if(curNode->children[0]->type != IntType) {
+					errorVector.push_back(invalidUnaryOpError(curNode->linenum, "?", typeToChar(IntType), typeToChar(curNode->children[0]->type)));
+					curNode->type = UndefinedType;
+					break;
+				} else{
+					curNode->type = IntType;
+					break;
+				}
+			}
 			break;
 		default:
-			printf("hit the default\n");
+			printf("hit the default OpType\n");
 			break;
 		}
 	default:
-		printf("hit the default\n");
+		//printf("hit the default\n");
 		break;
 	}
 		
