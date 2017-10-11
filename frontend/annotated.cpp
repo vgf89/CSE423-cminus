@@ -101,8 +101,9 @@ void treeTraverse(treeNode *curNode) {
 		if (e == NULL) {
 			errorVector.push_back(printSymbolNotDefinedError(curNode->linenum, curNode->val.id));
 			curNode->type = UndefinedType;
-		}
-		else {
+		} else if (e->kind == Func) {
+			curNode->type = UndefinedType;
+		} else {
 			curNode->type = e->type;
 			curNode->isStatic = e->isStatic;
 			curNode->isArray = e->isArray;
@@ -198,10 +199,9 @@ void treeTraverse(treeNode *curNode) {
 			curNode->isRecord,
 			curNode->linenum
 		);
-		if (e != NULL)
+		if (e != NULL) {
 			errorVector.push_back(printSymbolAlreadyDefinedError(curNode->linenum, curNode->val.id, e->linenum));
-
-		else {
+		}else {
 			if(yydebug)
 				printEntry(curNode->val.id, curNode->type, Var, curNode->isStatic, curNode->isArray, curNode->isRecord, curNode->linenum);
 		}
