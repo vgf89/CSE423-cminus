@@ -219,6 +219,7 @@ void treeTraverse(treeNode *curNode) {
 			}
 			if(curNode->children[1]->type == VoidType) {
 				errorVector.push_back(voidOpRhsError(curNode->linenum, "+="));
+			}
 			e = st.searchAll(curNode->children[0]->val.id);
 			if(e->kind == Func) {
 				errorVector.push_back(functionAsVariableError(curNode->linenum, curNode->children[0]->val.id));
@@ -235,6 +236,7 @@ void treeTraverse(treeNode *curNode) {
 			}
 			if(curNode->children[1]->type == VoidType) {
 				errorVector.push_back(voidOpRhsError(curNode->linenum, "-="));
+			}
 			e = st.searchAll(curNode->children[0]->val.id);
 			if(e->kind == Func) {
 				errorVector.push_back(functionAsVariableError(curNode->linenum, curNode->children[0]->val.id));
@@ -251,6 +253,7 @@ void treeTraverse(treeNode *curNode) {
 			}
 			if(curNode->children[1]->type == VoidType) {
 				errorVector.push_back(voidOpRhsError(curNode->linenum, "*="));
+			}
 			e = st.searchAll(curNode->children[0]->val.id);
 			if(e->kind == Func) {
 				errorVector.push_back(functionAsVariableError(curNode->linenum, curNode->children[0]->val.id));
@@ -267,6 +270,7 @@ void treeTraverse(treeNode *curNode) {
 			}
 			if(curNode->children[1]->type == VoidType) {
 				errorVector.push_back(voidOpRhsError(curNode->linenum, "/="));
+			}
 
 			e = st.searchAll(curNode->children[0]->val.id);
 			if(e->kind == Func) {
